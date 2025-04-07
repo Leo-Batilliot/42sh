@@ -9,12 +9,8 @@
 
 char *get_env_value(const char *to_find, linked_list_t *head)
 {
-    linked_list_t *tmp = head;
-
-    while (tmp != NULL) {
-        if (my_strcmp(to_find, tmp->key) == 0)
+    for (linked_list_t *tmp = head; tmp; tmp = tmp->next)
+        if (!strcmp(to_find, tmp->key))
             return tmp->value;
-        tmp = tmp->next;
-    }
     return NULL;
 }
