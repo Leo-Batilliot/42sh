@@ -94,3 +94,6 @@ fclean:
 
 # CLEAN EVERYTHING AND RE-COMPILE
 re: fclean all
+
+tests_run:
+	@echo "$(WHITE)$(BOLD)\t[TESTS...]$(RESET)"
