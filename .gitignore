@@ -51,6 +51,8 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
+# Project specific
+obj
 tester.sh 
 tests
 42sh

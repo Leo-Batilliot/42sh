@@ -1,82 +1,97 @@
 ##
 ## EPITECH PROJECT, 2024
-## lib-include
+## makefile
 ## File description:
-## Makefile
+## task 01
 ##
 
-CC      = gcc
-CFLAGS  = -Wextra -Wall -Werror -W -g -I./include
+# DIRECTORIES
+OBJ_DIR = obj
 
-SRC     =	main.c 							\
-			src/utils/my_get_in_env.c 		\
-			src/utils/my_parse_env.c 		\
-			src/utils/my_gest_exec.c 		\
-			src/utils/my_list_to_array.c 	\
-			src/utils/my_envcpy.c 			\
-			src/utils/my_get_curpath.c 		\
-			src/utils/my_gest_commands.c 	\
-			src/utils/parse.c 				\
-			src/utils/handle_red.c 			\
-			src/utils/handle_heredoc.c 		\
-			src/commands/my_set_env.c 		\
-			src/commands/my_unsetenv.c 		\
-			src/commands/my_env.c 			\
-			src/commands/my_print_prompt.c 	\
-			src/commands/my_exit.c 			\
-			src/commands/my_cd.c 			\
-			src/commands/my_print_env.c 	\
-			src/utils/update_pipe.c 		\
-			src/utils/redirect.c 			\
+# FILES
+SRC = 	lib/my_strchr.c 					    \
+		lib/my_strcmp.c 						\
+		lib/my_strdup.c 						\
+		lib/my_strlen.c 						\
+		lib/my_str_to_word_array_sep.c 			\
+		lib/my_strcpy.c 						\
+		lib/my_strcat.c 						\
+		lib/my_get_nbr.c 						\
+		lib/my_putstr.c 						\
+		lib/my_put_nbr.c 						\
+		lib/my_putchar.c 						\
+		lib/mini_printf.c						\
+		lib/my_printerr.c						\
+		lib/linked_list.c 						\
+		src/commands/my_cd.c 					\
+		src/commands/my_env.c 					\
+		src/commands/my_exit.c 					\
+		src/commands/my_print_env.c 			\
+		src/commands/my_print_prompt.c 			\
+		src/commands/my_set_env.c 				\
+		src/commands/my_unsetenv.c 				\
+		src/utils/handle_heredoc.c 				\
+		src/utils/handle_red.c 					\
+		src/utils/my_envcpy.c 					\
+		src/utils/my_gest_commands.c 			\
+		src/utils/my_gest_exec.c 				\
+		src/utils/my_get_curpath.c 				\
+		src/utils/my_get_in_env.c 				\
+		src/utils/my_list_to_array.c 			\
+		src/utils/my_parse_env.c 				\
+		src/utils/parse.c 						\
+		src/utils/redirect.c 					\
+		src/utils/update_pipe.c 				\
+		src/main.c
 
-OBJ     = $(SRC:.c=.o)
+# COLORS
+RED=\033[31m
+GREEN=\033[32m
+WHITE=\033[37m
+BOLD=\033[1m
+RESET=\033[0m
 
-NAME    = 42sh
+# VARIABLES
+OBJ = $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRC))
+FLAGS = -Wextra -Wall -W -Werror -I include
+CC = gcc
+NAME = 42sh
 
-LIBMY   = lib/my/libmy.a
+# PRINT COMPILATION
+$(OBJ_DIR)/%.o: %.c
+	@mkdir -p $(dir $@)
+	@echo "$(GREEN)$(BOLD)[COMPILING]:\t$(RESET)$(GREEN)$<$(RESET)"
+	@$(CC) $(FLAGS) -c $< -o $@
 
-RM      = rm -f
+# PRINT AND THEN COMPILE
+all: pre-compile $(NAME)
 
-# Couleurs pour les messages
-DEFAULT := \e[0m
-BOLD    := \e[1m
-RED     := \e[91m
-GREEN   := \e[92m
-YELLOW  := \e[93m
-BLUE    := \e[94m
+# PRINT INFO
+pre-compile:
+	@echo "$(WHITE)$(BOLD)\t$(WHITE)[COMPILATION...]$(RESET)"
+	@mkdir -p $(OBJ_DIR)
 
-all: force_rebuild_lib $(NAME)
+# COMPILATION
+$(NAME): $(OBJ)
+	@$(CC) -o $(NAME) $(OBJ) $(FLAGS)
+	@echo "$(WHITE)$(BOLD)\t[COMPILED SUCCESSFULLY]"
+	@echo "[READY]:$(RESET)$(WHITE)\t$(NAME)$(RESET)"
 
-force_rebuild_lib:
-	@echo -e "$(YELLOW)Forcing rebuild of libmy...$(DEFAULT)"
-	@$(MAKE) -C lib/my/ fclean
-	@$(MAKE) -C lib/my/
-
-$(LIBMY):
-	@echo -e "$(YELLOW)Rebuilding libmy...$(DEFAULT)"
-	@$(MAKE) -C lib/my/ fclean
-	@$(MAKE) -C lib/my/
-
-$(NAME): $(OBJ) $(LIBMY)
-	@echo -e "$(GREEN)Building $(NAME)...$(DEFAULT)"
-	@$(CC) -o $(NAME) $(OBJ) $(LIBMY) $(CFLAGS)
-
-%.o: %.c
-	@echo -e "$(BLUE)Compiling: $<$(DEFAULT)"
-	@$(CC) -c $< -o $@ $(CFLAGS)
-
+# CLEAN OBJECT FILES
 clean:
-	@echo -e "$(RED)Cleaning object files...$(DEFAULT)"
-	@$(RM) $(OBJ)
+	@echo "$(WHITE)$(BOLD)\t[CLEANING OBJ...]$(RESET)"
+	@if [ -d "$(OBJ_DIR)" ]; then \
+		echo "$(RED)$(BOLD)[CLEAN]:\t$(RESET)$(RED)$(OBJ_DIR)$(RESET)"; \
+		rm -rf $(OBJ_DIR); \
+	fi
 
-fclean: clean
-	@$(MAKE) -C lib/my/ fclean
-	@echo -e "$(RED)Removing $(NAME)...$(DEFAULT)"
-	@$(RM) $(NAME)
+# CLEAN EXEC / LIB and call clean
+fclean:
+	@echo "$(WHITE)$(BOLD)\t[CLEANING EXEC/LIB...]"
+	@echo "$(RED)[CLEAN]:\t$(RESET)$(RED)$(NAME)$(RESET)"
+	@rm -f $(NAME)
+	@$(MAKE) clean -s
 
+# CLEAN EVERYTHING AND RE-COMPILE
 re: fclean all
 
-tests_run:
-	@echo -e "$(RED)TEST $(NAME)...$(DEFAULT)"
-
-.PHONY: all clean fclean re
