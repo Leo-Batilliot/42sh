@@ -21,10 +21,10 @@ void gest_signal(info_shell_t *shell_i, int *statu)
 {
     int term_signal = WTERMSIG(*statu);
 
-    write(2, strsignal(term_signal), my_strlen(strsignal(term_signal)));
+    fprintf(stderr, "%s", strsignal(term_signal));
     if (WCOREDUMP(*statu))
-        write(2, " (core dumped)", 14);
-    write(2, "\n", 1);
+        fprintf(stderr, " (core dumped)");
+    fprintf(stderr, "\n");
     shell_i->last_exit = 128 + term_signal;
 }
 
