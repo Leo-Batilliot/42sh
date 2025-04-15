@@ -67,6 +67,6 @@ int print_list(list_t *list)
         return -1;
     current = list->head;
     for (; current; current = current->next)
-        mini_printf(1, "%s=%s\n", current->name, current->value);
+        printf(1, "%s=%s\n", current->name, current->value);
     return 0;
 }

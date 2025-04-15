@@ -73,9 +73,9 @@ static int gest_error_set(linked_list_t **head, char **array,
     linked_list_t *tmp = NULL;
     int count = 0;
 
-    for (; array[count] != NULL; count++);
+    for (; array[count]; count++);
     if (count > 3) {
-        my_printerr("setenv: Too many arguments.\n");
+        fprintf(stderr, "setenv: Too many arguments.\n");
         shell_i->last_exit = 1;
         return 1;
     }
@@ -92,13 +92,13 @@ static int gest_case(linked_list_t *new_alloc, info_shell_t *shell_i)
     if ((new_alloc->key[0] < 'a' || new_alloc->key[0] > 'z')
             && (new_alloc->key[0] < 'A' || new_alloc->key[0] > 'Z')
             && (new_alloc->key[0] != '_')) {
-        my_printerr("setenv: Variable name must begin with a letter.\n");
+        fprintf(stderr, "setenv: Variable name must begin with a letter.\n");
         shell_i->last_exit = 1;
         return -1;
     }
     if (check_alpha(new_alloc->key) == -1) {
-        my_printerr("setenv: Variable name must ");
-        my_printerr("contain alphanumeric characters.\n");
+        fprintf(stderr, "setenv: Variable name must ");
+        fprintf(stderr, "contain alphanumeric characters.\n");
         shell_i->last_exit = 1;
         return -1;
     }

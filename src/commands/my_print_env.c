@@ -12,7 +12,8 @@ int my_print_env(char **array, info_shell_t *shell_i, linked_list_t *tmp)
     if (my_strcmp(array[0], "env") == 0) {
         if (array[1] != NULL) {
             shell_i->last_exit = 127;
-            my_printerr("env: '%s': No such file or directory\n", array[1]);
+            fprintf(stderr, "env: '%s': No such file or directory\n",
+            array[1]);
             return 1;
         }
         print_env(tmp);

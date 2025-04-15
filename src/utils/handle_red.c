@@ -20,7 +20,7 @@
 int gest_fd(int fd, info_shell_t *shell_i, args_t *tmp, int std_fd)
 {
     if (fd == -1) {
-        my_printerr("%s: %s.\n",
+        fprintf(stderr, "%s: %s.\n",
             tmp->redir[tmp->redir->i].file, strerror(errno));
         shell_i->last_exit = ERROR;
         return -1;

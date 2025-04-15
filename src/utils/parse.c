@@ -10,14 +10,14 @@
 
 int null_message(info_shell_t *shell_i)
 {
-    my_printerr("Invalid null command.\n");
+    fprintf(stderr, "Invalid null command.\n");
     shell_i->last_exit = ERROR;
     return ERROR;
 }
 
 int message_error(info_shell_t *shell_i)
 {
-    my_printerr("Missing name for redirect.\n");
+    fprintf(stderr, "Missing name for redirect.\n");
     shell_i->last_exit = ERROR;
     return ERROR;
 }
@@ -50,7 +50,7 @@ static int add_pipe(int i, char **array,
     args_t **cur, info_shell_t *shell_i)
 {
     if (shell_i->index_parse == 0 || array[i + 1] == NULL) {
-        my_printerr("Invalid null command.\n");
+        fprintf(stderr, "Invalid null command.\n");
         shell_i->last_exit = ERROR;
         return 84;
     }
@@ -101,7 +101,7 @@ static int reset_parse(char **array, info_shell_t *shell_i)
 
 int parse_args(info_shell_t *shell_i)
 {
-    char **array = my_str_to_word_array_sep(shell_i->line, " \t\n");
+    char **array = split_str(shell_i->line, " \t\n");
     args_t *cur = NULL;
 
     if (reset_parse(array, shell_i) == ERROR)

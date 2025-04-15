@@ -21,7 +21,7 @@ int get_cur_pass(linked_list_t **head, char **array, info_shell_t *shell_i)
     string_pwd = get_env_value("PWD", *head);
     shell_i->path = get_path(array[0], string_path, string_pwd);
     if (!shell_i->path) {
-        my_printerr("%s: Command not found.\n", array[0]);
+        fprintf(stderr, "%s: Command not found.\n", array[0]);
         shell_i->last_exit = 1;
         return 1;
     }
@@ -60,7 +60,7 @@ info_shell_t *declare_struct(char **env)
 static void reset_prompt(void)
 {
     if (isatty(0) == 1)
-        mini_printf("$> ");
+        printf("$> ");
 }
 
 static int gest_inside(info_shell_t *shell_i, linked_list_t *head)
