@@ -13,16 +13,15 @@ SRC = 	lib/my_strchr.c 					    \
 		lib/my_strcmp.c 						\
 		lib/my_strdup.c 						\
 		lib/my_strlen.c 						\
-		lib/my_str_to_word_array_sep.c 			\
+		lib/split_str.c 						\
 		lib/my_strcpy.c 						\
 		lib/my_strcat.c 						\
 		lib/my_get_nbr.c 						\
 		lib/my_putstr.c 						\
 		lib/my_put_nbr.c 						\
 		lib/my_putchar.c 						\
-		lib/mini_printf.c						\
-		lib/my_printerr.c						\
 		lib/linked_list.c 						\
+		lib/count_word.c 						\
 		src/commands/my_cd.c 					\
 		src/commands/my_env.c 					\
 		src/commands/my_exit.c 					\
@@ -60,7 +59,7 @@ NAME = 42sh
 # PRINT COMPILATION
 $(OBJ_DIR)/%.o: %.c
 	@mkdir -p $(dir $@)
-	@echo "$(GREEN)$(BOLD)[COMPILING]:\t$(RESET)$(GREEN)$<$(RESET)"
+	@echo -e "$(GREEN)$(BOLD)[COMPILING]:\t$(RESET)$(GREEN)$<$(RESET)"
 	@$(CC) $(FLAGS) -c $< -o $@
 
 # PRINT AND THEN COMPILE
@@ -68,18 +67,18 @@ all: pre-compile $(NAME)
 
 # PRINT INFO
 pre-compile:
-	@echo "$(WHITE)$(BOLD)\t$(WHITE)[COMPILATION...]$(RESET)"
+	@echo -e "$(WHITE)$(BOLD)\t$(WHITE)[COMPILATION...]$(RESET)"
 	@mkdir -p $(OBJ_DIR)
 
 # COMPILATION
 $(NAME): $(OBJ)
 	@$(CC) -o $(NAME) $(OBJ) $(FLAGS)
-	@echo "$(WHITE)$(BOLD)\t[COMPILED SUCCESSFULLY]"
-	@echo "[READY]:$(RESET)$(WHITE)\t$(NAME)$(RESET)"
+	@echo -e "$(WHITE)$(BOLD)\t[COMPILED SUCCESSFULLY]"
+	@echo -e "[READY]:$(RESET)$(WHITE)\t$(NAME)$(RESET)"
 
 # CLEAN OBJECT FILES
 clean:
-	@echo "$(WHITE)$(BOLD)\t[CLEANING OBJ...]$(RESET)"
+	@echo -e "$(WHITE)$(BOLD)\t[CLEANING OBJ...]$(RESET)"
 	@if [ -d "$(OBJ_DIR)" ]; then \
 		echo "$(RED)$(BOLD)[CLEAN]:\t$(RESET)$(RED)$(OBJ_DIR)$(RESET)"; \
 		rm -rf $(OBJ_DIR); \
@@ -87,8 +86,8 @@ clean:
 
 # CLEAN EXEC / LIB and call clean
 fclean:
-	@echo "$(WHITE)$(BOLD)\t[CLEANING EXEC/LIB...]"
-	@echo "$(RED)[CLEAN]:\t$(RESET)$(RED)$(NAME)$(RESET)"
+	@echo -e "$(WHITE)$(BOLD)\t[CLEANING EXEC/LIB...]"
+	@echo -e "$(RED)[CLEAN]:\t$(RESET)$(RED)$(NAME)$(RESET)"
 	@rm -f $(NAME)
 	@$(MAKE) clean -s
 
@@ -96,4 +95,4 @@ fclean:
 re: fclean all
 
 tests_run:
-	@echo "$(WHITE)$(BOLD)\t[TESTS...]$(RESET)"
+	@echo -e "$(WHITE)$(BOLD)\t[TESTS...]$(RESET)"

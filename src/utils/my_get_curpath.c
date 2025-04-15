@@ -61,7 +61,7 @@ char *get_path(char *input, char *string_path, char *string_pwd)
         return NULL;
     if (input[0] == '/' || (input[0] == '.' && input[1] == '/'))
         return my_strdup(input);
-    array = my_str_to_word_array_sep(string_path, ":");
+    array = split_str(string_path, ":");
     for (int i = 0; array[i] != NULL; i++) {
         res = check_path(input, &path, array, i);
         if (res != 0)

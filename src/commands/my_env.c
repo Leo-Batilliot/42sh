@@ -11,10 +11,10 @@
 void print_env(linked_list_t *tmp)
 {
     while (tmp != NULL) {
-        mini_printf("%s=", tmp->key);
+        printf("%s=", tmp->key);
         if (tmp->value != NULL)
-            mini_printf("%s", tmp->value);
-        mini_printf("\n");
+            printf("%s", tmp->value);
+        printf("\n");
         tmp = tmp->next;
     }
 }

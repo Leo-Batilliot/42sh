@@ -79,7 +79,7 @@ static int verif_cd_path(char *path, char **array, info_shell_t *shell_i)
     if (!path)
         return 1;
     if (chdir(path) == -1) {
-        my_printerr("%s: %s.\n", array[1], strerror(errno));
+        fprintf(stderr, "%s: %s.\n", array[1], strerror(errno));
         shell_i->last_exit = ERROR;
         return 1;
     }
@@ -112,7 +112,7 @@ int inv(linked_list_t **head, char *newpwd, info_shell_t *shell_i, char **old)
     if (!(*old))
         return 1;
     if (chdir((*old)) == -1) {
-        my_printerr("%s: %s\n", (*old), strerror(errno));
+        fprintf(stderr, "%s: %s\n", (*old), strerror(errno));
         shell_i->last_exit = ERROR;
         return 1;
     }
@@ -132,7 +132,7 @@ int my_cd(char **array, linked_list_t *head, info_shell_t *shell_i)
     if (my_strcmp(array[0], "cd") == 0) {
         for (; array[count] != NULL; count++);
         if (count >= 3) {
-            my_printerr("cd: Too many arguments.\n");
+            fprintf(stderr, "cd: Too many arguments.\n");
             shell_i->last_exit = ERROR;
             return 1;
         }

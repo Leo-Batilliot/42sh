@@ -33,17 +33,17 @@ int gest_acces(char *path, info_shell_t *shell_i)
     struct stat file_stat;
 
     if (stat(path, &file_stat) == -1) {
-        my_printerr("%s: Command not found.\n", path);
+        fprintf(stderr, "%s: Command not found.\n", path);
         shell_i->last_exit = ERROR;
         return -1;
     }
     if (S_ISDIR(file_stat.st_mode)) {
-        my_printerr("%s: Permission denied.\n", path);
+        fprintf(stderr, "%s: Permission denied.\n", path);
         shell_i->last_exit = ERROR;
         return -1;
     }
     if (access(path, X_OK)) {
-        my_printerr("%s: %s.\n", path, strerror(errno));
+        fprintf(stderr, "%s: %s.\n", path, strerror(errno));
         shell_i->last_exit = ERROR;
         return -1;
     }

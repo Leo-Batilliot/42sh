@@ -69,16 +69,17 @@ char *my_strchr(char *, int);
 char *my_strdup(char const *);
 char *my_strcat(char *, char const *);
 char *my_strcpy(char *, char const *);
-char **my_str_to_word_array_sep(const char *, char *);
+char **split_str(const char *, char *);
 int my_put_nbr(int);
 int my_getnbr(char *);
 int my_strlen(char const *);
 int my_putstr(char const *);
-int mini_printf(const char *, ...);
-int my_printerr(const char *, ...);
 int my_strcmp(char const *, char const *);
 list_t *create_list(void);
 void my_putchar(char);
+int count_word(const char *string, char *operator);
+int is_delim(const char c);
+int is_separator(const char c, char *ope);
 
 // utils
 char **my_env_cpy(char **);
