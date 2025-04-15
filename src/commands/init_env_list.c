@@ -2,12 +2,12 @@
 ** EPITECH PROJECT, 2025
 ** B-PSU-200-LIL-2-1-minishell1-gabin.wilson
 ** File description:
-** my_print_prompt
+** init_env_list
 */
 
 #include "my.h"
 
-linked_list_t *print_prompt(char **env_cpy)
+linked_list_t *init_env_list(char **env_cpy)
 {
     linked_list_t *head = NULL;
 

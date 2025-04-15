@@ -63,7 +63,7 @@ static void reset_prompt(void)
         printf("$> ");
 }
 
-static int gest_inside(info_shell_t *shell_i, linked_list_t *head)
+static int execute_command_list(info_shell_t *shell_i, linked_list_t *head)
 {
     args_t *tmp = shell_i->list->head;
 
@@ -76,15 +76,8 @@ static int gest_inside(info_shell_t *shell_i, linked_list_t *head)
     return 0;
 }
 
-int main_loop(char **env)
+int main_loop(info_shell_t *shell_i, linked_list_t *head)
 {
-    linked_list_t *head = NULL;
-    info_shell_t *shell_i = NULL;
-
-    shell_i = declare_struct(env);
-    if (!shell_i)
-        return -1;
-    head = print_prompt(shell_i->env_cpy);
     while (1) {
         reset_prompt();
         if (!head)
@@ -93,7 +86,7 @@ int main_loop(char **env)
             return shell_i->last_exit;
         if (shell_i->line[0] == '\n' || parse_args(shell_i) == ERROR)
             continue;
-        if (gest_inside(shell_i, head) == ERROR)
+        if (execute_command_list(shell_i, head) == ERROR)
             continue;
     }
     return 0;
@@ -101,8 +94,13 @@ int main_loop(char **env)
 
 int main(int ac, char **av, char **env)
 {
+    info_shell_t *shell_i = NULL;
+    linked_list_t *head = NULL;
+
     (void)av;
-    if (ac != 1)
+    shell_i = declare_struct(env);
+    if (ac != 1 || !shell_i)
         return 84;
-    return main_loop(env);
+    head = init_env_list(shell_i->env_cpy);
+    return main_loop(shell_i, head);
 }
