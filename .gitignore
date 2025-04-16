@@ -55,6 +55,9 @@ dkms.conf
 obj
 tester.sh 
 tests
+test
 42sh
 .vscode
 crash
+coucou
+output.txt

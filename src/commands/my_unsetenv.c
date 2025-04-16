@@ -6,72 +6,45 @@
 */
 
 #include "my.h"
-#include <unistd.h>
 
-int free_unset(linked_list_t *tmp)
-{
-    free(tmp->key);
-    free(tmp->value);
-    free(tmp);
-    return 1;
-}
-
-int cmp_in(linked_list_t **head, linked_list_t **tmp,
-    int *to_delete, linked_list_t **prev)
+static int delete_node(linked_list_t **head, linked_list_t **tmp,
+    linked_list_t **prev)
 {
     linked_list_t *next = (*tmp)->next;
 
-    if ((*prev) == NULL)
+    if (!(*prev))
         *head = (*tmp)->next;
     else
-        (*prev)->next = (*tmp)->next;
-    free_unset((*tmp));
+        (*prev)->next = next;
+    if ((*tmp)->key)
+        my_free((*tmp)->key);
+    if ((*tmp)->value)
+        my_free((*tmp)->value);
+    my_free(*tmp);
     (*tmp) = next;
-    *to_delete = 1;
     return 0;
 }
 
-int check_key(linked_list_t **prev, linked_list_t **tmp,
+static int check_key(linked_list_t **prev, linked_list_t **tmp,
     linked_list_t **head, char **array)
 {
-    int to_delete = 0;
-
-    for (int i = 1; array[i] != NULL; i++) {
-        if (my_strcmp(array[i], (*tmp)->key) == 0)
-            return cmp_in(head, tmp, &to_delete, prev);
-    }
-    if (!to_delete) {
-        (*prev) = (*tmp);
-        (*tmp) = (*tmp)->next;
-    } else
-        (*tmp) = (*tmp)->next;
+    for (int i = 1; array[i]; i++)
+        if (!my_strcmp(array[i], (*tmp)->key))
+            return delete_node(head, tmp, prev);
+    (*prev) = (*tmp);
     return 0;
 }
 
-int inside_unset(linked_list_t *tmp, linked_list_t **head,
-    char **array, info_shell_t *shell_i)
+int my_unsetenv(char **array, linked_list_t **head, shell_t *shell)
 {
-    int value = 0;
     linked_list_t *prev = NULL;
 
-    if (array[1] == NULL) {
-        fprintf(stderr, "unsetenv: Too few arguments\n");
-        shell_i->last_exit = 1;
+    if (!array[1]) {
+        fprintf(stderr, "unsetenv: Too few arguments.\n");
+        shell->last_exit = 1;
         return 1;
     }
-    while (tmp != NULL) {
-        value = check_key(&prev, &tmp, head, array);
-        if (value == 1)
-            return 1;
-    }
+    for (linked_list_t *tmp = *head; tmp; tmp = tmp->next)
+        check_key(&prev, &tmp, head, array);
     return 2;
-}
-
-int my_unsetenv(char **array, linked_list_t **head, info_shell_t *shell_i)
-{
-    linked_list_t *tmp = *head;
-
-    if (my_strcmp(array[0], "unsetenv") == 0)
-        return inside_unset(tmp, head, array, shell_i);
-    return 0;
 }

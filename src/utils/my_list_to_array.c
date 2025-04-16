@@ -7,54 +7,45 @@
 
 #include "my.h"
 
-int get_count(linked_list_t *head)
+int list_len(linked_list_t *head)
 {
-    linked_list_t *tmp = head;
     int count = 0;
 
-    while (tmp != NULL) {
+    for (linked_list_t *tmp = head; tmp; tmp = tmp->next)
         count++;
-        tmp = tmp->next;
-    }
     return count;
 }
 
-int fill_tab(linked_list_t *cur, int *i, int count, char **array)
+static int fill_array(linked_list_t *head, char **array)
 {
-    int len_value = 0;
+    int len = 0;
+    int i = 0;
 
-    while (cur != NULL) {
-        if (cur->value == NULL)
-            len_value = 0;
-        else
-            len_value = my_strlen(cur->value);
-        count = my_strlen(cur->key) + len_value + 2;
-        array[(*i)] = malloc(sizeof(char) * count);
-        if (!array[(*i)])
+    for (linked_list_t *cur = head; cur; cur = cur->next) {
+        len = my_strlen(cur->key) + my_strlen(cur->value) + 2;
+        array[i] = malloc(sizeof(char) * len);
+        if (!array[i])
             return -1;
-        my_strcpy(array[(*i)], cur->key);
-        my_strcat(array[(*i)], "=");
-        if (cur->value != NULL)
-            my_strcat(array[(*i)], cur->value);
-        cur = cur->next;
-        (*i)++;
+        my_strcpy(array[i], cur->key);
+        my_strcat(array[i], "=");
+        if (cur->value)
+            my_strcat(array[i], cur->value);
+        i++;
     }
+    array[i] = NULL;
     return 0;
 }
 
 char **linked_list_to_array(linked_list_t *head)
 {
     char **array = NULL;
-    int i = 0;
     int count = 0;
-    linked_list_t *cur = head;
 
-    count = get_count(head);
+    count = list_len(head);
     array = malloc(sizeof(char *) * (count + 1));
     if (!array)
         return NULL;
-    if (fill_tab(cur, &i, count, array) == -1)
+    if (fill_array(head, array) == -1)
         return NULL;
-    array[i] = NULL;
     return array;
 }
