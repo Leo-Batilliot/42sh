@@ -26,7 +26,7 @@ SRC = 	lib/my_strchr.c 					    \
 		src/commands/my_env.c 					\
 		src/commands/my_exit.c 					\
 		src/commands/my_print_env.c 			\
-		src/commands/my_print_prompt.c 			\
+		src/commands/init_env_list.c 			\
 		src/commands/my_set_env.c 				\
 		src/commands/my_unsetenv.c 				\
 		src/utils/handle_heredoc.c 				\

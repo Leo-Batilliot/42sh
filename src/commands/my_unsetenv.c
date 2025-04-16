@@ -55,7 +55,7 @@ int inside_unset(linked_list_t *tmp, linked_list_t **head,
     linked_list_t *prev = NULL;
 
     if (array[1] == NULL) {
-        write(2, "unsetenv: Too few arguments\n", 29);
+        fprintf(stderr, "unsetenv: Too few arguments\n");
         shell_i->last_exit = 1;
         return 1;
     }

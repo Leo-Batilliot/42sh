@@ -87,7 +87,7 @@ char *get_path(char *, char *, char *);
 char **linked_list_to_array(linked_list_t *);
 char *get_env_value(const char *, linked_list_t *);
 linked_list_t *my_parse_env(char **);
-linked_list_t *print_prompt(char **);
+linked_list_t *init_env_list(char **);
 void print_env(linked_list_t *);
 void free_all(char **, char **);
 args_t *add_cmd(char **);
