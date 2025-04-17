@@ -32,6 +32,8 @@ static int exec_builtin(char **array, linked_list_t *head, shell_t *shell)
         return my_unsetenv(array, &head, shell);
     if (!strcmp(array[0], "cd"))
         return my_cd(array, head, shell);
+    if (!strcmp(array[0], "history"))
+        return my_history(array[0]);
     if (!strcmp(array[0], "exit"))
         my_exit(array);
     return 0;

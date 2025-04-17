@@ -18,6 +18,7 @@ SRC = 	lib/my_strchr.c 					    \
 		lib/my_strcat.c 						\
 		lib/count_word.c 						\
 		lib/free.c 								\
+		lib/put_spaces.c						\
 		lib/array_len.c 						\
 		src/commands/my_cd.c 					\
 		src/commands/my_env.c 					\
@@ -25,6 +26,7 @@ SRC = 	lib/my_strchr.c 					    \
 		src/commands/my_setenv.c 				\
 		src/commands/my_unsetenv.c 				\
 		src/commands/builtin.c 					\
+		src/commands/my_history.c				\
 		src/utils/redirection.c 				\
 		src/utils/commands.c 					\
 		src/utils/exec.c 						\

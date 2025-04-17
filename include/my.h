@@ -20,6 +20,7 @@
     #include <errno.h>
     #include <sys/types.h>
     #include <stdbool.h>
+    #include <time.h>
     #include <fcntl.h>
 
     #define ERROR 1
@@ -27,6 +28,14 @@
 /*--------------------*/
 /* PROJECT STRUCTURES */
 /*--------------------*/
+
+typedef struct history_s {
+    int index;
+    char *time;
+    char *cmd;
+    char *full_line;
+    struct history_s *next;
+} history_t;
 
 typedef struct linked_list_s {
     char *key;
@@ -65,6 +74,8 @@ typedef struct {
     int prev;
     int index_parse;
     int pipefd[2];
+    int count;
+    history_t *head;
     list_t *list;
 } shell_t;
 
@@ -80,6 +91,7 @@ int free_array(void **);
 int my_free(void *);
 
 /*    OTHERS    */
+char *put_spaces(int);
 int array_len(const void **array);
 char *my_strchr(char *, int);
 char *my_strdup(char const *);
@@ -99,11 +111,14 @@ int is_separator(const char, char *);
 /*    INIT    */
 linked_list_t *init_env(char **);
 char **linked_list_to_array(linked_list_t *);
+int load_history(shell_t *);
 
 /*    FREE    */
 int free_list(linked_list_t *head);
 
 /*    OTHERS    */
+int add_node_to_history(shell_t *, char *, bool);
+int add_to_history(shell_t *, char *);
 int is_operator(const char *);
 int is_builtin(char *);
 char *get_env_value(const char *, linked_list_t *);
@@ -140,6 +155,7 @@ int my_cd(char **, linked_list_t *, shell_t *);
 int my_setenv(linked_list_t **, char **, shell_t *);
 int my_unsetenv(char **, linked_list_t **, shell_t *);
 int my_env(char **, shell_t *, linked_list_t **);
+int my_history(char *);
 void my_exit(char **);
 
 #endif
