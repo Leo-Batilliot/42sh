@@ -24,6 +24,10 @@
 
     #define ERROR 1
 
+/*--------------------*/
+/* PROJECT STRUCTURES */
+/*--------------------*/
+
 typedef struct linked_list_s {
     char *key;
     char *value;
@@ -31,7 +35,7 @@ typedef struct linked_list_s {
 } linked_list_t;
 
 typedef struct redirect_s {
-    int statu;
+    int status;
     int i;
     char *file;
 } redirect_t;
@@ -62,59 +66,80 @@ typedef struct {
     int index_parse;
     int pipefd[2];
     list_t *list;
-} info_shell_t;
+} shell_t;
 
-// lib
+/*---------------------*/
+/*    LIB FUNCTIONS    */
+/*---------------------*/
+
+/*    INIT    */
+list_t *init_list(void);
+
+/*    FREE    */
+int free_array(void **);
+int my_free(void *);
+
+/*    OTHERS    */
+int array_len(const void **array);
 char *my_strchr(char *, int);
 char *my_strdup(char const *);
-char *my_strcat(char *, char const *);
 char *my_strcpy(char *, char const *);
+char *my_strcat(char *, char const *);
+int count_word(const char *, char *);
 char **split_str(const char *, char *);
-int my_put_nbr(int);
-int my_getnbr(char *);
 int my_strlen(char const *);
-int my_putstr(char const *);
 int my_strcmp(char const *, char const *);
-list_t *create_list(void);
-void my_putchar(char);
-int count_word(const char *string, char *operator);
-int is_delim(const char c);
-int is_separator(const char c, char *ope);
+int is_delim(const char);
+int is_separator(const char, char *);
 
-// utils
-char **my_env_cpy(char **);
-char *get_path(char *, char *, char *);
+/*---------------------*/
+/*   UTILS FUNCTIONS   */
+/*---------------------*/
+
+/*    INIT    */
+linked_list_t *init_env(char **);
 char **linked_list_to_array(linked_list_t *);
-char *get_env_value(const char *, linked_list_t *);
-linked_list_t *my_parse_env(char **);
-linked_list_t *init_env_list(char **);
-void print_env(linked_list_t *);
-void free_all(char **, char **);
-args_t *add_cmd(char **);
-bool is_operator(const char *str);
-int is_bulltins(char *);
-int parse_args(info_shell_t *);
-int null_message(info_shell_t *);
-int message_error(info_shell_t *);
-int create_pipe(int[2], args_t *);
-int gest_fd(int, info_shell_t *, args_t *, int);
-int handle_heredocs(args_t *, int, info_shell_t *);
-int gest_redir(char **, info_shell_t *, args_t **, int *);
-int my_unsetenv(char **, linked_list_t **, info_shell_t *);
-int commands_env(char **, linked_list_t *, info_shell_t *);
-int get_cur_pass(linked_list_t **, char **, info_shell_t *);
-int gest_bef_signal(pid_t, info_shell_t *, int[2], args_t *);
-int gest_first_cmd(int *i, args_t **, info_shell_t *, char **);
-int my_gest_exec(info_shell_t *, args_t *tmp, linked_list_t **);
-int gest_cur_commands(char **, linked_list_t *, info_shell_t *);
-int pipe_w_bulltins(info_shell_t *, args_t *, linked_list_t **, int[2]);
-int handle_builtins(info_shell_t *, char **, args_t *, linked_list_t **);
 
-//// commands
-int handle_red(args_t *tmp, info_shell_t *shell_i);
-int my_cd(char **, linked_list_t *, info_shell_t *);
-int set_env(linked_list_t **, char **, info_shell_t *);
-int my_print_env(char **, info_shell_t *, linked_list_t *);
+/*    FREE    */
+int free_list(linked_list_t *head);
+
+/*    OTHERS    */
+int is_operator(const char *);
+int is_builtin(char *);
+char *get_env_value(const char *, linked_list_t *);
+int print_error(shell_t *, int);
+char **my_env_cpy(char **);
+
+/*---------------------*/
+/*  PROJECT FUNCTIONS  */
+/*---------------------*/
+
+/*    INIT    */
+args_t *init_cmd(char **);
+shell_t *init_shell(char **);
+
+/*    FREE    */
+int free_shell(shell_t *shell);
+int free_args_list(list_t *list, int opt);
+
+/*    OTHERS    */
+int signal_error(pid_t, shell_t *, int[2], args_t *);
+void print_env(linked_list_t **);
+
+/*    MAIN FUNCTIONS    */
+int execute_command_list(shell_t *, linked_list_t *);
+int set_redirection_file(char **, shell_t *, args_t **, int *);
+int redirection(args_t *tmp, shell_t *shell);
+int parse_args(shell_t *);
+int pipe_builtin(shell_t *, args_t *, linked_list_t **, int[2]);
+int builtin(shell_t *, args_t *, linked_list_t **, int[2]);
+int execute_cmd(shell_t *, args_t *, linked_list_t **);
+
+/*    COMMANDS    */
+int my_cd(char **, linked_list_t *, shell_t *);
+int my_setenv(linked_list_t **, char **, shell_t *);
+int my_unsetenv(char **, linked_list_t **, shell_t *);
+int my_env(char **, shell_t *, linked_list_t **);
 void my_exit(char **);
 
 #endif

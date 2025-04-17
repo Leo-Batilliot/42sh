@@ -16,31 +16,24 @@ SRC = 	lib/my_strchr.c 					    \
 		lib/split_str.c 						\
 		lib/my_strcpy.c 						\
 		lib/my_strcat.c 						\
-		lib/my_get_nbr.c 						\
-		lib/my_putstr.c 						\
-		lib/my_put_nbr.c 						\
-		lib/my_putchar.c 						\
-		lib/linked_list.c 						\
 		lib/count_word.c 						\
+		lib/free.c 								\
+		lib/array_len.c 						\
 		src/commands/my_cd.c 					\
 		src/commands/my_env.c 					\
 		src/commands/my_exit.c 					\
-		src/commands/my_print_env.c 			\
-		src/commands/init_env_list.c 			\
-		src/commands/my_set_env.c 				\
+		src/commands/my_setenv.c 				\
 		src/commands/my_unsetenv.c 				\
-		src/utils/handle_heredoc.c 				\
-		src/utils/handle_red.c 					\
-		src/utils/my_envcpy.c 					\
-		src/utils/my_gest_commands.c 			\
-		src/utils/my_gest_exec.c 				\
-		src/utils/my_get_curpath.c 				\
-		src/utils/my_get_in_env.c 				\
+		src/commands/builtin.c 					\
+		src/utils/redirection.c 				\
+		src/utils/commands.c 					\
+		src/utils/exec.c 						\
 		src/utils/my_list_to_array.c 			\
-		src/utils/my_parse_env.c 				\
-		src/utils/parse.c 						\
-		src/utils/redirect.c 					\
-		src/utils/update_pipe.c 				\
+		src/utils/parsing.c 					\
+		src/utils/redirection_file.c 			\
+		src/utils/init.c 						\
+		src/utils/free.c 						\
+		src/utils/utils.c 						\
 		src/main.c
 
 # COLORS
