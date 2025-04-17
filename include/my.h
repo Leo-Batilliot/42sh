@@ -36,6 +36,25 @@ typedef struct redirect_s {
     char *file;
 } redirect_t;
 
+typedef struct color_s {
+    char *name;
+    char *code;
+} color_t;
+
+static const color_t colors[] = {
+    {"black", "\033[0;30m"},
+    {"red", "\033[0;31m"},
+    {"green", "\033[0;32m"},
+    {"yellow", "\033[0;33m"},
+    {"blue", "\033[0;34m"},
+    {"purple", "\033[0;35m"},
+    {"cyan", "\033[0;36m"},
+    {"white", "\033[0;37m"},
+    {"reset", "\033[0m"},
+    {NULL, NULL}
+};
+
+
 typedef struct args_s {
     redirect_t *redir;
     char **args;
@@ -62,6 +81,7 @@ typedef struct {
     int index_parse;
     int pipefd[2];
     list_t *list;
+    char *prompt_color;
 } info_shell_t;
 
 // lib
@@ -109,6 +129,7 @@ int my_gest_exec(info_shell_t *, args_t *tmp, linked_list_t **);
 int gest_cur_commands(char **, linked_list_t *, info_shell_t *);
 int pipe_w_bulltins(info_shell_t *, args_t *, linked_list_t **, int[2]);
 int handle_builtins(info_shell_t *, char **, args_t *, linked_list_t **);
+int handle_color_command(char **args, info_shell_t *shell_i);
 
 //// commands
 int handle_red(args_t *tmp, info_shell_t *shell_i);

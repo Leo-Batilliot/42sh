@@ -41,6 +41,7 @@ SRC = 	lib/my_strchr.c 					    \
 		src/utils/parse.c 						\
 		src/utils/redirect.c 					\
 		src/utils/update_pipe.c 				\
+		src/utils/handle_colors.c				\
 		src/main.c
 
 # COLORS
