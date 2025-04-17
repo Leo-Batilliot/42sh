@@ -20,6 +20,8 @@ int main_loop(shell_t *shell, linked_list_t *head)
             continue;
         if (getline(&shell->line, &shell->size, stdin) == -1)
             return shell->last_exit;
+        if (add_to_history(shell, shell->line) == 1)
+            continue;
         if (!shell->line || shell->line[0] == '\n' || parse_args(shell) == 1)
             continue;
         execute_command_list(shell, head);
@@ -42,6 +44,7 @@ int main(int ac, char **av, char **env)
     head = init_env(shell->env_cpy);
     if (!head)
         return res;
+    load_history(shell);
     res = main_loop(shell, head);
     free_shell(shell);
     free_list(head);
