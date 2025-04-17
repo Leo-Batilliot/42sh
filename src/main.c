@@ -6,16 +6,22 @@
 */
 #include "my.h"
 
-static void reset_prompt(void)
+static void reset_prompt(linked_list_t *head)
 {
-    if (isatty(0) == 1)
-        printf("$> ");
+    char *path = get_env_value("PWD", head);
+
+    if (isatty(0) == 1) {
+        if (path)
+            printf("%s> ", path);
+        else
+            printf("$> ");
+    }
 }
 
 int main_loop(shell_t *shell, linked_list_t *head)
 {
     while (1) {
-        reset_prompt();
+        reset_prompt(head);
         if (!head)
             continue;
         if (getline(&shell->line, &shell->size, stdin) == -1)
