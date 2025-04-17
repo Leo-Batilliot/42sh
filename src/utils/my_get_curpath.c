@@ -18,18 +18,18 @@ void free_array(char **array)
     free(array);
 }
 
-int check_path(char *input, char **path, char **array, int i)
+int check_path(char *input, char **path, char *str)
 {
-    int len = my_strlen(array[i]) + my_strlen(input) + 2;
+    int len = my_strlen(str) + my_strlen(input) + 2;
 
     *path = malloc(sizeof(char) * len);
     if (!(*path))
         return 2;
-    my_strcpy((*path), array[i]);
+    my_strcpy((*path), str);
     my_strcat((*path), "/");
     my_strcat((*path), input);
     if (access((*path), X_OK) == 0) {
-        free_array(array);
+        free(str);
         return 1;
     }
     return 0;
@@ -63,7 +63,7 @@ char *get_path(char *input, char *string_path, char *string_pwd)
         return my_strdup(input);
     array = my_str_to_word_array_sep(string_path, ":");
     for (int i = 0; array[i] != NULL; i++) {
-        res = check_path(input, &path, array, i);
+        res = check_path(input, &path, array[i]);
         if (res != 0)
             return (res == 2) ? NULL : path;
         free(path);

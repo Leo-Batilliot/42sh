@@ -36,6 +36,9 @@ int commands_env(char **array, linked_list_t *head, info_shell_t *shell_i)
     value = my_cd(array, head, shell_i);
     if (value != 0)
         return (value == 2) ? 2 : 1;
+    value = my_history(array[0]);
+    if (value != 0)
+        return (value == 2) ? 2 : 1;
     my_exit(array);
     return 0;
 }

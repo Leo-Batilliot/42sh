@@ -23,6 +23,8 @@ SRC = 	lib/my_strchr.c 					    \
 		lib/mini_printf.c						\
 		lib/my_printerr.c						\
 		lib/linked_list.c 						\
+		lib/put_spaces.c						\
+		lib/check_str.c							\
 		src/commands/my_cd.c 					\
 		src/commands/my_env.c 					\
 		src/commands/my_exit.c 					\
@@ -30,7 +32,9 @@ SRC = 	lib/my_strchr.c 					    \
 		src/commands/my_print_prompt.c 			\
 		src/commands/my_set_env.c 				\
 		src/commands/my_unsetenv.c 				\
+		src/commands/my_history.c				\
 		src/utils/handle_heredoc.c 				\
+		src/utils/signals.c						\
 		src/utils/handle_red.c 					\
 		src/utils/my_envcpy.c 					\
 		src/utils/my_gest_commands.c 			\
@@ -53,7 +57,7 @@ RESET=\033[0m
 
 # VARIABLES
 OBJ = $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRC))
-FLAGS = -Wextra -Wall -W -Werror -I include
+FLAGS = -Wextra -Wall -W -Werror -I include -g
 CC = gcc
 NAME = 42sh
 

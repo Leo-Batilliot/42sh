@@ -46,11 +46,13 @@ info_shell_t *declare_struct(char **env)
         return NULL;
     shell_i->path = NULL;
     shell_i->line = NULL;
+    shell_i->head = NULL;
     shell_i->save_old = NULL;
     shell_i->last_exit = 0;
     shell_i->size = 0;
     shell_i->res = 0;
     shell_i->prev = 0;
+    shell_i->count = 0;
     shell_i->env_cpy = my_env_cpy(env);
     if (!shell_i->env_cpy)
         return NULL;
@@ -76,6 +78,21 @@ static int gest_inside(info_shell_t *shell_i, linked_list_t *head)
     return 0;
 }
 
+static int load_history(info_shell_t *shell_i)
+{
+    FILE *fp = fopen("history", "r");
+    char *line = NULL;
+    size_t len = 0;
+
+    if (!fp)
+        return ERROR;
+    while (getline(&line, &len, fp) != -1) {
+        add_node_to_history(shell_i, line, false);
+    }
+    fclose(fp);
+    return 0;
+}
+
 int main_loop(char **env)
 {
     linked_list_t *head = NULL;
@@ -84,6 +101,7 @@ int main_loop(char **env)
     shell_i = declare_struct(env);
     if (!shell_i)
         return -1;
+    load_history(shell_i);
     head = print_prompt(shell_i->env_cpy);
     while (1) {
         reset_prompt();
@@ -93,6 +111,8 @@ int main_loop(char **env)
             return shell_i->last_exit;
         if (shell_i->line[0] == '\n' || parse_args(shell_i) == ERROR)
             continue;
+        if (add_to_history(shell_i, shell_i->line) == ERROR)
+                continue;
         if (gest_inside(shell_i, head) == ERROR)
             continue;
     }
@@ -104,5 +124,6 @@ int main(int ac, char **av, char **env)
     (void)av;
     if (ac != 1)
         return 84;
+    init_signals();
     return main_loop(env);
 }

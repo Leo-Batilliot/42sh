@@ -21,8 +21,17 @@
     #include <sys/types.h>
     #include <stdbool.h>
     #include <fcntl.h>
+    #include <time.h>
 
     #define ERROR 1
+
+typedef struct history_s {
+    int index;
+    char *time;
+    char *cmd;
+    char *full_line;
+    struct history_s *next;
+} history_t;
 
 typedef struct linked_list_s {
     char *key;
@@ -61,16 +70,20 @@ typedef struct {
     int prev;
     int index_parse;
     int pipefd[2];
+    int count;
     list_t *list;
+    history_t *head;
 } info_shell_t;
 
 // lib
+char *put_spaces(int);
 char *my_strchr(char *, int);
 char *my_strdup(char const *);
 char *my_strcat(char *, char const *);
 char *my_strcpy(char *, char const *);
 char **my_str_to_word_array_sep(const char *, char *);
 int my_put_nbr(int);
+int check_str(char *);
 int my_getnbr(char *);
 int my_strlen(char const *);
 int my_putstr(char const *);
@@ -87,12 +100,16 @@ char **linked_list_to_array(linked_list_t *);
 char *get_env_value(const char *, linked_list_t *);
 linked_list_t *my_parse_env(char **);
 linked_list_t *print_prompt(char **);
+void init_signals(void);
+int my_history(char *command);
 void print_env(linked_list_t *);
 void free_all(char **, char **);
 args_t *add_cmd(char **);
 bool is_operator(const char *str);
 int is_bulltins(char *);
 int parse_args(info_shell_t *);
+int add_to_history(info_shell_t *, char *);
+int add_node_to_history(info_shell_t *shell_i, char *cmd, bool status);
 int null_message(info_shell_t *);
 int message_error(info_shell_t *);
 int create_pipe(int[2], args_t *);

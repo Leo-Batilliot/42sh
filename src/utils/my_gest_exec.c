@@ -103,7 +103,8 @@ int is_bulltins(char *cmd)
         || !my_strcmp(cmd, "setenv")
         || !my_strcmp(cmd, "unsetenv")
         || !my_strcmp(cmd, "exit")
-        || !my_strcmp(cmd, "cd")) {
+        || !my_strcmp(cmd, "cd")
+        || !strcmp(cmd, "history")) {
         return 1;
     }
     return 0;
