@@ -54,13 +54,17 @@ info_shell_t *declare_struct(char **env)
     shell_i->env_cpy = my_env_cpy(env);
     if (!shell_i->env_cpy)
         return NULL;
+    shell_i->prompt_color = my_strdup("\033[0;32m");
+    if (!shell_i->prompt_color)
+        return NULL;
     return shell_i;
 }
 
-static void reset_prompt(void)
+static void reset_prompt(info_shell_t *shell_i)
 {
-    if (isatty(0) == 1)
-        mini_printf("$> ");
+    if (isatty(0) == 1) {
+        mini_printf("%s$> %s", shell_i->prompt_color, colors[8].code);
+    }
 }
 
 static int gest_inside(info_shell_t *shell_i, linked_list_t *head)
@@ -86,7 +90,7 @@ int main_loop(char **env)
         return -1;
     head = print_prompt(shell_i->env_cpy);
     while (1) {
-        reset_prompt();
+        reset_prompt(shell_i);
         if (!head)
             continue;
         if (getline(&shell_i->line, &shell_i->size, stdin) == -1)

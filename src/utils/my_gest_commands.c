@@ -49,6 +49,8 @@ int gest_cur_commands(char **array, linked_list_t *head, info_shell_t *shell_i)
 {
     if (array[0] == NULL)
         return -1;
+    if (handle_color_command(array, shell_i))
+        return -1;
     if (is_bulltins(array[0]) == 0) {
         if (get_cur_pass(&head, array, shell_i) == 1) {
             free(shell_i->path);
