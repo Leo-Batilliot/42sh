@@ -11,10 +11,10 @@ static void print_signal(shell_t *shell, int *status)
 {
     int term_signal = WTERMSIG(*status);
 
-    fprintf(stderr, "%s", strsignal(term_signal));
+    mini_printf(2, "%s", strsignal(term_signal));
     if (WCOREDUMP(*status))
-        fprintf(stderr, " (core dumped)");
-    fprintf(stderr, "\n");
+        mini_printf(2, " (core dumped)");
+    mini_printf(2, "\n");
     shell->last_exit = 128 + term_signal;
 }
 
@@ -46,17 +46,17 @@ static int try_to_acces(char *path, shell_t *shell)
     struct stat file_stat;
 
     if (stat(path, &file_stat) == -1) {
-        fprintf(stderr, "%s: Command not found.\n", path);
+        mini_printf(2, "%s: Command not found.\n", path);
         shell->last_exit = 1;
         return -1;
     }
     if (S_ISDIR(file_stat.st_mode)) {
-        fprintf(stderr, "%s: Permission denied.\n", path);
+        mini_printf(2, "%s: Permission denied.\n", path);
         shell->last_exit = 1;
         return -1;
     }
     if (access(path, X_OK)) {
-        fprintf(stderr, "%s: %s.\n", path, strerror(errno));
+        mini_printf(2, "%s: %s.\n", path, strerror(errno));
         shell->last_exit = 1;
         return -1;
     }

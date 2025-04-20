@@ -97,37 +97,22 @@ int add_node_to_history(shell_t *shell, char *cmd, bool status)
     return append_history_node(shell, new_node);
 }
 
-void add_to_file(shell_t *shell)
-{
-    FILE *fp = fopen("history.txt", "w");
-    history_t *current = shell->head;
-
-    if (!fp)
-        return;
-    while (current) {
-        fprintf(fp, "%s", current->full_line);
-        current = current->next;
-    }
-    fclose(fp);
-}
-
 int add_to_history(shell_t *shell, char *cmd)
 {
     int value = 0;
 
-    if (is_last_command_same(shell, cmd)) {
+    if (is_last_command_same(shell, cmd))
         return 0;
-    }
     value = add_node_to_history(shell, cmd, true);
     if (value == 1)
         return 1;
-    add_to_file(shell);
+    write_history(shell);
     return 0;
 }
 
 int my_history(char *cmd)
 {
-    FILE *fp = fopen("history.txt", "r");
+    FILE *fp = fopen("assets/history.txt", "r");
     char *line = NULL;
     size_t len = 0;
 
@@ -135,7 +120,7 @@ int my_history(char *cmd)
         return 1;
     if (strcmp("history", cmd) == 0) {
         while (getline(&line, &len, fp) != -1) {
-            printf("%s", line);
+            write(1, line, strlen(line));
         }
         return 2;
     }

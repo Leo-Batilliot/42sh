@@ -8,9 +8,10 @@
 
 int free_redir(redirect_t *redirect, int count)
 {
-    for (int i = 0; i < count; i++)
+    for (int i = 0; i < count; i++) {
         if (redirect[i].file)
             my_free(redirect[i].file);
+    }
     return my_free(redirect);
 }
 

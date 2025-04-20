@@ -9,9 +9,9 @@
 int print_error(shell_t *shell, int opt)
 {
     if (!opt)
-        fprintf(stderr, "Invalid null command.\n");
+        mini_printf(2, "Invalid null command.\n");
     if (opt == 1)
-        fprintf(stderr, "Missing name for redirect.\n");
+        mini_printf(2, "Missing name for redirect.\n");
     shell->last_exit = 1;
     return 1;
 }
@@ -59,6 +59,7 @@ int is_builtin(char *cmd)
         || !my_strcmp(cmd, "unsetenv")
         || !my_strcmp(cmd, "exit")
         || !my_strcmp(cmd, "cd")
+        || !my_strcmp(cmd, "alias")
         || !my_strcmp(cmd, "history")) {
         return 1;
     }

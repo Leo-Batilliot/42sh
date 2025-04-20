@@ -18,8 +18,10 @@ SRC = 	lib/my_strchr.c 					    \
 		lib/my_strcat.c 						\
 		lib/count_word.c 						\
 		lib/free.c 								\
+		lib/array_to_str.c 						\
 		lib/put_spaces.c						\
 		lib/array_len.c 						\
+		lib/mini_printf.c 						\
 		src/commands/my_cd.c 					\
 		src/commands/my_env.c 					\
 		src/commands/my_exit.c 					\
@@ -27,6 +29,7 @@ SRC = 	lib/my_strchr.c 					    \
 		src/commands/my_unsetenv.c 				\
 		src/commands/builtin.c 					\
 		src/commands/my_history.c				\
+		src/commands/alias.c 					\
 		src/utils/redirection.c 				\
 		src/utils/commands.c 					\
 		src/utils/exec.c 						\
@@ -35,6 +38,8 @@ SRC = 	lib/my_strchr.c 					    \
 		src/utils/redirection_file.c 			\
 		src/utils/init.c 						\
 		src/utils/free.c 						\
+		src/utils/write_function.c 				\
+		src/utils/load_functions.c 				\
 		src/utils/utils.c 						\
 		src/main.c
 
@@ -47,7 +52,7 @@ RESET=\033[0m
 
 # VARIABLES
 OBJ = $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRC))
-FLAGS = -Wextra -Wall -W -Werror -I include
+FLAGS = -Wextra -Wall -W -Werror -I include -g
 CC = gcc
 NAME = 42sh
 

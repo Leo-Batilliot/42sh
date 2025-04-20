@@ -10,10 +10,11 @@
 void print_env(linked_list_t **head)
 {
     for (linked_list_t *tmp = *head; tmp; tmp = tmp->next) {
-        printf("%s=", tmp->key);
+        write(1, tmp->key, strlen(tmp->key));
+        write(1, "=", 1);
         if (tmp->value)
-            printf("%s", tmp->value);
-        printf("\n");
+            write(1, tmp->value, strlen(tmp->value));
+        write(1, "\n", 1);
     }
 }
 
@@ -21,7 +22,7 @@ int my_env(char **array, shell_t *shell, linked_list_t **head)
 {
     if (array[1]) {
         shell->last_exit = 127;
-        fprintf(stderr, "env: '%s': No such file or directory\n", array[1]);
+        mini_printf(2, "env: '%s': No such file or directory\n", array[1]);
         return 1;
     }
     print_env(head);

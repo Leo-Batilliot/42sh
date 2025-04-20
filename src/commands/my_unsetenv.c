@@ -40,7 +40,7 @@ int my_unsetenv(char **array, linked_list_t **head, shell_t *shell)
     linked_list_t *prev = NULL;
 
     if (!array[1]) {
-        fprintf(stderr, "unsetenv: Too few arguments.\n");
+        mini_printf(2, "unsetenv: Too few arguments.\n");
         shell->last_exit = 1;
         return 1;
     }

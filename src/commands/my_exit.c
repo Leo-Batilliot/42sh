@@ -7,11 +7,12 @@
 
 #include "my.h"
 
-void my_exit(char **array)
+void my_exit(shell_t *shell, char **array)
 {
     int status_exit = 0;
 
     if (array[1])
         status_exit = atoi(array[1]);
+    write_alias(shell);
     exit(status_exit);
 }
