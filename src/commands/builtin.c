@@ -22,25 +22,6 @@ static int manage_fd(args_t *tmp, int fd[2],
     return 0;
 }
 
-static int exec_builtin(char **array, linked_list_t *head, shell_t *shell)
-{
-    if (!strcmp(array[0], "env"))
-        return my_env(array, shell, &head);
-    if (!strcmp(array[0], "setenv"))
-        return my_setenv(&head, array, shell);
-    if (!strcmp(array[0], "unsetenv"))
-        return my_unsetenv(array, &head, shell);
-    if (!strcmp(array[0], "cd"))
-        return my_cd(array, head, shell);
-    if (!strcmp(array[0], "history"))
-        return my_history(array[0]);
-    if (!strcmp(array[0], "exit"))
-        my_exit(shell, array);
-    if (!strcmp(array[0], "alias"))
-        return alias(shell, array);
-    return 0;
-}
-
 int builtin(shell_t *shell,
     args_t *tmp, linked_list_t **head, int fd[2])
 {
