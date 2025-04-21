@@ -106,7 +106,6 @@ int add_to_history(shell_t *shell, char *cmd)
     value = add_node_to_history(shell, cmd, true);
     if (value == 1)
         return 1;
-    write_history(shell);
     return 0;
 }
 
@@ -114,9 +113,8 @@ int my_history(char **array, linked_list_t **head, shell_t *shell)
 {
     (void)array;
     (void)head;
-    while (shell->head != NULL) {
-        printf("%s", shell->head->full_line);
-        shell->head = shell->head->next;
+    for (history_t *cur = shell->head; cur; cur = cur->next) {
+        printf("%s", cur->full_line);
     }
     return 0;
 }

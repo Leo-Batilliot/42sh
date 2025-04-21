@@ -14,6 +14,6 @@ int my_exit(char **array, linked_list_t **head, shell_t *shell)
     (void)head;
     if (array[1])
         status_exit = atoi(array[1]);
-    write_alias(shell);
+    save_file(shell);
     exit(status_exit);
 }

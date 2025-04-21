@@ -131,19 +131,20 @@ int load_history(shell_t *);
 linked_list_t *init_env(char **);
 
 /*    FREE    */
-int free_list(linked_list_t *head);
+int free_list(linked_list_t *);
 
 /*    OTHERS    */
 int add_node_to_history(shell_t *, char *, bool);
-int add_node(shell_t *shell, char **array);
+int save_file(shell_t *);
+int add_node(shell_t *shell, char **);
 int add_to_history(shell_t *, char *);
 int is_operator(const char *);
 int is_builtin(char *);
 char *get_env_value(const char *, linked_list_t *);
 int print_error(shell_t *, int);
 char **my_env_cpy(char **);
-int write_alias(shell_t *shell);
-alias_t *find_node(shell_t *shell, char *name);
+int write_alias(shell_t *);
+alias_t *find_node(shell_t *, char *);
 
 /*---------------------*/
 /*  PROJECT FUNCTIONS  */
