@@ -107,7 +107,7 @@ int previous_path(linked_list_t **head, shell_t *shell, char **old)
     return 2;
 }
 
-int my_cd(char **array, linked_list_t *head, shell_t *shell)
+int my_cd(char **array, linked_list_t **head, shell_t *shell)
 {
     static char *old = NULL;
 
@@ -117,6 +117,6 @@ int my_cd(char **array, linked_list_t *head, shell_t *shell)
         return 1;
     }
     if (array[1] && !my_strcmp(array[1], "-"))
-        return previous_path(&head, shell, &old);
-    return change_directory(array[1], &head, shell, &old);
+        return previous_path(head, shell, &old);
+    return change_directory(array[1], head, shell, &old);
 }

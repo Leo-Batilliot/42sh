@@ -18,7 +18,7 @@ void print_env(linked_list_t **head)
     }
 }
 
-int my_env(char **array, shell_t *shell, linked_list_t **head)
+int my_env(char **array, linked_list_t **head, shell_t *shell)
 {
     if (array[1]) {
         shell->last_exit = 127;

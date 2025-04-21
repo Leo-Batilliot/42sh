@@ -77,7 +77,8 @@ static int setenv_error(linked_list_t **head, char **array, shell_t *shell)
     return 1;
 }
 
-int my_setenv(linked_list_t **head, char **array, shell_t *shell)
+int my_setenv(char **array, linked_list_t **head, shell_t *shell)
+
 {
     int len = array_len((const void **) array);
 

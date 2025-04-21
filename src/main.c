@@ -12,9 +12,9 @@ static void reset_prompt(linked_list_t *head)
 
     if (isatty(0) == 1) {
         if (path)
-            mini_printf(1, "%s> ", path);
+            printf("%s> ", path);
         else
-            mini_printf(1, "$> ");
+            printf("$> ");
     }
 }
 
@@ -35,37 +35,6 @@ int main_loop(shell_t *shell, linked_list_t *head)
     return 0;
 }
 
-static int create_directory(char *directory)
-{
-    struct stat st = {0};
-
-    if (stat(directory, &st) == -1) {
-        if (mkdir(directory, 0755) != 0) {
-            mini_printf(1, "Could not create the directory : %s\n", directory);
-            return 84;
-        }
-    }
-    return 0;
-}
-
-int load_file(shell_t *shell)
-{
-    create_directory("assets");
-    if (isatty(0) == 1) {
-        load_alias(shell);
-        load_history(shell);
-    }
-    return 0;
-}
-
-int save_file(shell_t *shell)
-{
-    if (isatty(0) == 1) {
-        write_alias(shell);
-    }
-    return 0;
-}
-
 int main(int ac, char **av, char **env)
 {
     shell_t *shell = NULL;
@@ -81,9 +50,8 @@ int main(int ac, char **av, char **env)
     head = init_env(shell->env_cpy);
     if (!head)
         return res;
-    load_file(shell);
+    load_history(shell);
     res = main_loop(shell, head);
-    save_file(shell);
     free_shell(shell);
     free_list(head);
     return res;

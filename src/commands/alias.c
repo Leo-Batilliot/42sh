@@ -134,7 +134,7 @@ static int add_to_alias_list(shell_t *shell, char **array)
     return 0;
 }
 
-int alias(char **array, linked_list_t *head, shell_t *shell)
+int alias(char **array, linked_list_t **head, shell_t *shell)
 {
     (void)head;
     if (array[1])

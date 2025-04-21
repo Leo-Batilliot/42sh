@@ -27,7 +27,6 @@ SRC = 	lib/my_strchr.c 					    \
 		src/commands/my_exit.c 					\
 		src/commands/my_setenv.c 				\
 		src/commands/my_unsetenv.c 				\
-		src/commands/exec_builtin.c				\
 		src/commands/builtin.c 					\
 		src/commands/my_history.c				\
 		src/commands/alias.c 					\

@@ -7,6 +7,17 @@
 
 #include "my.h"
 
+const builtin_t builtins[] = {
+    {"env", my_env},
+    {"setenv", my_setenv},
+    {"unsetenv", my_unsetenv},
+    {"cd", my_cd},
+    {"history", my_history},
+    {"exit", my_exit},
+    {"alias", alias},
+    {NULL, NULL}
+};
+
 static int manage_fd(args_t *tmp, int fd[2],
     int *save_stdin, int *save_stdout)
 {
@@ -18,6 +29,16 @@ static int manage_fd(args_t *tmp, int fd[2],
         dup2(fd[1], STDOUT_FILENO);
         close(fd[0]);
         close(fd[1]);
+    }
+    return 0;
+}
+
+int exec_builtin(char **array, linked_list_t *head, shell_t *shell)
+{
+    for (int i = 0; builtins[i].name != NULL; i++) {
+        if (strcmp(array[0], builtins[i].name) == 0) {
+            return builtins[i].func(array, &head, shell);
+        }
     }
     return 0;
 }

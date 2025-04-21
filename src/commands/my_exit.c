@@ -7,7 +7,7 @@
 
 #include "my.h"
 
-int my_exit(char **array, linked_list_t *head, shell_t *shell)
+int my_exit(char **array, linked_list_t **head, shell_t *shell)
 {
     int status_exit = 0;
 

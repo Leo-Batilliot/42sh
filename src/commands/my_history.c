@@ -110,7 +110,7 @@ int add_to_history(shell_t *shell, char *cmd)
     return 0;
 }
 
-int my_history(char **array, linked_list_t *head, shell_t *shell)
+int my_history(char **array, linked_list_t **head, shell_t *shell)
 {
     (void)array;
     (void)head;

@@ -86,6 +86,13 @@ typedef struct {
     list_t *list;
 } shell_t;
 
+typedef int (*builtin_func_t)(char **, linked_list_t **, shell_t *);
+
+typedef struct {
+    char *name;
+    builtin_func_t func;
+} builtin_t;
+
 /*---------------------*/
 /*    LIB FUNCTIONS    */
 /*---------------------*/
@@ -165,23 +172,12 @@ int builtin(shell_t *, args_t *, linked_list_t **, int[2]);
 int execute_cmd(shell_t *, args_t *, linked_list_t **);
 
 /*    COMMANDS    */
-int my_history(char **, linked_list_t *, shell_t *);
-int alias(char **, linked_list_t *, shell_t *);
-int my_cd(char **, linked_list_t *, shell_t *);
-int my_env(char **, shell_t *, linked_list_t **);
-int my_setenv(linked_list_t **, char **, shell_t *);
+int my_history(char **, linked_list_t **, shell_t *);
+int alias(char **, linked_list_t **, shell_t *);
+int my_cd(char **, linked_list_t **, shell_t *);
+int my_env(char **, linked_list_t **, shell_t *);
+int my_setenv(char **, linked_list_t **, shell_t *);
 int my_unsetenv(char **, linked_list_t **, shell_t *);
-int my_exit(char **, linked_list_t *, shell_t *);
-int exec_builtin(char **, linked_list_t *, shell_t *);
-int exec_setenv(char **array, linked_list_t *head, shell_t *shell);
-int exec_unsetenv(char **array, linked_list_t *head, shell_t *shell);
-int exec_env(char **array, linked_list_t *head, shell_t *shell);
-
-typedef int (*builtin_func_t)(char **, linked_list_t *, shell_t *);
-
-typedef struct {
-    char *name;
-    builtin_func_t func;
-} builtin_t;
+int my_exit(char **, linked_list_t **, shell_t *);
 
 #endif
