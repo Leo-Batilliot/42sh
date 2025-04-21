@@ -110,20 +110,13 @@ int add_to_history(shell_t *shell, char *cmd)
     return 0;
 }
 
-int my_history(char *cmd)
+int my_history(char **array, linked_list_t **head, shell_t *shell)
 {
-    FILE *fp = fopen("assets/history.txt", "r");
-    char *line = NULL;
-    size_t len = 0;
-
-    if (!fp)
-        return 1;
-    if (strcmp("history", cmd) == 0) {
-        while (getline(&line, &len, fp) != -1) {
-            write(1, line, strlen(line));
-        }
-        return 2;
+    (void)array;
+    (void)head;
+    while (shell->head != NULL) {
+        printf("%s", shell->head->full_line);
+        shell->head = shell->head->next;
     }
-    fclose(fp);
     return 0;
 }

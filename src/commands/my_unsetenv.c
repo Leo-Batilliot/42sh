@@ -38,13 +38,21 @@ static int check_key(linked_list_t **prev, linked_list_t **tmp,
 int my_unsetenv(char **array, linked_list_t **head, shell_t *shell)
 {
     linked_list_t *prev = NULL;
+    linked_list_t *next = NULL;
 
     if (!array[1]) {
         mini_printf(2, "unsetenv: Too few arguments.\n");
         shell->last_exit = 1;
         return 1;
     }
-    for (linked_list_t *tmp = *head; tmp; tmp = tmp->next)
+    if (head == NULL || *head == NULL) {
+        shell->last_exit = 1;
+        return 1;
+    }
+    for (linked_list_t *tmp = *head; tmp != NULL;) {
+        next = tmp->next;
         check_key(&prev, &tmp, head, array);
+        tmp = next;
+    }
     return 2;
 }
