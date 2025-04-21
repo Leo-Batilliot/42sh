@@ -9,10 +9,14 @@
 
 static int redirect_file(int *i, shell_t *shell, args_t **cur, char **array)
 {
-    if (!array[*i + 1])
+    if (!array[*i + 1]) {
+        (*cur)->redir[shell->tmp_red].file = NULL;
         return print_error(shell, 1);
-    if (shell->index_parse == 0)
+    }
+    if (shell->index_parse == 0) {
+        (*cur)->redir[shell->tmp_red].file = NULL;
         return print_error(shell, 0);
+    }
     (*cur)->redir[shell->tmp_red].file = my_strdup(array[*i + 1]);
     if (!(*cur)->redir[shell->tmp_red].file)
         return print_error(shell, 1);

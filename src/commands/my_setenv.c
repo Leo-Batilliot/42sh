@@ -34,14 +34,14 @@ static int invalid_name(char *str)
 {
     if ((str[0] > 'z' || str[0] < 'a') && (str[0] < 'A' ||
         str[0] > 'Z') && str[0] != '_') {
-        fprintf(stderr, "setenv: Variable name must begin with a letter.\n");
+        mini_printf(2, "setenv: Variable name must begin with a letter.\n");
         return 1;
     }
     for (int i = 0; str[i] != '\0'; i++) {
         if ((str[i] > 'z' || str[i] < 'a') && (str[i] < 'A' || str[i] > 'Z') &&
             str[i] != '.' && str[i] != '_' && (str[i] < '0' || str[i] > '9')) {
-            fprintf(stderr, "setenv: Variable name must");
-            fprintf(stderr, " contain alphanumeric characters.\n");
+            mini_printf(2, "setenv: Variable name must");
+            mini_printf(2, " contain alphanumeric characters.\n");
             return 1;
             }
     }
@@ -66,7 +66,7 @@ static int setenv_error(linked_list_t **head, char **array, shell_t *shell)
     int len = array_len((const void **) array);
 
     if (len > 3) {
-        fprintf(stderr, "setenv: Too many arguments.\n");
+        mini_printf(2, "setenv: Too many arguments.\n");
         shell->last_exit = 1;
         return 1;
     }

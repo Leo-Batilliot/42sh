@@ -35,7 +35,9 @@ static int exec_builtin(char **array, linked_list_t *head, shell_t *shell)
     if (!strcmp(array[0], "history"))
         return my_history(array[0]);
     if (!strcmp(array[0], "exit"))
-        my_exit(array);
+        my_exit(shell, array);
+    if (!strcmp(array[0], "alias"))
+        return alias(shell, array);
     return 0;
 }
 

@@ -62,7 +62,7 @@ static int invalid_path(char *path, char *str, shell_t *shell)
     if (!path)
         return 1;
     if (chdir(path) == -1) {
-        fprintf(stderr, "%s: %s.\n", str, strerror(errno));
+        mini_printf(2, "%s: %s.\n", str, strerror(errno));
         shell->last_exit = 1;
         return 1;
     }
@@ -96,7 +96,7 @@ int previous_path(linked_list_t **head, shell_t *shell, char **old)
     if (!(*old))
         return 1;
     if (chdir((*old)) == -1) {
-        fprintf(stderr, "%s: %s\n", (*old), strerror(errno));
+        mini_printf(2, "%s: %s\n", (*old), strerror(errno));
         shell->last_exit = 1;
         return 1;
     }
@@ -112,7 +112,7 @@ int my_cd(char **array, linked_list_t *head, shell_t *shell)
     static char *old = NULL;
 
     if (array_len((const void **) array) >= 3) {
-        fprintf(stderr, "cd: Too many arguments.\n");
+        mini_printf(2, "cd: Too many arguments.\n");
         shell->last_exit = 1;
         return 1;
     }

@@ -74,7 +74,7 @@ static int get_command_path(char **array, linked_list_t *head, shell_t *shell)
         shell->path = get_path(
             array[0], get_env_value("PATH", head), get_env_value("PWD", head));
         if (!shell->path) {
-            fprintf(stderr, "%s: Command not found.\n", array[0]);
+            mini_printf(2, "%s: Command not found.\n", array[0]);
             shell->last_exit = 1;
             my_free(shell->path);
             shell->path = NULL;

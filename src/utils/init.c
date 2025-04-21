@@ -114,7 +114,7 @@ static linked_list_t *my_parse_env(char **env)
     return head;
 }
 
-shell_t *init_shell(char **env)
+static shell_t *alloc_shell(void)
 {
     shell_t *shell = malloc(sizeof(shell_t));
 
@@ -127,9 +127,21 @@ shell_t *init_shell(char **env)
     shell->size = 0;
     shell->res = 0;
     shell->prev = 0;
-    shell->env_cpy = my_env_cpy(env);
+    shell->alias = NULL;
     shell->head = NULL;
     shell->count = 0;
+    shell->list = NULL;
+    shell->env_cpy = NULL;
+    return shell;
+}
+
+shell_t *init_shell(char **env)
+{
+    shell_t *shell = alloc_shell();
+
+    if (!shell)
+        return NULL;
+    shell->env_cpy = my_env_cpy(env);
     if (!shell->env_cpy)
         return NULL;
     shell->list = init_list();
@@ -156,19 +168,4 @@ list_t *init_list(void)
         return NULL;
     list->head = NULL;
     return list;
-}
-
-int load_history(shell_t *shell)
-{
-    FILE *fp = fopen("history.txt", "r");
-    char *line = NULL;
-    size_t len = 0;
-
-    if (!fp)
-        return 1;
-    while (getline(&line, &len, fp) != -1) {
-        add_node_to_history(shell, line, false);
-    }
-    fclose(fp);
-    return 0;
 }

@@ -27,7 +27,7 @@ static int end_heredoc(char *line, int i, args_t *tmp, int index)
 static int handle_fd(int fd, shell_t *shell, args_t *tmp, int std_fd)
 {
     if (fd == -1) {
-        fprintf(stderr, "%s: %s.\n",
+        mini_printf(2, "%s: %s.\n",
             tmp->redir[tmp->redir->i].file, strerror(errno));
         shell->last_exit = 1;
         return 1;
@@ -65,11 +65,11 @@ int redirection(args_t *tmp, shell_t *shell)
     int fds[3] = {STDIN_FILENO, STDOUT_FILENO, STDOUT_FILENO};
 
     for (int i = 0; i < tmp->count_red; i++) {
-        tmp->redir->i = 0;
+        tmp->redir->i = i;
         if (tmp->redir[i].status >= 1 && tmp->redir[i].status <= 3)
             return handle_fd(open(
-                tmp->redir[i].file, open_flags[tmp->redir[i].status], 0644),
-                shell, tmp, fds[tmp->redir[i].status]);
+                tmp->redir[i].file, open_flags[tmp->redir[i].status - 1], 0644)
+                , shell, tmp, fds[tmp->redir[i].status - 1]);
         if (tmp->redir[i].status == 4)
             return (heredoc(tmp, i, shell) == -1) ? 1 : 0;
     }
