@@ -131,6 +131,7 @@ static shell_t *alloc_shell(void)
     shell->head = NULL;
     shell->list = NULL;
     shell->env_cpy = NULL;
+    shell->prompt_color = NULL;
     return shell;
 }
 
@@ -145,6 +146,9 @@ shell_t *init_shell(char **env)
         return NULL;
     shell->list = init_list();
     if (!shell->list)
+        return NULL;
+    shell->prompt_color = my_strdup("\033[0m");
+    if (!shell->prompt_color)
         return NULL;
     return shell;
 }

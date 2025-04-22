@@ -42,6 +42,7 @@ SRC = 	lib/my_strchr.c 					    \
 		src/utils/write_function.c 				\
 		src/utils/load_functions.c 				\
 		src/utils/utils.c 						\
+		src/utils/handle_colors.c				\
 		src/main.c
 
 # COLORS

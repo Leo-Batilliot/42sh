@@ -64,6 +64,8 @@ int free_shell(shell_t *shell)
         my_free(shell->path);
     if (shell->save_old)
         my_free(shell->save_old);
+    if (shell->prompt_color)
+        my_free(shell->prompt_color);
     my_free(shell);
     return res;
 }
