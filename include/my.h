@@ -139,7 +139,7 @@ int save_file(shell_t *);
 int add_node(shell_t *shell, char **);
 int add_to_history(shell_t *, char *);
 int is_operator(const char *);
-int is_builtin(char *);
+int is_builtin(char **);
 char *get_env_value(const char *, linked_list_t *);
 int print_error(shell_t *, int);
 char **my_env_cpy(char **);
@@ -180,5 +180,6 @@ int my_env(char **, linked_list_t **, shell_t *);
 int my_setenv(char **, linked_list_t **, shell_t *);
 int my_unsetenv(char **, linked_list_t **, shell_t *);
 int my_exit(char **, linked_list_t **, shell_t *);
+int clean(char **, linked_list_t **, shell_t *);
 
 #endif

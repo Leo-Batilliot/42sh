@@ -28,6 +28,7 @@ SRC = 	lib/my_strchr.c 					    \
 		src/commands/my_setenv.c 				\
 		src/commands/my_unsetenv.c 				\
 		src/commands/builtin.c 					\
+		src/commands/clean_cmds.c				\
 		src/commands/my_history.c				\
 		src/commands/alias.c 					\
 		src/utils/redirection.c 				\

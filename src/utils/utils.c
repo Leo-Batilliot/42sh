@@ -52,16 +52,24 @@ int is_operator(const char *str)
     return 0;
 }
 
-int is_builtin(char *cmd)
+int is_builtin(char **cmds)
 {
-    if (!my_strcmp(cmd, "env")
-        || !my_strcmp(cmd, "setenv")
-        || !my_strcmp(cmd, "unsetenv")
-        || !my_strcmp(cmd, "exit")
-        || !my_strcmp(cmd, "cd")
-        || !my_strcmp(cmd, "alias")
-        || !my_strcmp(cmd, "history")) {
+    if (!my_strcmp(cmds[0], "env")
+        || !my_strcmp(cmds[0], "setenv")
+        || !my_strcmp(cmds[0], "unsetenv")
+        || !my_strcmp(cmds[0], "exit")
+        || !my_strcmp(cmds[0], "cd")
+        || !my_strcmp(cmds[0], "alias")
+        || !my_strcmp(cmds[0], "history")
+        || !my_strcmp(cmds[0], "clear_history")) {
         return 1;
+    }
+    if (!my_strcmp(cmds[0], "clean")) {
+        if (!cmds[1])
+            return 1;
+        if (!my_strcmp(cmds[1], "history")) {
+            return 1;
+        }
     }
     return 0;
 }

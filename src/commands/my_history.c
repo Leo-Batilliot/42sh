@@ -26,7 +26,14 @@ static int is_last_command_same(shell_t *shell, char *cmd)
     }
     if (current != NULL && strcmp(current->cmd, cmd) == 0) {
         free(current->time);
+        free(current->full_line);
         current->time = get_current_time();
+        current->full_line = malloc(sizeof(char) *
+        strlen(current->time) + strlen(current->cmd) + 10);
+        if (!current->full_line)
+            return 1;
+        sprintf(current->full_line, "%s%i  %s  %s", put_spaces(current->index),
+        current->index, current->time, current->cmd);
         return 1;
     }
     return 0;
