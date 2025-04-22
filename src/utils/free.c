@@ -6,7 +6,7 @@
 */
 #include "my.h"
 
-int free_redir(redirect_t *redirect, int count)
+static int free_redir(redirect_t *redirect, int count)
 {
     for (int i = 0; i < count; i++) {
         if (redirect[i].file)
@@ -15,11 +15,11 @@ int free_redir(redirect_t *redirect, int count)
     return my_free(redirect);
 }
 
-int free_list(linked_list_t *head)
+int free_list(list_t *head)
 {
     if (!head)
         return 0;
-    for (linked_list_t *next = NULL; head; head = next) {
+    for (list_t *next = NULL; head; head = next) {
         next = head->next;
         if (head->key)
             my_free(head->key);
@@ -30,13 +30,13 @@ int free_list(linked_list_t *head)
     return 0;
 }
 
-int free_args_list(list_t *list, int opt)
+int free_args_list(args_t *list)
 {
     args_t *next = NULL;
 
     if (!list)
         return 0;
-    for (args_t *tmp = list->head; tmp; tmp = next) {
+    for (args_t *tmp = list; tmp; tmp = next) {
         next = tmp->next;
         if (tmp->args)
             free_array((void **)tmp->args);
@@ -44,26 +44,55 @@ int free_args_list(list_t *list, int opt)
             free_redir(tmp->redir, tmp->count_red);
         my_free(tmp);
     }
-    list->head = NULL;
-    if (opt == 1)
-        return my_free(list);
     return 0;
 }
 
-int free_shell(shell_t *shell)
+static void free_alias(alias_t *alias)
+{
+    for (alias_t *next = NULL; alias; alias = next) {
+        next = alias->next;
+        free(alias->cmd);
+        free(alias->name);
+        free(alias);
+    }
+}
+
+static void free_history(history_t *history)
+{
+    for (history_t *next = NULL; history; history = next) {
+        next = history->next;
+        free(history->cmd);
+        free(history->time);
+        free(history->full_line);
+        free(history);
+    }
+}
+
+static int free_shell(shell_t *shell)
 {
     int res = shell->last_exit;
 
     if (shell->env_cpy)
         free_array((void **)shell->env_cpy);
-    if (shell->line)
-        my_free(shell->line);
-    if (shell->list)
-        free_args_list(shell->list, 1);
+    if (shell->args)
+        free_args_list(shell->args);
     if (shell->path)
         my_free(shell->path);
-    if (shell->save_old)
-        my_free(shell->save_old);
+    if (shell->previous_pwd)
+        my_free(shell->previous_pwd);
+    if (shell->env)
+        free_list(shell->env);
+    if (shell->alias)
+        free_alias(shell->alias);
+    if (shell->history)
+        free_history(shell->history);
     my_free(shell);
     return res;
+}
+
+void free_and_exit(shell_t *shell, int value)
+{
+    save_file(shell);
+    free_shell(shell);
+    exit(value);
 }

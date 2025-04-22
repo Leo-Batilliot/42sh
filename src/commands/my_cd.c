@@ -7,7 +7,7 @@
 
 #include "my.h"
 
-static int compare_and_replace(char *name, char *value, linked_list_t **tmp)
+static int compare_and_replace(char *name, char *value, list_t **tmp)
 {
     if (!my_strcmp((*tmp)->key, name)) {
         free((*tmp)->value);
@@ -17,15 +17,15 @@ static int compare_and_replace(char *name, char *value, linked_list_t **tmp)
     return 0;
 }
 
-static int update_value(linked_list_t **head, char *name, char *value)
+static int update_value(list_t **head, char *name, char *value)
 {
-    for (linked_list_t *tmp = *head; tmp; tmp = tmp->next)
+    for (list_t *tmp = *head; tmp; tmp = tmp->next)
         if (compare_and_replace(name, value, &tmp))
             return 0;
     return 1;
 }
 
-int home_path(linked_list_t **head, char **path,
+int home_path(list_t **head, char **path,
     char *str, int *to_free)
 {
     char *home = get_env_value("HOME", (*head));
@@ -41,7 +41,7 @@ int home_path(linked_list_t **head, char **path,
     return 0;
 }
 
-static char *get_path(int *to_free, linked_list_t **head, char *str)
+static char *get_path(int *to_free, list_t **head, char *str)
 {
     char *path = NULL;
 
@@ -69,54 +69,51 @@ static int invalid_path(char *path, char *str, shell_t *shell)
     return 0;
 }
 
-int change_directory(char *str, linked_list_t **head,
-    shell_t *shell, char **oldpwd)
+int change_directory(char *str, shell_t *shell)
 {
     char *path = NULL;
     char newpwd[256] = {0};
     int to_free = 0;
 
-    *oldpwd = my_strdup(getcwd(NULL, 0));
-    path = get_path(&to_free, head, str);
+    shell->previous_pwd = my_strdup(getcwd(NULL, 0));
+    path = get_path(&to_free, &(shell->env), str);
     if (invalid_path(path, str, shell))
         return 1;
     if (to_free == 1)
         free(path);
     if (!getcwd(newpwd, 256))
         return 1;
-    update_value((head), "PWD", newpwd);
+    update_value(&(shell->env), "PWD", newpwd);
     return 2;
 }
 
-int previous_path(linked_list_t **head, shell_t *shell, char **old)
+int previous_path(shell_t *shell)
 {
     char *save_old = getcwd(NULL, 0);
     char newpwd[256] = {0};
 
-    if (!(*old))
+    if (!(shell->previous_pwd))
         return 1;
-    if (chdir((*old)) == -1) {
-        mini_printf(2, "%s: %s\n", (*old), strerror(errno));
+    if (chdir((shell->previous_pwd)) == -1) {
+        mini_printf(2, "%s: %s\n", (shell->previous_pwd), strerror(errno));
         shell->last_exit = 1;
         return 1;
     }
     if (!getcwd(newpwd, sizeof(char) * 256))
         return 1;
-    *old = save_old;
-    update_value((head), "PWD", newpwd);
+    shell->previous_pwd = save_old;
+    update_value(&(shell->env), "PWD", newpwd);
     return 2;
 }
 
-int my_cd(char **array, linked_list_t **head, shell_t *shell)
+int my_cd(char **array, shell_t *shell)
 {
-    static char *old = NULL;
-
     if (array_len((const void **) array) >= 3) {
         mini_printf(2, "cd: Too many arguments.\n");
         shell->last_exit = 1;
         return 1;
     }
     if (array[1] && !my_strcmp(array[1], "-"))
-        return previous_path(head, shell, &old);
-    return change_directory(array[1], head, shell, &old);
+        return previous_path(shell);
+    return change_directory(array[1], shell);
 }

@@ -33,25 +33,22 @@ static int manage_fd(args_t *tmp, int fd[2],
     return 0;
 }
 
-int exec_builtin(char **array, linked_list_t *head, shell_t *shell)
+int exec_builtin(char **array, shell_t *shell)
 {
-    for (int i = 0; builtins[i].name != NULL; i++) {
-        if (strcmp(array[0], builtins[i].name) == 0) {
-            return builtins[i].func(array, &head, shell);
-        }
-    }
+    for (int i = 0; builtins[i].name; i++)
+        if (!strcmp(array[0], builtins[i].name))
+            return builtins[i].func(array, shell);
     return 0;
 }
 
-int builtin(shell_t *shell,
-    args_t *tmp, linked_list_t **head, int fd[2])
+int builtin(shell_t *shell, args_t *tmp, int fd[2])
 {
     int save_stdin = -1;
     int save_stdout = -1;
 
     manage_fd(tmp, fd, &save_stdin, &save_stdout);
     redirection(tmp, shell);
-    exec_builtin(tmp->args, (*head), shell);
+    exec_builtin(tmp->args, shell);
     if (tmp->count_red > 0 || tmp->is_pipe == 1) {
         dup2(save_stdin, STDIN_FILENO);
         close(save_stdin);
@@ -61,15 +58,14 @@ int builtin(shell_t *shell,
     return 0;
 }
 
-int pipe_builtin(shell_t *shell, args_t *tmp,
-    linked_list_t **head, int pipefd[2])
+int pipe_builtin(shell_t *shell, args_t *tmp, int pipefd[2])
 {
     pid_t pid = 0;
 
     if (is_builtin(tmp->args[0]) == 1 && tmp->is_pipe == 1) {
         pid = fork();
         if (pid == 0) {
-            builtin(shell, tmp, head, pipefd);
+            builtin(shell, tmp, pipefd);
             exit(0);
         }
         signal_error(pid, shell, pipefd, tmp);

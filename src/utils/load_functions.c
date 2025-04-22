@@ -22,23 +22,26 @@ int load_alias(shell_t *shell)
         if (line[strlen(line) - 1] == '\n')
             line[strlen(line) - 1] = '\0';
         array = split_str(line, " \t='");
-        if (add_node(shell, array) == 84)
+        if (!array)
             continue;
+        add_node(shell, array);
+        free(array);
     }
-    return 0;
+    free(line);
+    return fclose(fd);
 }
 
 int load_history(shell_t *shell)
 {
-    FILE *fp = fopen("assets/history.txt", "r");
+    FILE *fd = fopen("assets/history.txt", "r");
     char *line = NULL;
     size_t len = 0;
 
-    if (!fp)
+    if (!fd)
         return 1;
-    while (getline(&line, &len, fp) != -1) {
+    while (getline(&line, &len, fd) != -1) {
         add_node_to_history(shell, line, false);
     }
-    fclose(fp);
-    return 0;
+    free(line);
+    return fclose(fd);
 }

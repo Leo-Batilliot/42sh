@@ -41,7 +41,7 @@ void write_history(shell_t *shell)
 
     if (!fp)
         return;
-    for (history_t *cur = shell->head; cur; cur = cur->next)
+    for (history_t *cur = shell->history; cur; cur = cur->next)
         fprintf(fp, "%s", cur->full_line);
     fclose(fp);
 }

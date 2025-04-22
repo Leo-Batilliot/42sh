@@ -19,7 +19,7 @@ static char *get_current_time(void)
 
 static int is_last_command_same(shell_t *shell, char *cmd)
 {
-    history_t *current = shell->head;
+    history_t *current = shell->history;
 
     while (current != NULL && current->next != NULL) {
         current = current->next;
@@ -71,30 +71,31 @@ static history_t *create_history_node(int index, char *cmd, bool status)
     return new_node;
 }
 
-static int append_history_node(shell_t *shell, history_t *new_node)
+static int append_history_node(shell_t *shell, history_t *new_node, int *count)
 {
     history_t *current = NULL;
 
-    if (shell->head == NULL) {
-        shell->head = new_node;
+    if (shell->history == NULL) {
+        shell->history = new_node;
     } else {
-        current = shell->head;
+        current = shell->history;
         while (current->next != NULL) {
             current = current->next;
         }
         current->next = new_node;
     }
-    shell->count++;
+    *count += 1;
     return 0;
 }
 
 int add_node_to_history(shell_t *shell, char *cmd, bool status)
 {
-    history_t *new_node = create_history_node(shell->count + 1, cmd, status);
+    static int count = 1;
+    history_t *new_node = create_history_node(count, cmd, status);
 
     if (new_node == NULL)
         return 1;
-    return append_history_node(shell, new_node);
+    return append_history_node(shell, new_node, &count);
 }
 
 int add_to_history(shell_t *shell, char *cmd)
@@ -109,11 +110,10 @@ int add_to_history(shell_t *shell, char *cmd)
     return 0;
 }
 
-int my_history(char **array, linked_list_t **head, shell_t *shell)
+int my_history(char **array, shell_t *shell)
 {
     (void)array;
-    (void)head;
-    for (history_t *cur = shell->head; cur; cur = cur->next) {
+    for (history_t *cur = shell->history; cur; cur = cur->next) {
         printf("%s", cur->full_line);
     }
     return 0;

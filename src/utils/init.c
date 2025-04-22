@@ -60,10 +60,10 @@ args_t *init_cmd(char **array)
     return new;
 }
 
-static linked_list_t *add_to_list(
-    linked_list_t *head, linked_list_t *node)
+static list_t *add_to_list(
+    list_t *head, list_t *node)
 {
-    linked_list_t *cur = NULL;
+    list_t *cur = NULL;
 
     if (!head) {
         head = node;
@@ -76,9 +76,9 @@ static linked_list_t *add_to_list(
     return head;
 }
 
-static linked_list_t *init_node(char *ope, char **env, int i)
+static list_t *init_node(char *ope, char **env, int i)
 {
-    linked_list_t *node = malloc(sizeof(linked_list_t));
+    list_t *node = malloc(sizeof(list_t));
 
     if (!node)
         return NULL;
@@ -94,11 +94,11 @@ static linked_list_t *init_node(char *ope, char **env, int i)
     return node;
 }
 
-static linked_list_t *my_parse_env(char **env)
+static list_t *my_parse_env(char **env)
 {
     char *ope = NULL;
-    linked_list_t *head = NULL;
-    linked_list_t *node = NULL;
+    list_t *head = NULL;
+    list_t *node = NULL;
 
     for (int i = 0; env[i]; i++) {
         ope = my_strchr(env[i], '=');
@@ -114,58 +114,37 @@ static linked_list_t *my_parse_env(char **env)
     return head;
 }
 
-static shell_t *alloc_shell(void)
+static void *init_shell_values(shell_t *shell, char **env)
 {
-    shell_t *shell = malloc(sizeof(shell_t));
-
-    if (!shell)
-        return NULL;
     shell->path = NULL;
-    shell->line = NULL;
-    shell->save_old = NULL;
     shell->last_exit = 0;
-    shell->size = 0;
-    shell->res = 0;
     shell->prev = 0;
     shell->alias = NULL;
-    shell->head = NULL;
-    shell->count = 0;
-    shell->list = NULL;
-    shell->env_cpy = NULL;
+    shell->history = NULL;
+    shell->args = NULL;
+    shell->previous_pwd = NULL;
+    shell->env_cpy = my_env_cpy(env);
+    if (!shell->env_cpy)
+        return NULL;
     return shell;
 }
 
 shell_t *init_shell(char **env)
 {
-    shell_t *shell = alloc_shell();
+    shell_t *shell = malloc(sizeof(shell_t));
 
     if (!shell)
         return NULL;
-    shell->env_cpy = my_env_cpy(env);
-    if (!shell->env_cpy)
-        return NULL;
-    shell->list = init_list();
-    if (!shell->list)
-        return NULL;
+    init_shell_values(shell, env);
     return shell;
 }
 
-linked_list_t *init_env(char **env_cpy)
+list_t *init_env(char **env_cpy)
 {
-    linked_list_t *head = NULL;
+    list_t *head = NULL;
 
     if (!env_cpy)
         return NULL;
     head = my_parse_env(env_cpy);
     return head;
-}
-
-list_t *init_list(void)
-{
-    list_t *list = malloc(sizeof(list_t));
-
-    if (!list)
-        return NULL;
-    list->head = NULL;
-    return list;
 }

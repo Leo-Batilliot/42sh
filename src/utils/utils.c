@@ -34,9 +34,9 @@ char **my_env_cpy(char **env)
     return env_cpy;
 }
 
-char *get_env_value(const char *to_find, linked_list_t *head)
+char *get_env_value(const char *to_find, list_t *head)
 {
-    for (linked_list_t *tmp = head; tmp; tmp = tmp->next)
+    for (list_t *tmp = head; tmp; tmp = tmp->next)
         if (!strcmp(to_find, tmp->key))
             return tmp->value;
     return NULL;
