@@ -53,7 +53,7 @@ RESET=\033[0m
 
 # VARIABLES
 OBJ = $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRC))
-FLAGS = -Wextra -Wall -W -Werror -I include -g
+FLAGS = -Wextra -Wall -W -Werror -I include
 CC = gcc
 NAME = 42sh
 

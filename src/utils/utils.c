@@ -60,8 +60,7 @@ int is_builtin(char **cmds)
         || !my_strcmp(cmds[0], "exit")
         || !my_strcmp(cmds[0], "cd")
         || !my_strcmp(cmds[0], "alias")
-        || !my_strcmp(cmds[0], "history")
-        || !my_strcmp(cmds[0], "clear_history")) {
+        || !my_strcmp(cmds[0], "history")) {
         return 1;
     }
     if (!my_strcmp(cmds[0], "clean")) {

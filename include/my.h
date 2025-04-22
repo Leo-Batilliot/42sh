@@ -105,8 +105,8 @@ int free_array(void **);
 int my_free(void *);
 
 /*    OTHERS    */
-char *put_spaces(int);
-int array_len(const void **array);
+char *put_spaces(int, int);
+int array_len(const void **);
 char *my_strchr(char *, int);
 char *my_strdup(char const *);
 char *my_strcpy(char *, char const *);
@@ -134,7 +134,7 @@ linked_list_t *init_env(char **);
 int free_list(linked_list_t *);
 
 /*    OTHERS    */
-int add_node_to_history(shell_t *, char *, bool);
+int add_node_to_history(shell_t *, char *);
 int save_file(shell_t *);
 int add_node(shell_t *shell, char **);
 int add_to_history(shell_t *, char *);
