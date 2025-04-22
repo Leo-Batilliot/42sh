@@ -54,7 +54,7 @@ info_shell_t *declare_struct(char **env)
     shell_i->env_cpy = my_env_cpy(env);
     if (!shell_i->env_cpy)
         return NULL;
-    shell_i->prompt_color = my_strdup("\033[0;32m");
+    shell_i->prompt_color = my_strdup("\033[0m");
     if (!shell_i->prompt_color)
         return NULL;
     return shell_i;

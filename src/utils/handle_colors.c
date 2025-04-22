@@ -7,14 +7,28 @@
 
 #include "my.h"
 
+int check_color(info_shell_t *shell, char *color_name, int i)
+{
+    if (strcmp(colors[i].name, color_name) == 0) {
+        free(shell->prompt_color);
+        shell->prompt_color = strdup(colors[i].code);
+        if (!shell->prompt_color)
+            return -1;
+        return 1;
+    }
+    return 0;
+}
+
 int change_prompt_color(info_shell_t *shell, char *color_name)
 {
+    int res = 0;
+
     for (int i = 0; colors[i].name != NULL; i++) {
-        if (my_strcmp(colors[i].name, color_name) == 0) {
-            free(shell->prompt_color);
-            shell->prompt_color = my_strdup(colors[i].code);
+        res = check_color(shell, color_name, i);
+        if (res == 1)
             return 0;
-        }
+        if (res == -1)
+            return -1;
     }
     return -1;
 }
@@ -35,7 +49,7 @@ int handle_color_command(char **args, info_shell_t *shell_i)
         print_all_color();
     } else {
         if (change_prompt_color(shell_i, args[1]) == -1) {
-            my_printerr("Color not found. Available colors:\n");
+            printf("Color not found. Available colors:\n");
             print_all_color();
         }
     }

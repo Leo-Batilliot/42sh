@@ -54,7 +54,6 @@ static const color_t colors[] = {
     {NULL, NULL}
 };
 
-
 typedef struct args_s {
     redirect_t *redir;
     char **args;
