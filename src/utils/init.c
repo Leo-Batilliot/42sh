@@ -129,7 +129,6 @@ static shell_t *alloc_shell(void)
     shell->prev = 0;
     shell->alias = NULL;
     shell->head = NULL;
-    shell->count = 0;
     shell->list = NULL;
     shell->env_cpy = NULL;
     return shell;
