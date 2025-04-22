@@ -19,7 +19,7 @@ SRC = 	lib/my_strchr.c 					    \
 		lib/count_word.c 						\
 		lib/free.c 								\
 		lib/array_to_str.c 						\
-		lib/put_spaces.c						\
+		lib/spaces_count.c						\
 		lib/array_len.c 						\
 		lib/mini_printf.c 						\
 		src/commands/cd.c	 					\
@@ -28,8 +28,8 @@ SRC = 	lib/my_strchr.c 					    \
 		src/commands/setenv.c 					\
 		src/commands/unsetenv.c 				\
 		src/commands/builtin.c 					\
-		src/commands/clean_cmds.c				\
-		src/commands/my_history.c				\
+		src/commands/clean.c					\
+		src/commands/history.c					\
 		src/commands/alias.c 					\
 		src/utils/redirection.c 				\
 		src/utils/commands.c 					\

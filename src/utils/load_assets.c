@@ -25,7 +25,7 @@ int load_alias(shell_t *shell)
         if (!array)
             continue;
         add_node(shell, array);
-        free(array);
+        free_array((void **)array);
     }
     free(line);
     return fclose(fd);
@@ -41,10 +41,13 @@ int load_history(shell_t *shell)
     if (!fd)
         return 1;
     while (getline(&line, &len, fd) != -1) {
+        if (line[strlen(line) - 1] == '\n')
+            line[strlen(line) - 1] = '\0';
         array = split_str(line, " ");
         if (!array)
-            return 1;
-        add_node_to_history(shell, array[2]);
+            continue;
+        add_node_to_history(shell, array[1], array[2]);
+        free_array((void **)array);
     }
     free(line);
     return fclose(fd);

@@ -73,6 +73,8 @@ static int get_command_path(char **array, shell_t *shell)
     if (handle_color_command(array, shell))
         return -1;
     if (!is_builtin(array)) {
+        if (shell->path)
+            my_free(shell->path);
         shell->path = get_path(array[0], get_env_value("PATH", shell->env),
             get_env_value("PWD", shell->env));
         if (!shell->path) {

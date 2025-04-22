@@ -27,33 +27,29 @@ static int append_array(char ***new_array, int *j, char *string)
 
 static int add_alias(char **array_tmp, int *j, char ***new_array)
 {
-    int res = 0;
-
-    for (int k = 0; array_tmp[k]; k++) {
-        res = append_array(new_array, j, array_tmp[k]);
-        if (res == -1)
-            return 84;
-    }
-    return 0;
+    if (!array_tmp)
+        return free_array((void **)new_array) + 84;
+    for (int k = 0; array_tmp[k]; k++)
+        if (append_array(new_array, j, array_tmp[k]))
+            return free_array((void **)array_tmp) + 84;
+    return free_array((void **)array_tmp) + 1;
 }
 
 static int replace_new(int *j, char ***new_array,
-    char *find_str, shell_t *shell)
+    char *name, shell_t *shell)
 {
     char *string = NULL;
     char **array_tmp = NULL;
-    alias_t *to_cmp = find_node(shell, find_str);
+    alias_t *to_cmp = find_node(shell, name);
 
-    if (to_cmp) {
-        string = array_to_str(to_cmp->cmd);
-        if (!string)
-            return 1;
-        array_tmp = split_str(string, " \t");
-        if (add_alias(array_tmp, j, new_array) == 84)
-            return 84;
+    if (!to_cmp)
+        return 0;
+    string = array_to_str(to_cmp->cmd);
+    if (!string)
         return 1;
-    }
-    return 0;
+    array_tmp = split_str(string, " \t");
+    free(string);
+    return add_alias(array_tmp, j, new_array);
 }
 
 char **replace_alias(shell_t *shell, char **array)
@@ -70,8 +66,7 @@ char **replace_alias(shell_t *shell, char **array)
             continue;
         if (res == 84)
             return NULL;
-        res = append_array(&new_array, &j, array[i]);
-        if (res == -1)
+        if (append_array(&new_array, &j, array[i]) == -1)
             return NULL;
     }
     if (new_array)

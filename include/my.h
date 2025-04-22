@@ -64,6 +64,7 @@ typedef struct alias_s {
 
 typedef struct {
     char *path;
+    char *line;
     char **env_cpy;
     char *previous_pwd;
     int last_exit;
@@ -113,7 +114,7 @@ int free_array(void **);
 int my_free(void *);
 
 /*    OTHERS    */
-char *put_spaces(int, int);
+int spaces_count(int, int);
 int array_len(const void **);
 char *my_strchr(char *, int);
 char *my_strdup(char const *);
@@ -144,7 +145,7 @@ int free_list(list_t *);
 
 /*    OTHERS    */
 char **replace_alias(shell_t *, char **);
-int add_node_to_history(shell_t *, char *);
+int add_node_to_history(shell_t *, char *, char *);
 int save_file(shell_t *);
 int add_node(shell_t *shell, char **);
 int add_to_history(shell_t *, char *);
@@ -167,6 +168,7 @@ shell_t *init_shell(char **);
 /*    FREE    */
 int free_args_list(args_t *list);
 void free_and_exit(shell_t *shell, int return_value);
+int free_history(shell_t *shell);
 
 /*    OTHERS    */
 int signal_error(pid_t, shell_t *, int[2], args_t *);
@@ -177,7 +179,7 @@ void write_history(shell_t *);
 int execute_command_list(shell_t *);
 int set_redirection_file(char **array, shell_t *shell, args_t **cur, int *);
 int redirection(args_t *tmp, shell_t *shell);
-int parse_args(shell_t *, char *line);
+int parse_args(shell_t *);
 int pipe_builtin(shell_t *, args_t *, int[2]);
 int builtin(shell_t *, args_t *, int[2]);
 int execute_cmd(shell_t *, args_t *);

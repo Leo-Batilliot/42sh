@@ -21,20 +21,17 @@ static void reset_prompt(shell_t *shell)
 
 int main_loop(shell_t *shell)
 {
-    char *line = NULL;
     size_t size;
 
     while (1) {
         reset_prompt(shell);
         if (!shell->env)
             continue;
-        if (getline(&line, &size, stdin) == -1) {
-            free(line);
+        if (getline(&shell->line, &size, stdin) == -1)
             return shell->last_exit;
-        }
-        if (add_to_history(shell, line))
+        if (add_to_history(shell, shell->line))
             continue;
-        if (!line || line[0] == '\n' || parse_args(shell, line))
+        if (!shell->line || shell->line[0] == '\n' || parse_args(shell))
             continue;
         execute_command_list(shell);
     }

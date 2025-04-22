@@ -23,10 +23,8 @@ static int is_last_command_same(shell_t *shell, char *cmd)
 {
     history_t *current = shell->history;
 
-    while (current != NULL && current->next != NULL) {
-        current = current->next;
-    }
-    if (current != NULL && strcmp(current->cmd, cmd) == 0) {
+    for (; current && current->next; current = current->next);
+    if (current && !strcmp(current->cmd, cmd)) {
         free(current->time);
         current->time = get_current_time();
         if (!current->time)
@@ -36,17 +34,19 @@ static int is_last_command_same(shell_t *shell, char *cmd)
     return 0;
 }
 
-static history_t *create_history_node(char *cmd)
+static history_t *create_history_node(char *time, char *cmd)
 {
     history_t *new_node = malloc(sizeof(history_t));
 
-    if (new_node == NULL || !strcmp("\n", cmd))
+    if (!new_node || !strcmp("\n", cmd))
         return NULL;
-    new_node->time = get_current_time();
+    new_node->time = my_strdup(time);
+    if (!new_node->time)
+        new_node->time = get_current_time();
     if (!new_node->time)
         return NULL;
-    new_node->cmd = strdup(cmd);
-    if (new_node->cmd == NULL)
+    new_node->cmd = my_strdup(cmd);
+    if (!new_node->cmd)
         return NULL;
     new_node->next = NULL;
     return new_node;
@@ -59,20 +59,20 @@ static int append_history_node(shell_t *shell, history_t *new_node)
     if (shell->history == NULL) {
         shell->history = new_node;
     } else {
-        current = shell->history;
-        while (current->next != NULL) {
-            current = current->next;
-        }
+        for (current = shell->history; current->next; current = current->next);
         current->next = new_node;
     }
     return 0;
 }
 
-int add_node_to_history(shell_t *shell, char *cmd)
+int add_node_to_history(shell_t *shell, char *time, char *cmd)
 {
-    history_t *new_node = create_history_node(cmd);
+    history_t *new_node;
 
-    if (new_node == NULL)
+    if (!cmd)
+        return 1;
+    new_node = create_history_node(time, cmd);
+    if (!new_node)
         return 1;
     return append_history_node(shell, new_node);
 }
@@ -81,28 +81,30 @@ int add_to_history(shell_t *shell, char *cmd)
 {
     int value = 0;
 
+    if (cmd[my_strlen(cmd) - 1] == '\n')
+        cmd[my_strlen(cmd) - 1] = '\0';
     value = is_last_command_same(shell, cmd);
     if (value)
         return (value == 1) ? 0 : 1;
-    if (add_node_to_history(shell, cmd))
+    if (add_node_to_history(shell, NULL, cmd))
         return 1;
     return 0;
 }
 
 int my_history(char **array, shell_t *shell)
 {
-    char *spaces = NULL;
     int last_index = 1;
     int i = 1;
+    int spaces = 0;
 
     (void)array;
     for (history_t *tmp = shell->history; tmp; tmp = tmp->next)
         last_index++;
     for (history_t *cur = shell->history; cur; cur = cur->next) {
-        spaces = put_spaces(i, last_index);
-        if (!spaces)
-            return 1;
-        printf("%s%i  %s  %s", spaces, i, cur->time, cur->cmd);
+        spaces = spaces_count(i, last_index - 1);
+        for (int s = 0; s < spaces; s++)
+            printf(" ");
+        printf("%i  %s  %s\n", i, cur->time, cur->cmd);
         i++;
     }
     return 0;
