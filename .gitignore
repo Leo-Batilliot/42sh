@@ -52,6 +52,7 @@ Mkfile.old
 dkms.conf
 
 # Project specific
+**/*.txt
 obj
 tester.sh 
 tests
@@ -61,4 +62,3 @@ test
 crash
 coucou
 assets
-output.txt

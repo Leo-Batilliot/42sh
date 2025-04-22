@@ -52,7 +52,7 @@ static history_t *create_history_node(char *cmd)
     return new_node;
 }
 
-static int append_history_node(shell_t *shell, history_t *new_node, int *count)
+static int append_history_node(shell_t *shell, history_t *new_node)
 {
     history_t *current = NULL;
 
@@ -74,7 +74,7 @@ int add_node_to_history(shell_t *shell, char *cmd)
 
     if (new_node == NULL)
         return 1;
-    return append_history_node(shell, new_node, &count);
+    return append_history_node(shell, new_node);
 }
 
 int add_to_history(shell_t *shell, char *cmd)
@@ -96,10 +96,9 @@ int my_history(char **array, shell_t *shell)
     int i = 1;
 
     (void)array;
-    (void)head;
-    for (history_t *tmp = shell->head; tmp; tmp = tmp->next)
+    for (history_t *tmp = shell->history; tmp; tmp = tmp->next)
         last_index++;
-    for (history_t *cur = shell->head; cur; cur = cur->next) {
+    for (history_t *cur = shell->history; cur; cur = cur->next) {
         spaces = put_spaces(i, last_index);
         if (!spaces)
             return 1;

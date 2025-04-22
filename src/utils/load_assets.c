@@ -33,14 +33,14 @@ int load_alias(shell_t *shell)
 
 int load_history(shell_t *shell)
 {
-    FILE *fp = fopen("assets/history.txt", "r");
+    FILE *fd = fopen("assets/history.txt", "r");
     char **array = NULL;
     char *line = NULL;
     size_t len = 0;
 
     if (!fd)
         return 1;
-    while (getline(&line, &len, fp) != -1) {
+    while (getline(&line, &len, fd) != -1) {
         array = split_str(line, " ");
         if (!array)
             return 1;

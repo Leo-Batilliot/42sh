@@ -33,7 +33,6 @@ typedef struct history_s {
     int index;
     char *time;
     char *cmd;
-    char *full_line;
     struct history_s *next;
 } history_t;
 
@@ -150,7 +149,6 @@ int save_file(shell_t *);
 int add_node(shell_t *shell, char **);
 int add_to_history(shell_t *, char *);
 int is_operator(const char *);
-int is_builtin(char *);
 char *get_env_value(const char *, list_t *);
 int is_builtin(char **);
 int print_error(shell_t *, int);

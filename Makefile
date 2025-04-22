@@ -22,11 +22,11 @@ SRC = 	lib/my_strchr.c 					    \
 		lib/put_spaces.c						\
 		lib/array_len.c 						\
 		lib/mini_printf.c 						\
-		src/commands/my_cd.c 					\
-		src/commands/my_env.c 					\
-		src/commands/my_exit.c 					\
-		src/commands/my_setenv.c 				\
-		src/commands/my_unsetenv.c 				\
+		src/commands/cd.c	 					\
+		src/commands/env.c 						\
+		src/commands/exit.c 					\
+		src/commands/setenv.c 					\
+		src/commands/unsetenv.c 				\
 		src/commands/builtin.c 					\
 		src/commands/clean_cmds.c				\
 		src/commands/my_history.c				\
@@ -40,11 +40,11 @@ SRC = 	lib/my_strchr.c 					    \
 		src/utils/redirection_file.c 			\
 		src/utils/init.c 						\
 		src/utils/free.c 						\
-		src/utils/write_function.c 				\
-		src/utils/load_functions.c 				\
+		src/utils/write_assets.c 				\
+		src/utils/load_assets.c 				\
 		src/utils/utils.c 						\
 		src/utils/files.c 						\
-		src/utils/handle_colors.c				\
+		src/utils/colors.c						\
 		src/main.c
 
 # COLORS

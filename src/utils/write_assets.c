@@ -44,9 +44,9 @@ void write_history(shell_t *shell)
 
     if (!fp)
         return;
-    for (history_t *tmp = shell->head; tmp; tmp = tmp->next)
+    for (history_t *tmp = shell->history; tmp; tmp = tmp->next)
         last_index++;
-    for (history_t *cur = shell->head; cur; cur = cur->next) {
+    for (history_t *cur = shell->history; cur; cur = cur->next) {
         spaces = put_spaces(i, last_index);
         if (!spaces)
             return;

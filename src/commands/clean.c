@@ -9,7 +9,7 @@
 
 int clean_history(shell_t *shell)
 {
-    history_t *current = shell->head;
+    history_t *current = shell->history;
     history_t *next = NULL;
 
     while (current != NULL) {
@@ -18,7 +18,7 @@ int clean_history(shell_t *shell)
         free(current);
         current = next;
     }
-    shell->head = NULL;
+    shell->history = NULL;
     return 0;
 }
 
@@ -29,13 +29,12 @@ int print_help_msg(void)
     return 0;
 }
 
-int clean(char **array, linked_list_t **head, shell_t *shell)
+int clean(char **array, shell_t *shell)
 {
     (void)array;
-    (void)head;
     if (!array[1])
         return print_help_msg();
     if (!strcmp(array[1], "history"))
         return clean_history(shell);
-    return 0;
+    return print_help_msg();
 }
