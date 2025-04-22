@@ -75,6 +75,7 @@ typedef struct {
     list_t *env;
     history_t *history;
     args_t *args;
+    char *prompt_color;
 } shell_t;
 
 typedef int (*builtin_func_t)(char **, shell_t *);
@@ -83,6 +84,24 @@ typedef struct {
     char *name;
     builtin_func_t func;
 } builtin_t;
+
+typedef struct color_s {
+    char *name;
+    char *code;
+} color_t;
+
+static const color_t colors[] = {
+    {"black", "\033[0;30m"},
+    {"red", "\033[0;31m"},
+    {"green", "\033[0;32m"},
+    {"yellow", "\033[0;33m"},
+    {"blue", "\033[0;34m"},
+    {"purple", "\033[0;35m"},
+    {"cyan", "\033[0;36m"},
+    {"white", "\033[0;37m"},
+    {"reset", "\033[0m"},
+    {NULL, NULL}
+};
 
 /*---------------------*/
 /*    LIB FUNCTIONS    */
@@ -95,8 +114,8 @@ int free_array(void **);
 int my_free(void *);
 
 /*    OTHERS    */
-char *put_spaces(int);
-int array_len(const void **array);
+char *put_spaces(int, int);
+int array_len(const void **);
 char *my_strchr(char *, int);
 char *my_strdup(char const *);
 char *my_strcpy(char *, char const *);
@@ -126,13 +145,14 @@ int free_list(list_t *);
 
 /*    OTHERS    */
 char **replace_alias(shell_t *, char **);
-int add_node_to_history(shell_t *, char *, bool);
+int add_node_to_history(shell_t *, char *);
 int save_file(shell_t *);
 int add_node(shell_t *shell, char **);
 int add_to_history(shell_t *, char *);
 int is_operator(const char *);
 int is_builtin(char *);
 char *get_env_value(const char *, list_t *);
+int is_builtin(char **);
 int print_error(shell_t *, int);
 char **my_env_cpy(char **);
 int write_alias(shell_t *);
@@ -172,5 +192,7 @@ int my_env(char **, shell_t *);
 int my_setenv(char **, shell_t *);
 int my_unsetenv(char **, shell_t *);
 int my_exit(char **, shell_t *);
+int handle_color_command(char **args, shell_t *shell_i);
+int clean(char **, shell_t *);
 
 #endif

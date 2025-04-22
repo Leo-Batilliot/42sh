@@ -38,10 +38,20 @@ int write_alias(shell_t *shell)
 void write_history(shell_t *shell)
 {
     FILE *fp = fopen("assets/history.txt", "w");
+    char *spaces = NULL;
+    int last_index = 1;
+    int i = 1;
 
     if (!fp)
         return;
-    for (history_t *cur = shell->history; cur; cur = cur->next)
-        fprintf(fp, "%s", cur->full_line);
+    for (history_t *tmp = shell->head; tmp; tmp = tmp->next)
+        last_index++;
+    for (history_t *cur = shell->head; cur; cur = cur->next) {
+        spaces = put_spaces(i, last_index);
+        if (!spaces)
+            return;
+        fprintf(fp, "%s%i  %s  %s", spaces, i, cur->time, cur->cmd);
+        i++;
+    }
     fclose(fp);
 }

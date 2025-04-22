@@ -15,6 +15,7 @@ const builtin_t builtins[] = {
     {"history", my_history},
     {"exit", my_exit},
     {"alias", alias},
+    {"clean", clean},
     {NULL, NULL}
 };
 
@@ -62,7 +63,7 @@ int pipe_builtin(shell_t *shell, args_t *tmp, int pipefd[2])
 {
     pid_t pid = 0;
 
-    if (is_builtin(tmp->args[0]) == 1 && tmp->is_pipe == 1) {
+    if (is_builtin(tmp->args) == 1 && tmp->is_pipe == 1) {
         pid = fork();
         if (pid == 0) {
             builtin(shell, tmp, pipefd);

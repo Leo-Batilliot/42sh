@@ -7,21 +7,20 @@
 
 #include <stdlib.h>
 
-char *put_spaces(int index)
+char *put_spaces(int index, int last_index)
 {
-    int i = 0;
-    int temp = index;
     char *spaces = NULL;
+    int i = 0;
 
-    while (temp > 9) {
-        temp /= 10;
+    while (index > 9) {
+        index /= 10;
         i++;
     }
-    spaces = malloc(sizeof(char) * (i + 5));
+    spaces = malloc(sizeof(char) * (i + last_index + 1));
     if (!spaces)
         return NULL;
-    for (int j = 0; j < 4 - i; j++)
+    for (int j = 0; j < last_index - i; j++)
         spaces[j] = ' ';
-    spaces[4 - i] = '\0';
+    spaces[last_index - i] = '\0';
     return spaces;
 }

@@ -107,9 +107,9 @@ int execute_cmd(shell_t *shell,
     int pipefd[2] = {0};
     int res = 0;
 
-    if (is_builtin(tmp->args[0]) && !tmp->is_pipe)
+    if (is_builtin(tmp->args) && !tmp->is_pipe)
         return builtin(shell, tmp, NULL);
-    if (res != 0 || (is_builtin(tmp->args[0]) == 1 && tmp->is_pipe == 0))
+    if (res != 0 || (is_builtin(tmp->args) == 1 && tmp->is_pipe == 0))
         return res;
     if (tmp->is_pipe && pipe(pipefd) == - 1)
         return 1;

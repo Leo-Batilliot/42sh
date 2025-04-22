@@ -86,6 +86,10 @@ static int free_shell(shell_t *shell)
         free_alias(shell->alias);
     if (shell->history)
         free_history(shell->history);
+    if (shell->save_old)
+        my_free(shell->save_old);
+    if (shell->prompt_color)
+        my_free(shell->prompt_color);
     my_free(shell);
     return res;
 }

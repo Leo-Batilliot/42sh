@@ -126,6 +126,7 @@ static void *init_shell_values(shell_t *shell, char **env)
     shell->env_cpy = my_env_cpy(env);
     if (!shell->env_cpy)
         return NULL;
+    shell->prompt_color = NULL;
     return shell;
 }
 
@@ -136,6 +137,9 @@ shell_t *init_shell(char **env)
     if (!shell)
         return NULL;
     init_shell_values(shell, env);
+    shell->prompt_color = my_strdup("\033[0m");
+    if (!shell->prompt_color)
+        return NULL;
     return shell;
 }
 

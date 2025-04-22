@@ -12,9 +12,10 @@ static void reset_prompt(shell_t *shell)
 
     if (isatty(0) == 1) {
         if (path)
-            mini_printf(1, "%s> ", path);
+            mini_printf(1, "%s%s> %s", shell->prompt_color, path,
+                colors[8].code);
         else
-            mini_printf(1, "$> ");
+            mini_printf(1, "%s$> %s", shell->prompt_color, colors[8].code);
     }
 }
 
