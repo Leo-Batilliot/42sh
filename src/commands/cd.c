@@ -72,14 +72,16 @@ static int invalid_path(char *path, char *str, shell_t *shell)
 int change_directory(char *str, shell_t *shell)
 {
     char *path = NULL;
-    char newpwd[256] = {0};
+    char newpwd[256];
     int to_free = 0;
 
-    shell->previous_pwd = my_strdup(getcwd(NULL, 0));
+    if (shell->previous_pwd)
+        my_free(shell->previous_pwd);
+    shell->previous_pwd = getcwd(NULL, 0);
     path = get_path(&to_free, &(shell->env), str);
     if (invalid_path(path, str, shell))
-        return 1;
-    if (to_free == 1)
+        return str != path ? my_free(path) + 1 : 1;
+    if (to_free)
         free(path);
     if (!getcwd(newpwd, 256))
         return 1;
@@ -101,6 +103,8 @@ int previous_path(shell_t *shell)
     }
     if (!getcwd(newpwd, sizeof(char) * 256))
         return 1;
+    if (shell->previous_pwd)
+        free(shell->previous_pwd);
     shell->previous_pwd = save_old;
     update_value(&(shell->env), "PWD", newpwd);
     return 2;

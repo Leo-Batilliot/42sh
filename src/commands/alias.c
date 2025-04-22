@@ -32,10 +32,9 @@ static int print_alias(shell_t *shell)
 
 alias_t *find_node(shell_t *shell, char *name)
 {
-    for (alias_t *cur = shell->alias; cur; cur = cur->next) {
+    for (alias_t *cur = shell->alias; cur; cur = cur->next)
         if (!strcmp(cur->name, name))
             return cur;
-    }
     return NULL;
 }
 
@@ -76,9 +75,7 @@ int add_node(shell_t *shell, char **array)
         shell->alias = node;
     } else {
         free(node->name);
-        for (int i = 0; node->cmd && node->cmd[i]; i++)
-            free(node->cmd[i]);
-        free(node->cmd);
+        free_array((void **)node->cmd);
         cpy_node(array, &node);
     }
     return 0;
@@ -89,20 +86,15 @@ static int append_split_to_array(char ***dest,
 {
     char **split = split_str(to_split, "= '\t");
 
-    if (!split || !split[0]) {
-        free_array((void **)split);
-        return 84;
-    }
+    if (!split || !split[0])
+        return free_array((void **)split) + 84;
     for (int k = 0; split[k]; k++) {
         (*dest)[*j] = my_strdup(split[k]);
-        if (!(*dest)[*j]) {
-            free_array((void **)split);
-            return 84;
-        }
+        if (!(*dest)[*j])
+            return free_array((void **)split) + 84;
         (*j)++;
     }
-    free_array((void **)split);
-    return 0;
+    return free_array((void **)split);
 }
 
 static char **init_new_array(int size)
@@ -122,16 +114,13 @@ static int add_to_alias_list(shell_t *shell, char **array)
 
     if (!new_array)
         return 84;
-    for (int i = 1; array[i]; i++) {
-        if (append_split_to_array(&new_array, &j, array[i]) == 84) {
-            free_array((void **)new_array);
-            return 84;
-        }
-    }
+    for (int i = 1; array[i]; i++)
+        if (append_split_to_array(&new_array, &j, array[i]) == 84)
+            return free_array((void **)new_array) + 84;
     new_array[j] = NULL;
     if (add_node(shell, new_array) == 84)
-        return 84;
-    return 0;
+        return free_array((void **)new_array) + 84;
+    return free_array((void **)new_array);
 }
 
 int alias(char **array, shell_t *shell)

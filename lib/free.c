@@ -9,17 +9,17 @@
 int my_free(void *ptr)
 {
     if (!ptr)
-        return 84;
+        return 0;
     free(ptr);
-    return 84;
+    return 0;
 }
 
 int free_array(void **array)
 {
     if (!array)
-        return 84;
+        return 0;
     for (int i = 0; array[i]; i++)
         free(array[i]);
     free(array);
-    return 84;
+    return 0;
 }

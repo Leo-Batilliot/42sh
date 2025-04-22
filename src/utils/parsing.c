@@ -83,14 +83,16 @@ static int parsing_loop(shell_t *shell, char **new_array)
     return 0;
 }
 
-int parse_args(shell_t *shell, char *line)
+int parse_args(shell_t *shell)
 {
-    char **array = split_str(line, " \t\n");
+    char **array = split_str(shell->line, " \t\n");
     char **new_array = replace_alias(shell, array);
 
+    if (array != new_array)
+        free_array((void **)array);
     if (!new_array || reset_parsing_list(new_array, shell))
-        return 1;
+        return free_array((void **)new_array) + 1;
     if (parsing_loop(shell, new_array))
-        return 1;
-    return 0;
+        return free_array((void **)new_array) + 1;
+    return free_array((void **)new_array);
 }

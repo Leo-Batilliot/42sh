@@ -7,16 +7,16 @@
 
 #include "my.h"
 
-int clean_history(shell_t *shell)
+
+int free_history(shell_t *shell)
 {
-    history_t *current = shell->history;
     history_t *next = NULL;
 
-    while (current != NULL) {
-        next = current->next;
-        free(current->cmd);
-        free(current);
-        current = next;
+    for (history_t *history = shell->history; history; history = next) {
+        next = history->next;
+        free(history->cmd);
+        free(history->time);
+        free(history);
     }
     shell->history = NULL;
     return 0;
@@ -34,7 +34,7 @@ int clean(char **array, shell_t *shell)
     (void)array;
     if (!array[1])
         return print_help_msg();
-    if (!strcmp(array[1], "history"))
-        return clean_history(shell);
+    if (!strcmp(array[1], "history") && shell->history)
+        return free_history(shell);
     return print_help_msg();
 }

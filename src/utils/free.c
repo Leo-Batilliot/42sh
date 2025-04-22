@@ -51,42 +51,39 @@ static void free_alias(alias_t *alias)
 {
     for (alias_t *next = NULL; alias; alias = next) {
         next = alias->next;
-        free(alias->cmd);
+        free_array((void **)alias->cmd);
         free(alias->name);
         free(alias);
     }
 }
 
-static void free_history(history_t *history)
+static void free_shell_lists(shell_t *shell)
 {
-    for (history_t *next = NULL; history; history = next) {
-        next = history->next;
-        free(history->cmd);
-        free(history->time);
-        free(history);
-    }
+    if (shell->args)
+        free_args_list(shell->args);
+    if (shell->env)
+        free_list(shell->env);
+    if (shell->alias)
+        free_alias(shell->alias);
+    if (shell->history)
+        free_history(shell);
 }
 
 static int free_shell(shell_t *shell)
 {
     int res = shell->last_exit;
 
+    if (shell->line)
+        my_free(shell->line);
     if (shell->env_cpy)
         free_array((void **)shell->env_cpy);
-    if (shell->args)
-        free_args_list(shell->args);
     if (shell->path)
         my_free(shell->path);
     if (shell->previous_pwd)
         my_free(shell->previous_pwd);
-    if (shell->env)
-        free_list(shell->env);
-    if (shell->alias)
-        free_alias(shell->alias);
-    if (shell->history)
-        free_history(shell->history);
     if (shell->prompt_color)
         my_free(shell->prompt_color);
+    free_shell_lists(shell);
     my_free(shell);
     return res;
 }
