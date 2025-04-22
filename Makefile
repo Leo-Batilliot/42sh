@@ -28,6 +28,7 @@ SRC = 	lib/my_strchr.c 					    \
 		src/commands/my_setenv.c 				\
 		src/commands/my_unsetenv.c 				\
 		src/commands/builtin.c 					\
+		src/commands/clean_cmds.c				\
 		src/commands/my_history.c				\
 		src/commands/alias.c 					\
 		src/utils/redirection.c 				\
@@ -53,7 +54,7 @@ RESET=\033[0m
 
 # VARIABLES
 OBJ = $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRC))
-FLAGS = -Wextra -Wall -W -Werror -I include -g
+FLAGS = -Wextra -Wall -W -Werror -I include
 CC = gcc
 NAME = 42sh
 

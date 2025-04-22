@@ -27,9 +27,9 @@ int main_loop(shell_t *shell, linked_list_t *head)
             continue;
         if (getline(&shell->line, &shell->size, stdin) == -1)
             return shell->last_exit;
-        if (add_to_history(shell, shell->line) == 1)
-            continue;
         if (!shell->line || shell->line[0] == '\n' || parse_args(shell) == 1)
+            continue;
+        if (add_to_history(shell, shell->line) == 1)
             continue;
         execute_command_list(shell, head);
     }
