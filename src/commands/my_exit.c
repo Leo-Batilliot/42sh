@@ -7,13 +7,12 @@
 
 #include "my.h"
 
-int my_exit(char **array, linked_list_t **head, shell_t *shell)
+int my_exit(char **array, shell_t *shell)
 {
     int status_exit = 0;
 
-    (void)head;
     if (array[1])
         status_exit = atoi(array[1]);
-    save_file(shell);
-    exit(status_exit);
+    free_and_exit(shell, status_exit);
+    return 0;
 }

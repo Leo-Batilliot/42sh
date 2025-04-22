@@ -7,9 +7,9 @@
 
 #include "my.h"
 
-void print_env(linked_list_t **head)
+void print_env(list_t *head)
 {
-    for (linked_list_t *tmp = *head; tmp; tmp = tmp->next) {
+    for (list_t *tmp = head; tmp; tmp = tmp->next) {
         write(1, tmp->key, strlen(tmp->key));
         write(1, "=", 1);
         if (tmp->value)
@@ -18,13 +18,13 @@ void print_env(linked_list_t **head)
     }
 }
 
-int my_env(char **array, linked_list_t **head, shell_t *shell)
+int my_env(char **array, shell_t *shell)
 {
     if (array[1]) {
         shell->last_exit = 127;
         mini_printf(2, "env: '%s': No such file or directory\n", array[1]);
         return 1;
     }
-    print_env(head);
+    print_env(shell->env);
     return 2;
 }

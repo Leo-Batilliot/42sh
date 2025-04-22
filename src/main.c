@@ -6,9 +6,9 @@
 */
 #include "my.h"
 
-static void reset_prompt(linked_list_t *head, shell_t *shell)
+static void reset_prompt(shell_t *shell)
 {
-    char *path = get_env_value("PWD", head);
+    char *path = get_env_value("PWD", shell->env);
 
     if (isatty(0) == 1) {
         if (path)
@@ -19,51 +19,24 @@ static void reset_prompt(linked_list_t *head, shell_t *shell)
     }
 }
 
-int main_loop(shell_t *shell, linked_list_t *head)
+int main_loop(shell_t *shell)
 {
+    char *line = NULL;
+    size_t size;
+
     while (1) {
-        reset_prompt(head, shell);
-        if (!head)
+        reset_prompt(shell);
+        if (!shell->env)
             continue;
-        if (getline(&shell->line, &shell->size, stdin) == -1)
+        if (getline(&line, &size, stdin) == -1) {
+            free(line);
             return shell->last_exit;
-        if (!shell->line || shell->line[0] == '\n' || parse_args(shell) == 1)
-            continue;
-        if (add_to_history(shell, shell->line) == 1)
-            continue;
-        execute_command_list(shell, head);
-    }
-    return 0;
-}
-
-static int create_directory(char *directory)
-{
-    struct stat st = {0};
-
-    if (stat(directory, &st) == -1) {
-        if (mkdir(directory, 0755) != 0) {
-            mini_printf(1, "Could not create the directory : %s\n", directory);
-            return 84;
         }
-    }
-    return 0;
-}
-
-int load_file(shell_t *shell)
-{
-    create_directory("assets");
-    if (isatty(0) == 1) {
-        load_alias(shell);
-        load_history(shell);
-    }
-    return 0;
-}
-
-int save_file(shell_t *shell)
-{
-    if (isatty(0) == 1) {
-        write_alias(shell);
-        write_history(shell);
+        if (add_to_history(shell, line))
+            continue;
+        if (!line || line[0] == '\n' || parse_args(shell, line))
+            continue;
+        execute_command_list(shell);
     }
     return 0;
 }
@@ -71,7 +44,6 @@ int save_file(shell_t *shell)
 int main(int ac, char **av, char **env)
 {
     shell_t *shell = NULL;
-    linked_list_t *head = NULL;
     int res = 84;
 
     (void)av;
@@ -80,13 +52,10 @@ int main(int ac, char **av, char **env)
     shell = init_shell(env);
     if (!shell)
         return res;
-    head = init_env(shell->env_cpy);
-    if (!head)
-        return res;
+    shell->env = init_env(shell->env_cpy);
+    if (!shell->env)
+        free_and_exit(shell, res);
     load_file(shell);
-    res = main_loop(shell, head);
-    save_file(shell);
-    free_shell(shell);
-    free_list(head);
-    return res;
+    free_and_exit(shell, main_loop(shell));
+    return 84;
 }

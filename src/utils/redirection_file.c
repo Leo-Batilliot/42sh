@@ -25,15 +25,13 @@ static int redirect_file(int *i, shell_t *shell, args_t **cur, char **array)
 
 static int empty_cmd_list(args_t **cur, shell_t *shell, char **cmd)
 {
-    if (!shell->list->head) {
-        shell->list->head = init_cmd(cmd);
-        if (!shell->list->head) {
-            free_args_list(shell->list, 1);
-            shell->list = NULL;
+    if (!shell->args) {
+        shell->args = init_cmd(cmd);
+        if (!shell->args) {
             shell->last_exit = 1;
             return 1;
         }
-        *cur = shell->list->head;
+        *cur = shell->args;
     }
     return 0;
 }

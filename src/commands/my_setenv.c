@@ -7,10 +7,10 @@
 
 #include "my.h"
 
-static int init_new_variable(char **array, linked_list_t **head)
+static int init_new_variable(char **array, list_t **head)
 {
-    linked_list_t *new = malloc(sizeof(linked_list_t));
-    linked_list_t *cur = NULL;
+    list_t *new = malloc(sizeof(list_t));
+    list_t *cur = NULL;
 
     if (!new)
         return 0;
@@ -48,11 +48,11 @@ static int invalid_name(char *str)
     return 0;
 }
 
-static int replace(linked_list_t **head, char **array)
+static int replace(list_t **head, char **array)
 {
     int count = 0;
 
-    for (linked_list_t *tmp = *head; tmp; tmp = tmp->next)
+    for (list_t *tmp = *head; tmp; tmp = tmp->next)
         if (!my_strcmp(tmp->key, array[1])) {
             my_free(tmp->value);
             tmp->value = my_strdup(array[2]);
@@ -61,7 +61,7 @@ static int replace(linked_list_t **head, char **array)
     return count;
 }
 
-static int setenv_error(linked_list_t **head, char **array, shell_t *shell)
+static int setenv_error(char **array, shell_t *shell)
 {
     int len = array_len((const void **) array);
 
@@ -71,22 +71,22 @@ static int setenv_error(linked_list_t **head, char **array, shell_t *shell)
         return 1;
     }
     if (len == 1) {
-        print_env(head);
+        print_env(shell->env);
         return 0;
     }
     return 1;
 }
 
-int my_setenv(char **array, linked_list_t **head, shell_t *shell)
+int my_setenv(char **array, shell_t *shell)
 
 {
     int len = array_len((const void **) array);
 
     if (len > 3 || len == 1) {
-        shell->last_exit = setenv_error(head, array, shell);
+        shell->last_exit = setenv_error(array, shell);
         return shell->last_exit;
     }
-    if (replace(head, array) > 0) {
+    if (replace(&(shell->env), array) > 0) {
         shell->last_exit = 0;
         return shell->last_exit;
     }
@@ -94,6 +94,6 @@ int my_setenv(char **array, linked_list_t **head, shell_t *shell)
         shell->last_exit = 1;
         return shell->last_exit;
     }
-    shell->last_exit = init_new_variable(array, head);
+    shell->last_exit = init_new_variable(array, &(shell->env));
     return shell->last_exit;
 }

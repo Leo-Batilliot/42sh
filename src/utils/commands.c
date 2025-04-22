@@ -66,15 +66,15 @@ static char *get_path(char *input, char *path, char *pwd)
     return try_to_access(input, pwd, path);
 }
 
-static int get_command_path(char **array, linked_list_t *head, shell_t *shell)
+static int get_command_path(char **array, shell_t *shell)
 {
     if (!array[0])
         return 1;
     if (handle_color_command(array, shell))
         return -1;
-    if (!is_builtin(array)) {
-        shell->path = get_path(
-            array[0], get_env_value("PATH", head), get_env_value("PWD", head));
+    if (!is_builtin(array[0])) {
+        shell->path = get_path(array[0], get_env_value("PATH", shell->env),
+            get_env_value("PWD", shell->env));
         if (!shell->path) {
             mini_printf(2, "%s: Command not found.\n", array[0]);
             shell->last_exit = 1;
@@ -86,23 +86,23 @@ static int get_command_path(char **array, linked_list_t *head, shell_t *shell)
     return 0;
 }
 
-int execute_command_list(shell_t *shell, linked_list_t *head)
+int execute_command_list(shell_t *shell)
 {
-    for (args_t *tmp = shell->list->head; tmp; tmp = tmp->next) {
-        if (get_command_path(tmp->args, head, shell))
+    for (args_t *tmp = shell->args; tmp; tmp = tmp->next) {
+        if (get_command_path(tmp->args, shell))
             continue;
         free_array((void **)shell->env_cpy);
-        shell->env_cpy = linked_list_to_array(head);
+        shell->env_cpy = list_to_array(shell->env);
         if (!shell->env_cpy)
             return 0;
-        execute_cmd(shell, tmp, &head);
+        execute_cmd(shell, tmp);
         free_array((void **)shell->env_cpy);
         shell->env_cpy = NULL;
         free_array((void **)tmp->args);
         tmp->args = NULL;
     }
-    if (shell->list)
-        free_args_list(shell->list, 1);
-    shell->list = NULL;
+    if (shell->args)
+        free_args_list(shell->args);
+    shell->args = NULL;
     return 0;
 }

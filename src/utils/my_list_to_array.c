@@ -7,21 +7,21 @@
 
 #include "my.h"
 
-int list_len(linked_list_t *head)
+int list_len(list_t *head)
 {
     int count = 0;
 
-    for (linked_list_t *tmp = head; tmp; tmp = tmp->next)
+    for (list_t *tmp = head; tmp; tmp = tmp->next)
         count++;
     return count;
 }
 
-static int fill_array(linked_list_t *head, char **array)
+static int fill_array(list_t *head, char **array)
 {
     int len = 0;
     int i = 0;
 
-    for (linked_list_t *cur = head; cur; cur = cur->next) {
+    for (list_t *cur = head; cur; cur = cur->next) {
         len = my_strlen(cur->key) + my_strlen(cur->value) + 2;
         array[i] = malloc(sizeof(char) * len);
         if (!array[i])
@@ -36,7 +36,7 @@ static int fill_array(linked_list_t *head, char **array)
     return 0;
 }
 
-char **linked_list_to_array(linked_list_t *head)
+char **list_to_array(list_t *head)
 {
     char **array = NULL;
     int count = 0;

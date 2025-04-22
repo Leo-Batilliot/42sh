@@ -7,10 +7,10 @@
 
 #include "my.h"
 
-static int delete_node(linked_list_t **head, linked_list_t **tmp,
-    linked_list_t **prev)
+static int delete_node(list_t **head, list_t **tmp,
+    list_t **prev)
 {
-    linked_list_t *next = (*tmp)->next;
+    list_t *next = (*tmp)->next;
 
     if (!(*prev))
         *head = (*tmp)->next;
@@ -25,8 +25,8 @@ static int delete_node(linked_list_t **head, linked_list_t **tmp,
     return 0;
 }
 
-static int check_key(linked_list_t **prev, linked_list_t **tmp,
-    linked_list_t **head, char **array)
+static int check_key(list_t **prev, list_t **tmp,
+    list_t **head, char **array)
 {
     for (int i = 1; array[i]; i++)
         if (!my_strcmp(array[i], (*tmp)->key))
@@ -35,24 +35,23 @@ static int check_key(linked_list_t **prev, linked_list_t **tmp,
     return 0;
 }
 
-int my_unsetenv(char **array, linked_list_t **head, shell_t *shell)
+int my_unsetenv(char **array, shell_t *shell)
 {
-    linked_list_t *prev = NULL;
-    linked_list_t *next = NULL;
+    list_t *prev = NULL;
+    list_t *next = NULL;
 
     if (!array[1]) {
         mini_printf(2, "unsetenv: Too few arguments.\n");
         shell->last_exit = 1;
         return 1;
     }
-    if (head == NULL || *head == NULL) {
+    if (!shell->env) {
         shell->last_exit = 1;
         return 1;
     }
-    for (linked_list_t *tmp = *head; tmp != NULL;) {
+    for (list_t *tmp = shell->env; tmp; tmp = next) {
         next = tmp->next;
-        check_key(&prev, &tmp, head, array);
-        tmp = next;
+        check_key(&prev, &tmp, &(shell->env), array);
     }
     return 2;
 }
