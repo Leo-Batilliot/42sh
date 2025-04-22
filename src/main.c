@@ -6,22 +6,23 @@
 */
 #include "my.h"
 
-static void reset_prompt(linked_list_t *head)
+static void reset_prompt(linked_list_t *head, shell_t *shell)
 {
     char *path = get_env_value("PWD", head);
 
     if (isatty(0) == 1) {
         if (path)
-            mini_printf(1, "%s> ", path);
+            mini_printf(1, "%s%s> %s", shell->prompt_color, path,
+                colors[8].code);
         else
-            mini_printf(1, "$> ");
+            mini_printf(1, "%s$> %s", shell->prompt_color, colors[8].code);
     }
 }
 
 int main_loop(shell_t *shell, linked_list_t *head)
 {
     while (1) {
-        reset_prompt(head);
+        reset_prompt(head, shell);
         if (!head)
             continue;
         if (getline(&shell->line, &shell->size, stdin) == -1)

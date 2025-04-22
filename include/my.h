@@ -84,6 +84,7 @@ typedef struct {
     alias_t *alias;
     history_t *head;
     list_t *list;
+    char *prompt_color;
 } shell_t;
 
 typedef int (*builtin_func_t)(char **, linked_list_t **, shell_t *);
@@ -92,6 +93,24 @@ typedef struct {
     char *name;
     builtin_func_t func;
 } builtin_t;
+
+typedef struct color_s {
+    char *name;
+    char *code;
+} color_t;
+
+static const color_t colors[] = {
+    {"black", "\033[0;30m"},
+    {"red", "\033[0;31m"},
+    {"green", "\033[0;32m"},
+    {"yellow", "\033[0;33m"},
+    {"blue", "\033[0;34m"},
+    {"purple", "\033[0;35m"},
+    {"cyan", "\033[0;36m"},
+    {"white", "\033[0;37m"},
+    {"reset", "\033[0m"},
+    {NULL, NULL}
+};
 
 /*---------------------*/
 /*    LIB FUNCTIONS    */
@@ -180,5 +199,6 @@ int my_env(char **, linked_list_t **, shell_t *);
 int my_setenv(char **, linked_list_t **, shell_t *);
 int my_unsetenv(char **, linked_list_t **, shell_t *);
 int my_exit(char **, linked_list_t **, shell_t *);
+int handle_color_command(char **args, shell_t *shell_i);
 
 #endif
