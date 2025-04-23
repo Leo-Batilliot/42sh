@@ -6,28 +6,24 @@
 */
 #include "my.h"
 
-static void reset_prompt(shell_t *shell)
+static int line(shell_t *shell)
 {
-    char *path = get_env_value("PWD", shell->env);
+    size_t size;
 
-    if (isatty(0) == 1) {
-        if (path)
-            mini_printf(1, "%s%s> %s", shell->prompt_color, path,
-                colors[8].code);
-        else
-            mini_printf(1, "%s$> %s", shell->prompt_color, colors[8].code);
-    }
+    if (isatty(0))
+        return termios_main(shell);
+    else
+        if (getline(&shell->line, &size, stdin) == -1)
+            return 1;
+    return 0;
 }
 
 int main_loop(shell_t *shell)
 {
-    size_t size;
-
     while (1) {
-        reset_prompt(shell);
         if (!shell->env)
-            continue;
-        if (getline(&shell->line, &size, stdin) == -1)
+            return shell->last_exit;
+        if (line(shell))
             return shell->last_exit;
         if (add_to_history(shell, shell->line))
             continue;
