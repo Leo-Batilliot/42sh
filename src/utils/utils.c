@@ -44,9 +44,9 @@ char *get_env_value(const char *to_find, list_t *head)
 
 int is_operator(const char *str)
 {
-    const char *operators[] = {";", ">>", "<<", "<", "|", ">"};
+    const char *operators[] = {";", ">>", "<<", "<", "|", ">", "&&"};
 
-    for (int j = 0; j < 6; j++)
+    for (int j = 0; j < 7; j++)
         if (!my_strcmp(str, operators[j]))
             return 1;
     return 0;

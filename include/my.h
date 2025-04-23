@@ -53,6 +53,7 @@ typedef struct args_s {
     char **args;
     int count_red;
     int is_pipe;
+    int param;
     struct args_s *next;
 } args_t;
 

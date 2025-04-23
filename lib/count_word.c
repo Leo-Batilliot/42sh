@@ -7,7 +7,7 @@
 
 #include "my.h"
 
-static const char *array[] = {"<", ">", "|", NULL};
+static const char *array[] = {"<", ">", "|", "&", NULL};
 
 static int get_pos(int len, const char *str)
 {

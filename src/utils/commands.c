@@ -66,11 +66,31 @@ static char *get_path(char *input, char *path, char *pwd)
     return try_to_access(input, pwd, path);
 }
 
-static int get_command_path(char **array, shell_t *shell)
+static int update_execute(int *can_execute, shell_t *shell, args_t *tmp)
 {
-    if (!array[0])
+    if ((*can_execute) == 1) {
+        if (tmp->param == 0)
+            (*can_execute) = 0;
+        if ((*can_execute) == 1)
+            return 1;
+    }
+    if (tmp->param == 1 && shell->last_exit != 0) {
+        (*can_execute) = 1;
         return 1;
-    if (handle_color_command(array, shell))
+    }
+    if (tmp->param == 2 && shell->last_exit == 0) {
+        (*can_execute) = 1;
+        return 1;
+    }
+    return 0;
+}
+
+static int get_command_path(char **array, shell_t *shell,
+    int *can_execute, args_t *tmp)
+{
+    if (update_execute(can_execute, shell, tmp))
+        return -1;
+    if (!array[0] || handle_color_command(array, shell))
         return -1;
     if (!is_builtin(array)) {
         if (shell->path)
@@ -90,8 +110,10 @@ static int get_command_path(char **array, shell_t *shell)
 
 int execute_command_list(shell_t *shell)
 {
+    int can_execute = 0;
+
     for (args_t *tmp = shell->args; tmp; tmp = tmp->next) {
-        if (get_command_path(tmp->args, shell))
+        if (get_command_path(tmp->args, shell, &can_execute, tmp))
             continue;
         free_array((void **)shell->env_cpy);
         shell->env_cpy = list_to_array(shell->env);

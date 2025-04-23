@@ -66,7 +66,7 @@ static int try_to_acces(char *path, shell_t *shell)
 static int child(shell_t *shell, char **array,
     args_t *tmp, int pipe_fd[2])
 {
-    if (isatty(0) == 0 && shell->last_exit != 0)
+    if (isatty(0) == 0 && shell->last_exit != 0 && tmp->param == 0)
         return 1;
     if (shell->prev != 0) {
         dup2(shell->prev, STDIN_FILENO);
