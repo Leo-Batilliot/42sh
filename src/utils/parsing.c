@@ -30,10 +30,35 @@ static int add_pipe_cmd(int i, char **array,
     return add_new_cmd(shell, i, array, cur);
 }
 
+static int add_and_cmd(int i, char **array,
+    args_t **cur, shell_t *shell)
+{
+    if (!array[i + 1] || is_operator(array[i + 1])) {
+        print_error(shell, 0);
+        return 84;
+    }
+    add_new_cmd(shell, i, array, cur);
+    (*cur)->param = 1;
+    return 1;
+}
+
+static int add_or_cmd(int i, char **array,
+    args_t **cur, shell_t *shell)
+{
+    if (!array[i + 1] || is_operator(array[i + 1])) {
+        print_error(shell, 0);
+        return 84;
+    }
+    add_new_cmd(shell, i, array, cur);
+    (*cur)->param = 2;
+    return 1;
+}
+
 static int parse_command_line(int i, char **array,
     args_t **cur, shell_t *shell)
 {
-    if (my_strchr(array[i], '|') && my_strlen(array[i]) > 1) {
+    if ((strchr(array[i], '|') && my_strlen(array[i]) > 2)
+        || (strchr(array[i], '&') && my_strlen(array[i]) > 2)) {
         print_error(shell, 0);
         return 84;
     }
@@ -41,6 +66,10 @@ static int parse_command_line(int i, char **array,
         return add_new_cmd(shell, i, array, cur);
     if (!my_strcmp(array[i], "|"))
         return add_pipe_cmd(i, array, cur, shell);
+    if (!strcmp(array[i], "&&"))
+        return add_and_cmd(i, array, cur, shell);
+    if (!strcmp(array[i], "||"))
+        return add_or_cmd(i, array, cur, shell);
     if (!is_operator(array[i])) {
         (*cur)->args[shell->index_parse] = my_strdup(array[i]);
         if (!(*cur)->args)

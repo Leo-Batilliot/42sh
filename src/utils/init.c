@@ -9,7 +9,9 @@
 static int get_count(args_t *new, char **array)
 {
     for (int i = 0; array[i]; i++) {
-        if (!my_strcmp(";", array[i]) || !my_strcmp("|", array[i]))
+        if (!my_strcmp(";", array[i])
+            || !my_strcmp("|", array[i])
+            || !(strcmp("&&", array[i])))
             break;
         if (!my_strcmp("<", array[i])
             || !my_strcmp(">", array[i])
@@ -52,6 +54,7 @@ args_t *init_cmd(char **array)
     for (int i = 0; i <= count_args; i++)
         new->args[i] = NULL;
     new->is_pipe = 0;
+    new->param = 0;
     new->next = NULL;
     new->redir = NULL;
     new->count_red = 0;

@@ -12,7 +12,7 @@
 
 static const char *delim = ";";
 
-static const char *array[] = {"<", ">", "|", NULL};
+static const char *array[] = {"<", ">", "|", "&", NULL};
 
 int is_separator(const char c, char *ope)
 {
