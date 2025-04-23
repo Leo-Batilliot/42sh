@@ -126,8 +126,9 @@ int my_strlen(char const *);
 int my_strcmp(char const *, char const *);
 int is_delim(const char);
 int is_separator(const char, char *);
-char *array_to_str(char **array);
-int mini_printf(int output, char *format, ...);
+char *array_to_str(char **);
+int mini_printf(int, char *, ...);
+int my_strncmp(const char *, const char *, int);
 
 /*---------------------*/
 /*   UTILS FUNCTIONS   */
@@ -156,6 +157,16 @@ int print_error(shell_t *, int);
 char **my_env_cpy(char **);
 int write_alias(shell_t *);
 alias_t *find_node(shell_t *, char *);
+
+/*---------------------*/
+/*  TERMIOS FUNCTIONS  */
+/*---------------------*/
+
+/*    INIT    */
+
+/*    FREE    */
+
+/*    OTHERS    */
 
 /*---------------------*/
 /*  PROJECT FUNCTIONS  */
@@ -194,5 +205,7 @@ int my_unsetenv(char **, shell_t *);
 int my_exit(char **, shell_t *);
 int handle_color_command(char **args, shell_t *shell_i);
 int clean(char **, shell_t *);
+
+int termios_main(shell_t *shell);
 
 #endif
