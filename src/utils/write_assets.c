@@ -5,8 +5,12 @@
 ** write_function
 */
 
-#include "my.h"
+#include "shell.h"
+#include <stdio.h>
 
+// name :   print_array
+// args :   fd, current alias
+// use :    S.E
 static void print_array(FILE *fd, alias_t *cur)
 {
     for (int k = 0; cur->cmd[k]; k++) {
@@ -16,6 +20,9 @@ static void print_array(FILE *fd, alias_t *cur)
     }
 }
 
+// name :   write_alias
+// args :   shell main struct
+// use :    write the alias list in the assets/alias.txt file
 int write_alias(shell_t *shell)
 {
     FILE *fd = fopen("assets/alias.txt", "w");
@@ -35,6 +42,9 @@ int write_alias(shell_t *shell)
     return 0;
 }
 
+// name :   write_history
+// args :   shell main struct
+// use :    write the history in the assets/history.txt file
 void write_history(shell_t *shell)
 {
     FILE *fd = fopen("assets/history.txt", "w");

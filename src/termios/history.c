@@ -4,8 +4,14 @@
 ** File description:
 ** history
 */
-#include "line_edition.h"
 
+#include "line_edition.h"
+#include <stddef.h>
+#include <stdlib.h>
+
+// name :   reset_termios_history
+// args :   termios main struct
+// use :    resets the differents variables needed for the history
 void reset_termios_history(termios_t *termios, int *history)
 {
     (*history) = 0;
@@ -14,6 +20,9 @@ void reset_termios_history(termios_t *termios, int *history)
     termios->history_index = 0;
 }
 
+// name :   get_previous_command
+// args :   termios main struct, index's address
+// use :    find the previous command in the history
 static char *get_previous_command(termios_t *termios, int *index)
 {
     char *cmp = termios->history_line;
@@ -32,6 +41,9 @@ static char *get_previous_command(termios_t *termios, int *index)
     return res;
 }
 
+// name :   get_next_command
+// args :   termios main struct, index's address
+// use :    find the next command in the history
 static char *get_next_command(termios_t *termios, int *index)
 {
     char *res = termios->history_line;
@@ -52,7 +64,10 @@ static char *get_next_command(termios_t *termios, int *index)
     return res;
 }
 
-void replace_current_line(termios_t *termios, char *str)
+// name :   replace_current_line
+// args :   termios main struct, string
+// use :    replace the current line by the string given
+static void replace_current_line(termios_t *termios, char *str)
 {
     int i = 0;
 
@@ -62,6 +77,9 @@ void replace_current_line(termios_t *termios, char *str)
     termios->pos = my_strlen(termios->line);
 }
 
+// name :   my_strdup2
+// args :   string
+// use :    strdup but it allocates memory even if the string is NULL or empty
 static char *my_strdup2(char *str)
 {
     char *res = NULL;
@@ -76,6 +94,9 @@ static char *my_strdup2(char *str)
     return my_strdup(str);
 }
 
+// name :   move_history
+// args :   termios main struct, int option
+// use :    finds the next/previous command and replace the line with it
 int move_history(termios_t *termios, int option)
 {
     char *res = NULL;

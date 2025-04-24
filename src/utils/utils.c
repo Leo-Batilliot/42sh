@@ -4,8 +4,14 @@
 ** File description:
 ** builtin_utils
 */
-#include "my.h"
 
+#include "shell.h"
+#include <stddef.h>
+#include <stdlib.h>
+
+// name :   print_error
+// args :   shell main struct, option
+// use :    S.E
 int print_error(shell_t *shell, int opt)
 {
     if (!opt)
@@ -16,6 +22,9 @@ int print_error(shell_t *shell, int opt)
     return 1;
 }
 
+// name :   my_env_cpy
+// args :   env array
+// use :    duplicate the env array
 char **my_env_cpy(char **env)
 {
     char **env_cpy = NULL;
@@ -34,14 +43,20 @@ char **my_env_cpy(char **env)
     return env_cpy;
 }
 
+// name :   get_env_value
+// args :   name string, env list
+// use :    finds the value of an env variable using its name
 char *get_env_value(const char *to_find, list_t *head)
 {
     for (list_t *tmp = head; tmp; tmp = tmp->next)
-        if (!strcmp(to_find, tmp->key))
+        if (!my_strcmp(to_find, tmp->key))
             return tmp->value;
     return NULL;
 }
 
+// name :   is_operator
+// args :   string
+// use :    S.E
 int is_operator(const char *str)
 {
     const char *operators[] = {";", ">>", "<<", "<", "|", ">", "&&"};
@@ -49,26 +64,5 @@ int is_operator(const char *str)
     for (int j = 0; j < 7; j++)
         if (!my_strcmp(str, operators[j]))
             return 1;
-    return 0;
-}
-
-int is_builtin(char **cmds)
-{
-    if (!my_strcmp(cmds[0], "env")
-        || !my_strcmp(cmds[0], "setenv")
-        || !my_strcmp(cmds[0], "unsetenv")
-        || !my_strcmp(cmds[0], "exit")
-        || !my_strcmp(cmds[0], "cd")
-        || !my_strcmp(cmds[0], "alias")
-        || !my_strcmp(cmds[0], "history")) {
-        return 1;
-    }
-    if (!my_strcmp(cmds[0], "clean")) {
-        if (!cmds[1])
-            return 1;
-        if (!my_strcmp(cmds[1], "history")) {
-            return 1;
-        }
-    }
     return 0;
 }

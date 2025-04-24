@@ -5,9 +5,17 @@
 ** handle_redirections
 */
 
-#include "my.h"
+#include "shell.h"
+#include <errno.h>
+#include <unistd.h>
+#include <string.h>
+#include <stdio.h>
+#include <fcntl.h>
 
-static int end_heredoc(char *line, int i, args_t *tmp, int index)
+// name :   end_heredoc
+// args :   line string, file index, current arg, fd
+// use:     checks if the heredoc ends, writes lines to the pipe otherwise
+static int end_heredoc(char *line, int i, args_t *tmp, int fd)
 {
     char *temp_line = my_strdup(line);
 
@@ -15,15 +23,18 @@ static int end_heredoc(char *line, int i, args_t *tmp, int index)
         return 0;
     temp_line[my_strlen(temp_line) - 1] = '\0';
     if (!my_strcmp(temp_line, tmp->redir[i].file)) {
-        free(temp_line);
+        my_free(temp_line);
         return 1;
     }
-    free(temp_line);
-    write(index, line, my_strlen(line));
+    my_free(temp_line);
+    write(fd, line, my_strlen(line));
     write(STDOUT_FILENO, "? ", 2);
     return 0;
 }
 
+// name :   handle_fd
+// args :   fd, shell main struct, current arg, std_fd
+// use :    redirects std_fd to fd using dup2 and handles errors
 static int handle_fd(int fd, shell_t *shell, args_t *tmp, int std_fd)
 {
     if (fd == -1) {
@@ -38,7 +49,10 @@ static int handle_fd(int fd, shell_t *shell, args_t *tmp, int std_fd)
     return 0;
 }
 
-static int heredoc(args_t *tmp, int i, shell_t *shell)
+// name :   heredoc
+// args :   current arg, index, shell main struct
+// use :    reads lines until the delimiter is found, pipes input to command
+static int heredoc(args_t *tmp, int index, shell_t *shell)
 {
     int fd[2];
     size_t size = 0;
@@ -49,15 +63,18 @@ static int heredoc(args_t *tmp, int i, shell_t *shell)
     write(STDOUT_FILENO, "? ", 2);
     for (ssize_t read_size = getline(&line, &size, stdin); read_size != -1;
         read_size = getline(&line, &size, stdin))
-        if (end_heredoc(line, i, tmp, fd[1]))
+        if (end_heredoc(line, index, tmp, fd[1]))
             break;
-    free(line);
+    my_free(line);
     close(fd[1]);
     if (handle_fd(fd[0], shell, tmp, STDIN_FILENO))
         return -1;
     return 0;
 }
 
+// name :   redirection
+// args :   current arg, shell main struct
+// use :    handles all redirections before executing a command
 int redirection(args_t *tmp, shell_t *shell)
 {
     int open_flags[3] = {O_RDONLY, O_WRONLY | O_CREAT | O_TRUNC,

@@ -5,8 +5,12 @@
 ** my_unsetenv
 */
 
-#include "my.h"
+#include "shell.h"
+#include "stddef.h"
 
+// name :   delete_node
+// args :   env list, current node, previous node
+// use :    delete given node
 static int delete_node(list_t **head, list_t **tmp,
     list_t **prev)
 {
@@ -25,6 +29,9 @@ static int delete_node(list_t **head, list_t **tmp,
     return 0;
 }
 
+// name :   check_key
+// args :   previous node, current node, list, array
+// use :    compares array's names to the node and delete it if needed
 static int check_key(list_t **prev, list_t **tmp,
     list_t **head, char **array)
 {
@@ -35,6 +42,9 @@ static int check_key(list_t **prev, list_t **tmp,
     return 0;
 }
 
+// name :   my_unsetenv
+// args :   array, shell main struct
+// use :    loops through the env list to delete given nodes
 int my_unsetenv(char **array, shell_t *shell)
 {
     list_t *prev = NULL;

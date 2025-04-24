@@ -5,8 +5,13 @@
 ** my_setenv
 */
 
-#include "my.h"
+#include "shell.h"
+#include <stddef.h>
+#include <stdlib.h>
 
+// name :   init_new_variables
+// args :   array, env list
+// use :    init a new env variable
 static int init_new_variable(char **array, list_t **head)
 {
     list_t *new = malloc(sizeof(list_t));
@@ -16,7 +21,7 @@ static int init_new_variable(char **array, list_t **head)
         return 0;
     new->key = my_strdup(array[1]);
     if (!new->key) {
-        free(new);
+        my_free(new);
         return 0;
     }
     new->value = my_strdup(array[2]);
@@ -30,6 +35,9 @@ static int init_new_variable(char **array, list_t **head)
     return 0;
 }
 
+// name :   invalid_name
+// args :   string
+// use :    check if the name is correct according to the env standards
 static int invalid_name(char *str)
 {
     if ((str[0] > 'z' || str[0] < 'a') && (str[0] < 'A' ||
@@ -48,6 +56,9 @@ static int invalid_name(char *str)
     return 0;
 }
 
+// name :   replace
+// args :   env list, array
+// use :    replace the env value if the variable already exists
 static int replace(list_t **head, char **array)
 {
     int count = 0;
@@ -61,6 +72,9 @@ static int replace(list_t **head, char **array)
     return count;
 }
 
+// name :   setenv_error
+// args :   array, shell main struct
+// use :    setenv error_handling
 static int setenv_error(char **array, shell_t *shell)
 {
     int len = array_len((const void **) array);
@@ -77,8 +91,10 @@ static int setenv_error(char **array, shell_t *shell)
     return 1;
 }
 
+// name :   my_setenv
+// args :   array, shell main struct
+// use :    replace existing nodes, check the name of the variable and init it
 int my_setenv(char **array, shell_t *shell)
-
 {
     int len = array_len((const void **) array);
 

@@ -5,8 +5,12 @@
 ** redirect
 */
 
-#include "my.h"
+#include "shell.h"
+#include <stddef.h>
 
+// name :   redirect_file
+// args :   address of index, shell main struct, current arg, array
+// use :    set the redirection file in the current command and handle errors
 static int redirect_file(int *i, shell_t *shell, args_t **cur, char **array)
 {
     if (!array[*i + 1]) {
@@ -23,6 +27,9 @@ static int redirect_file(int *i, shell_t *shell, args_t **cur, char **array)
     return 2;
 }
 
+// name :   empty_cmd_list
+// args :   current arg, shell main struct, array
+// use :    initialize command list if it’s empty
 static int empty_cmd_list(args_t **cur, shell_t *shell, char **cmd)
 {
     if (!shell->args) {
@@ -36,6 +43,9 @@ static int empty_cmd_list(args_t **cur, shell_t *shell, char **cmd)
     return 0;
 }
 
+// name :   set_redirection_file
+// args :   array, shell main struct, current arg, address of index
+// use :    handle redirection tokens and update redirection info in arg
 int set_redirection_file(char **array, shell_t *shell, args_t **cur, int *i)
 {
     char *operators[] = {"<", ">", ">>", "<<"};

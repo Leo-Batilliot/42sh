@@ -4,8 +4,13 @@
 ** File description:
 ** input
 */
-#include "line_edition.h"
 
+#include "line_edition.h"
+#include <unistd.h>
+
+// name :   move_cursor
+// args :   termios main struct, option
+// use :    move the cursor position according to input
 static int move_cursor(termios_t *termios, int option)
 {
     if (termios->pos < my_strlen(termios->line) && option)
@@ -15,6 +20,9 @@ static int move_cursor(termios_t *termios, int option)
     return 0;
 }
 
+// name :   move_string
+// args :   string, start, end, option
+// use :    move characters from string[start] to string[end], by option
 static int move_string(char *string, int start, int end, int option)
 {
     if (start == end)
@@ -26,6 +34,9 @@ static int move_string(char *string, int start, int end, int option)
     return 0;
 }
 
+// name :   delete_character
+// args :   termios, option
+// use :    delete a character (left or right of pos) from the line
 static int delete_character(termios_t *termios, int option)
 {
     int len = my_strlen(termios->line);
@@ -44,6 +55,9 @@ static int delete_character(termios_t *termios, int option)
     return 0;
 }
 
+// name :   add_character
+// args :   termios main struct
+// use :    add a character to the line at the pos index
 static int add_character(termios_t *termios)
 {
     int len = my_strlen(termios->line);
@@ -57,6 +71,9 @@ static int add_character(termios_t *termios)
     return 0;
 }
 
+// name :   special_input
+// args :   termios main struct
+// use :    handle special input sequences (arrows, delete, etc...)
 static int special_input(termios_t *termios)
 {
     char code[3];
@@ -78,6 +95,9 @@ static int special_input(termios_t *termios)
     return 0;
 }
 
+// name :   empty_string
+// args :   string, max index
+// use :    check if from 0 to max index a string only contains spaces and tabs
 static int empty_string(char *str, int max_index)
 {
     for (int i = 0; i < max_index; i++) {
@@ -89,6 +109,9 @@ static int empty_string(char *str, int max_index)
     return 1;
 }
 
+// name :   handle_input
+// args :   termios main struct
+// use :    handle inputs during the main termios loop
 int handle_input(termios_t *termios)
 {
     if (termios->input == '\n' || termios->input == '\r') {

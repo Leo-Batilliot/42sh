@@ -5,8 +5,13 @@
 ** my_list_to_array
 */
 
-#include "my.h"
+#include "shell.h"
+#include <stddef.h>
+#include <stdlib.h>
 
+// name :   list_len
+// args :   list
+// use :    return the lenght of a list
 int list_len(list_t *head)
 {
     int count = 0;
@@ -16,6 +21,9 @@ int list_len(list_t *head)
     return count;
 }
 
+// name :   fill_array
+// args :   env list, array
+// use :    fill an array using the env list
 static int fill_array(list_t *head, char **array)
 {
     int len = 0;
@@ -36,6 +44,9 @@ static int fill_array(list_t *head, char **array)
     return 0;
 }
 
+// name :   list_to_array
+// args :   env list
+// use :    create an array using the env list
 char **list_to_array(list_t *head)
 {
     char **array = NULL;

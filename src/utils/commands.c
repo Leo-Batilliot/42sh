@@ -5,8 +5,14 @@
 ** my_gest_commands
 */
 
-#include "my.h"
+#include "shell.h"
+#include <stdlib.h>
+#include <stddef.h>
+#include <unistd.h>
 
+// name :   access_with_path
+// args :   input str, result str, path array, index
+// use :    try to access command with the path variables
 static int access_with_path(char *input, char **res, char **array, int i)
 {
     *res = malloc(sizeof(char) * my_strlen(array[i]) + my_strlen(input) + 2);
@@ -22,7 +28,10 @@ static int access_with_path(char *input, char **res, char **array, int i)
     return 0;
 }
 
-static int access_with_pwd(char *pwd, char *input, char **res)
+// name :   access_with_pwd
+// args :   input str, result str, pwd
+// use :    try to access command with the pwd variable
+static int access_with_pwd(char *input, char **res, char *pwd)
 {
     *res = malloc(sizeof(char) * (my_strlen(input) + my_strlen(pwd) + 2));
     if (!*res)
@@ -35,6 +44,9 @@ static int access_with_pwd(char *pwd, char *input, char **res)
     return 0;
 }
 
+// name :   try_to_access
+// args :   input str, pwd str, path str
+// use :    try to acccess the input command using pwd and path variables
 static char *try_to_access(char *input, char *pwd, char *path)
 {
     char *res = NULL;
@@ -51,12 +63,15 @@ static char *try_to_access(char *input, char *pwd, char *path)
     free_array((void **)array);
     if (!pwd || pwd[0] == '\0')
         return NULL;
-    if (access_with_pwd(pwd, input, &res))
+    if (access_with_pwd(input, &res, pwd))
         return res;
     my_free(res);
     return NULL;
 }
 
+// name :   get_path
+// args :   input str, path str, pwd str
+// use :    return the path to the input cmd or NULL
 static char *get_path(char *input, char *path, char *pwd)
 {
     if (!path || path[0] == '\0')
@@ -66,6 +81,9 @@ static char *get_path(char *input, char *path, char *pwd)
     return try_to_access(input, pwd, path);
 }
 
+// name :   udpate_execute
+// args :   adress of can execute, shell main struct, argument
+// use :    determine if the cmd can be executed depending on logic operators
 static int update_execute(int *can_execute, shell_t *shell, args_t *tmp)
 {
     if ((*can_execute) == 1) {
@@ -85,12 +103,15 @@ static int update_execute(int *can_execute, shell_t *shell, args_t *tmp)
     return 0;
 }
 
+// name :   get_command_path
+// args :   array, shell main struct, adress of execute, argument
+// use :    verify if the command can be executed and build its path
 static int get_command_path(char **array, shell_t *shell,
     int *can_execute, args_t *tmp)
 {
     if (update_execute(can_execute, shell, tmp))
         return -1;
-    if (!array[0] || handle_color_command(array, shell))
+    if (!array[0])
         return -1;
     if (!is_builtin(array)) {
         if (shell->path)
@@ -108,6 +129,9 @@ static int get_command_path(char **array, shell_t *shell,
     return 0;
 }
 
+// name :   execute_command_list
+// args :   shell main struct
+// use :    build cmd paths and execute them
 int execute_command_list(shell_t *shell)
 {
     int can_execute = 0;

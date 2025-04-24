@@ -5,27 +5,32 @@
 ** my_cd
 */
 
-#include "my.h"
+#include "shell.h"
+#include <stddef.h>
+#include <errno.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
-static int compare_and_replace(char *name, char *value, list_t **tmp)
-{
-    if (!my_strcmp((*tmp)->key, name)) {
-        free((*tmp)->value);
-        (*tmp)->value = my_strdup(value);
-        return 1;
-    }
-    return 0;
-}
-
+// name :   update_value
+// args :   env list, name, value
+// use :    parse the env list to find the node and replace its value if found
 static int update_value(list_t **head, char *name, char *value)
 {
-    for (list_t *tmp = *head; tmp; tmp = tmp->next)
-        if (compare_and_replace(name, value, &tmp))
+    for (list_t *tmp = *head; tmp; tmp = tmp->next) {
+        if (!my_strcmp((tmp)->key, name)) {
+            my_free((tmp)->value);
+            (tmp)->value = my_strdup(value);
             return 0;
+        }
+    }
     return 1;
 }
 
-int home_path(list_t **head, char **path,
+// name :   home_path
+// args :   env list, adress of path, string, adress of to_free value
+// use :    create the cd path if it contains a '~' (home)
+static int home_path(list_t **head, char **path,
     char *str, int *to_free)
 {
     char *home = get_env_value("HOME", (*head));
@@ -41,6 +46,9 @@ int home_path(list_t **head, char **path,
     return 0;
 }
 
+// name :   get_path
+// args :   adress of to_free value, env list, string
+// use :    computes the path contained in the string
 static char *get_path(int *to_free, list_t **head, char *str)
 {
     char *path = NULL;
@@ -57,6 +65,9 @@ static char *get_path(int *to_free, list_t **head, char *str)
     return path;
 }
 
+// name :   invalid_path
+// args :   path, string, shell
+// use :    check if the built path is a correct path for cd, print errors
 static int invalid_path(char *path, char *str, shell_t *shell)
 {
     if (!path)
@@ -69,7 +80,10 @@ static int invalid_path(char *path, char *str, shell_t *shell)
     return 0;
 }
 
-int change_directory(char *str, shell_t *shell)
+// name :   change_directory
+// args :   string, shell main struct
+// use :    build the path and try to access it, replace old pwd
+static int change_directory(char *str, shell_t *shell)
 {
     char *path = NULL;
     char newpwd[256];
@@ -82,14 +96,17 @@ int change_directory(char *str, shell_t *shell)
     if (invalid_path(path, str, shell))
         return str != path ? my_free(path) + 1 : 1;
     if (to_free)
-        free(path);
+        my_free(path);
     if (!getcwd(newpwd, 256))
         return 1;
     update_value(&(shell->env), "PWD", newpwd);
     return 2;
 }
 
-int previous_path(shell_t *shell)
+// name :   previous_path
+// args :   shell main struct
+// use :    reverse current and old pwd in case of "cd -"
+static int previous_path(shell_t *shell)
 {
     char *save_old = getcwd(NULL, 0);
     char newpwd[256] = {0};
@@ -104,12 +121,15 @@ int previous_path(shell_t *shell)
     if (!getcwd(newpwd, sizeof(char) * 256))
         return 1;
     if (shell->previous_pwd)
-        free(shell->previous_pwd);
+        my_free(shell->previous_pwd);
     shell->previous_pwd = save_old;
     update_value(&(shell->env), "PWD", newpwd);
     return 2;
 }
 
+// name :   my_cd
+// args :   array, shell main struct
+// use :    call change_directory/previous depending on the given array
 int my_cd(char **array, shell_t *shell)
 {
     if (array_len((const void **) array) >= 3) {

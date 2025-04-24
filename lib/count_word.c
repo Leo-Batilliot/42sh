@@ -5,7 +5,8 @@
 ** functions_delim
 */
 
-#include "my.h"
+#include "shell.h"
+#include <stddef.h>
 
 static const char *array[] = {"<", ">", "|", "&", NULL};
 
@@ -23,8 +24,8 @@ static int is_array(const char *str)
     int len = 0;
 
     for (int i = 0; array[i]; i++) {
-        len = strlen(array[i]);
-        if (strncmp(str, array[i], len) == 0)
+        len = my_strlen(array[i]);
+        if (!my_strncmp(str, array[i], len))
             return get_pos(len, str);
     }
     return 0;

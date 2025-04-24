@@ -4,8 +4,14 @@
 ** File description:
 ** files
 */
-#include "my.h"
 
+#include "shell.h"
+#include <unistd.h>
+#include <sys/stat.h>
+
+// name :   create_directory
+// args :   directory name
+// use :    S.E
 static int create_directory(char *directory)
 {
     struct stat st = {0};
@@ -19,6 +25,9 @@ static int create_directory(char *directory)
     return 0;
 }
 
+// name :   load_file
+// args :   shell main struct
+// use :    create assets directory if it doesnt exist and load history-alias
 int load_file(shell_t *shell)
 {
     create_directory("assets");
@@ -29,6 +38,9 @@ int load_file(shell_t *shell)
     return 0;
 }
 
+// name :   save_file
+// args :   shell main struct
+// use :    save alias and history in files
 int save_file(shell_t *shell)
 {
     if (isatty(0) == 1) {

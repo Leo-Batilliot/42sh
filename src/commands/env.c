@@ -5,19 +5,26 @@
 ** my_env
 */
 
-#include "my.h"
+#include "shell.h"
+#include <unistd.h>
 
+// name :   print_env
+// args :   env list
+// use :    S.E
 void print_env(list_t *head)
 {
     for (list_t *tmp = head; tmp; tmp = tmp->next) {
-        write(1, tmp->key, strlen(tmp->key));
+        write(1, tmp->key, my_strlen(tmp->key));
         write(1, "=", 1);
         if (tmp->value)
-            write(1, tmp->value, strlen(tmp->value));
+            write(1, tmp->value, my_strlen(tmp->value));
         write(1, "\n", 1);
     }
 }
 
+// name :   my_env
+// args :   array, shell main struct
+// use :    builtin: handle errors and print the env
 int my_env(char **array, shell_t *shell)
 {
     if (array[1]) {

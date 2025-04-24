@@ -5,8 +5,18 @@
 ** my_gest_exec
 */
 
-#include "my.h"
+#include "shell.h"
+#include <unistd.h>
+#include <stddef.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <sys/stat.h>
+#include <sys/wait.h>
+#include <string.h>
 
+// name :   print_signal
+// args :   shell main struct
+// use :    S.E
 static void print_signal(shell_t *shell, int *status)
 {
     int term_signal = WTERMSIG(*status);
@@ -18,6 +28,9 @@ static void print_signal(shell_t *shell, int *status)
     shell->last_exit = 128 + term_signal;
 }
 
+// name :   signal_error
+// args :   pid, shell main struct, fd, arg
+// use :    handle signal errors
 int signal_error(pid_t pid, shell_t *shell,
     int pipe_fd[2], args_t *tmp)
 {
@@ -41,6 +54,9 @@ int signal_error(pid_t pid, shell_t *shell,
     return 0;
 }
 
+// name :   try_to_access
+// args :   command, shell main struct
+// use :    S.E
 static int try_to_acces(char *path, shell_t *shell)
 {
     struct stat file_stat;
@@ -63,6 +79,9 @@ static int try_to_acces(char *path, shell_t *shell)
     return 0;
 }
 
+// name :   child
+// args :   shell main struct, array, arg, fd
+// use :    handle redirection and execute command
 static int child(shell_t *shell, char **array,
     args_t *tmp, int pipe_fd[2])
 {
@@ -87,6 +106,9 @@ static int child(shell_t *shell, char **array,
     return 0;
 }
 
+// name :   execute
+// args :   shell main struct, array, arg, fd
+// use :    fork and handle error in case of pid != 0
 static int execute(shell_t *shell, char **array,
     args_t *tmp, int pipefd[2])
 {
@@ -101,8 +123,10 @@ static int execute(shell_t *shell, char **array,
     return 0;
 }
 
-int execute_cmd(shell_t *shell,
-    args_t *tmp)
+// name :   execute_cmd
+// args :   shell main struct, arg
+// use :    execute given command (check for builtins, redirections, access...)
+int execute_cmd(shell_t *shell, args_t *tmp)
 {
     int pipefd[2] = {0};
     int res = 0;

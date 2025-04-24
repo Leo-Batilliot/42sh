@@ -4,14 +4,20 @@
 ** File description:
 ** init
 */
-#include "my.h"
 
+#include "shell.h"
+#include <stddef.h>
+#include <stdlib.h>
+
+// name :   get_count
+// args :   arg, array
+// use :    count redirection and allocate redirect structures for it
 static int get_count(args_t *new, char **array)
 {
     for (int i = 0; array[i]; i++) {
         if (!my_strcmp(";", array[i])
             || !my_strcmp("|", array[i])
-            || !(strcmp("&&", array[i])))
+            || !(my_strcmp("&&", array[i])))
             break;
         if (!my_strcmp("<", array[i])
             || !my_strcmp(">", array[i])
@@ -27,6 +33,9 @@ static int get_count(args_t *new, char **array)
     return 0;
 }
 
+// name :   count_args_until_sep
+// args :   array
+// use :    count the number of elements before a seperator in the array
 static int count_args_until_sep(char **array)
 {
     int count = 0;
@@ -40,6 +49,9 @@ static int count_args_until_sep(char **array)
     return count;
 }
 
+// name :   init_cmd
+// args :   array
+// use :    S.E
 args_t *init_cmd(char **array)
 {
     args_t *new = NULL;
@@ -63,30 +75,33 @@ args_t *init_cmd(char **array)
     return new;
 }
 
-static list_t *add_to_list(
-    list_t *head, list_t *node)
+// name :   add_to_list
+// args :   list head, node
+// use :    add node to the end of list
+static list_t *add_to_list(list_t *head, list_t *node)
 {
     list_t *cur = NULL;
 
     if (!head) {
         head = node;
     } else {
-        cur = head;
-        while (cur->next)
-            cur = cur->next;
+        for (cur = head; cur->next; cur = cur->next);
         cur->next = node;
     }
     return head;
 }
 
-static list_t *init_node(char *ope, char **env, int i)
+// name :   init_node
+// args :   value, env array, index
+// use :    init a new env variable using the env array
+static list_t *init_node(char *value, char **env, int i)
 {
     list_t *node = malloc(sizeof(list_t));
 
     if (!node)
         return NULL;
     node->key = my_strdup(env[i]);
-    node->value = my_strdup(ope + 1);
+    node->value = my_strdup(value + 1);
     if (!node->key || !node->value) {
         my_free(node->value);
         my_free(node->key);
@@ -97,26 +112,32 @@ static list_t *init_node(char *ope, char **env, int i)
     return node;
 }
 
+// name :   my_parse_env
+// args :   env array
+// use : parse the env array and init a linked list with it
 static list_t *my_parse_env(char **env)
 {
-    char *ope = NULL;
+    char *value = NULL;
     list_t *head = NULL;
     list_t *node = NULL;
 
     for (int i = 0; env[i]; i++) {
-        ope = my_strchr(env[i], '=');
-        if (!ope)
+        value = my_strchr(env[i], '=');
+        if (!value)
             return NULL;
-        *ope = '\0';
-        node = init_node(ope, env, i);
+        *value = '\0';
+        node = init_node(value, env, i);
         if (!node)
             return NULL;
-        *ope = '=';
+        *value = '=';
         head = add_to_list(head, node);
     }
     return head;
 }
 
+// name :   init_shell_values
+// args :   main shell struct, env array
+// use :    S.E
 static void *init_shell_values(shell_t *shell, char **env)
 {
     shell->path = NULL;
@@ -134,6 +155,9 @@ static void *init_shell_values(shell_t *shell, char **env)
     return shell;
 }
 
+// name :   init_shell
+// args :   env array
+// use :    S.E
 shell_t *init_shell(char **env)
 {
     shell_t *shell = malloc(sizeof(shell_t));
@@ -147,6 +171,9 @@ shell_t *init_shell(char **env)
     return shell;
 }
 
+// name :   init_env
+// args :   env array
+// use :    use the env copy to create an env linked list
 list_t *init_env(char **env_cpy)
 {
     list_t *head = NULL;

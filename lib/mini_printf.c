@@ -4,15 +4,22 @@
 ** File description:
 ** mini print f
 */
-#include "my.h"
-#include <stdio.h>
+
+#include "shell.h"
+#include <unistd.h>
 #include <stdarg.h>
 
+// name :   my_putchar
+// args :   output number, character to print
+// use :    print a character in the output specified
 void my_putchar(int output, char c)
 {
     write(output, &c, 1);
 }
 
+// name :   my_put_nbr
+// args :   output number, number to print
+// use :    print a number in the output specified
 void my_put_nbr(int output, long nb)
 {
     char res;
@@ -28,6 +35,9 @@ void my_put_nbr(int output, long nb)
     my_putchar(output, res);
 }
 
+// name :   my_putstr
+// args :   output number, string to print
+// use :    print a string in the output specified
 void putstr(int output, char *str)
 {
     if (!str)
@@ -35,6 +45,9 @@ void putstr(int output, char *str)
     write(output, str, my_strlen(str));
 }
 
+// name :   process_format
+// args :   output number, type, list of arguments
+// use :    parse the type and calls the relevant function to print
 void process_format(int output, char specifier, va_list ap)
 {
     switch (specifier) {
@@ -58,6 +71,9 @@ void process_format(int output, char specifier, va_list ap)
     }
 }
 
+// name :   mini_printf
+// args :   output number, char *format string, va list of arguments
+// use :    parse the format string and calls process format when a % is found
 int mini_printf(int output, char *format, ...)
 {
     va_list ap;
