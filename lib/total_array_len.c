@@ -4,8 +4,12 @@
 ** File description:
 ** total_array_len
 */
-#include "my.h"
 
+#include "shell.h"
+
+// name :   total_array_len
+// args :   an array
+// use :    return the total length of every cell of the given array
 int total_array_len(const char **array)
 {
     int res = 0;

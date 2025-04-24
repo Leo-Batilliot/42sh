@@ -5,6 +5,9 @@
 ** count number of strings
 */
 
+// name :   my_strlen
+// args :   a string
+// use :    return the lenght of the given string (nbr of characters before \0)
 int my_strlen(char const *str)
 {
     int count = 0;

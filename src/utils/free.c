@@ -4,8 +4,14 @@
 ** File description:
 ** free
 */
-#include "my.h"
 
+#include "shell.h"
+#include <stddef.h>
+#include <stdlib.h>
+
+// name :   free_redir
+// args :   redirection struct, nb of files
+// use :    S.E
 static int free_redir(redirect_t *redirect, int count)
 {
     for (int i = 0; i < count; i++) {
@@ -15,7 +21,10 @@ static int free_redir(redirect_t *redirect, int count)
     return my_free(redirect);
 }
 
-int free_list(list_t *head)
+// name :   free_list
+// args :   list
+// use :    S.E
+static int free_list(list_t *head)
 {
     if (!head)
         return 0;
@@ -30,6 +39,9 @@ int free_list(list_t *head)
     return 0;
 }
 
+// name :   free_args_list
+// args :   args list
+// use :    S.E
 int free_args_list(args_t *list)
 {
     args_t *next = NULL;
@@ -47,16 +59,22 @@ int free_args_list(args_t *list)
     return 0;
 }
 
+// name :   free_alias
+// args :   alias list
+// use :    S.E
 static void free_alias(alias_t *alias)
 {
     for (alias_t *next = NULL; alias; alias = next) {
         next = alias->next;
         free_array((void **)alias->cmd);
-        free(alias->name);
-        free(alias);
+        my_free(alias->name);
+        my_free(alias);
     }
 }
 
+// name :   free_shell_lists
+// args :   shell main struct
+// use :    S.E
 static void free_shell_lists(shell_t *shell)
 {
     if (shell->args)
@@ -69,6 +87,9 @@ static void free_shell_lists(shell_t *shell)
         free_history(shell);
 }
 
+// name :   free_shell
+// args :   shell main struct
+// use :    S.E
 static int free_shell(shell_t *shell)
 {
     int res = shell->last_exit;
@@ -88,6 +109,9 @@ static int free_shell(shell_t *shell)
     return res;
 }
 
+// name :   free_and_exit
+// args :   shell main struct, exit value
+// use :    S.E
 void free_and_exit(shell_t *shell, int value)
 {
     save_file(shell);

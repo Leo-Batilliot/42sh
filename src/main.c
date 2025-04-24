@@ -4,8 +4,15 @@
 ** File description:
 ** main
 */
-#include "my.h"
 
+#include "shell.h"
+#include <stddef.h>
+#include <unistd.h>
+#include <stdio.h>
+
+// name :   line
+// args :   shell main struct
+// use :    use getline or termios to get the line info depending on isatty(0)
 static int line(shell_t *shell)
 {
     size_t size;
@@ -18,6 +25,9 @@ static int line(shell_t *shell)
     return 0;
 }
 
+// name :   main_loop
+// args :   shell main struct
+// use :    get line input from user, parse it, execute the commands
 int main_loop(shell_t *shell)
 {
     while (1) {
@@ -34,6 +44,9 @@ int main_loop(shell_t *shell)
     return 0;
 }
 
+// name :   main
+// args :   arguments count, arguments value, env
+// use :    init the shell, env, and assets before starting the main loop
 int main(int ac, char **av, char **env)
 {
     shell_t *shell = NULL;

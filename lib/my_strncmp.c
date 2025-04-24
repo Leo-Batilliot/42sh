@@ -4,8 +4,12 @@
 ** File description:
 ** my_strncmp
 */
-#include "my.h"
 
+#include "shell.h"
+
+// name :   my_strncmp
+// args :   string 1, string 2, lenght to compare
+// use :    my_strcmp but ends the comparison after the N'th character
 int my_strncmp(const char *str1, const char *str2, int n)
 {
     if (!str1 || !str2 || my_strlen(str1) < n || my_strlen(str2) < n)

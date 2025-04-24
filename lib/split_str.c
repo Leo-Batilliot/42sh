@@ -5,7 +5,7 @@
 ** my_str_to_word_array
 */
 
-#include "my.h"
+#include "shell.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>

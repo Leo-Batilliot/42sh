@@ -5,8 +5,13 @@
 ** load_functions
 */
 
-#include "my.h"
+#include "shell.h"
+#include <stddef.h>
+#include <stdio.h>
 
+// name :   load_alias
+// args :   shell main struct
+// use :    S.E
 int load_alias(shell_t *shell)
 {
     FILE *fd = fopen("assets/alias.txt", "r");
@@ -19,18 +24,21 @@ int load_alias(shell_t *shell)
         return 0;
     }
     while (getline(&line, &size, fd) != -1) {
-        if (line[strlen(line) - 1] == '\n')
-            line[strlen(line) - 1] = '\0';
+        if (line[my_strlen(line) - 1] == '\n')
+            line[my_strlen(line) - 1] = '\0';
         array = split_str(line, " \t='");
         if (!array)
             continue;
         add_node(shell, array);
         free_array((void **)array);
     }
-    free(line);
+    my_free(line);
     return fclose(fd);
 }
 
+// name :   load_history
+// args :   shell main struct
+// use :    S.E
 int load_history(shell_t *shell)
 {
     FILE *fd = fopen("assets/history.txt", "r");
@@ -41,14 +49,14 @@ int load_history(shell_t *shell)
     if (!fd)
         return 1;
     while (getline(&line, &len, fd) != -1) {
-        if (line[strlen(line) - 1] == '\n')
-            line[strlen(line) - 1] = '\0';
+        if (line[my_strlen(line) - 1] == '\n')
+            line[my_strlen(line) - 1] = '\0';
         array = split_str(line, " ");
         if (!array)
             continue;
         add_node_to_history(shell, array[1], array[2]);
         free_array((void **)array);
     }
-    free(line);
+    my_free(line);
     return fclose(fd);
 }

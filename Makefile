@@ -23,6 +23,8 @@ SRC = 	lib/my_strchr.c 					    \
 		lib/array_len.c 						\
 		lib/mini_printf.c 						\
 		lib/my_strncmp.c 						\
+		lib/str_is_digits.c 					\
+		lib/my_atoi.c 							\
 		src/commands/cd.c	 					\
 		src/commands/env.c 						\
 		src/commands/exit.c 					\
@@ -32,6 +34,7 @@ SRC = 	lib/my_strchr.c 					    \
 		src/commands/clean.c					\
 		src/commands/history.c					\
 		src/commands/alias.c 					\
+		src/commands/colors.c					\
 		src/utils/redirection.c 				\
 		src/utils/commands.c 					\
 		src/utils/exec.c 						\
@@ -45,7 +48,6 @@ SRC = 	lib/my_strchr.c 					    \
 		src/utils/load_assets.c 				\
 		src/utils/utils.c 						\
 		src/utils/files.c 						\
-		src/utils/colors.c						\
 		src/termios/termios_main.c 				\
 		src/termios/history.c 					\
 		src/termios/auto_completion.c 			\

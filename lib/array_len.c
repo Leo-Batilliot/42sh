@@ -4,8 +4,10 @@
 ** File description:
 ** my_array_len
 */
-#include "my.h"
 
+// name :   array_len
+// args :   an array (cast in const void ** if needed)
+// use :    counts the number of cells in an array before NULL
 int array_len(const void **array)
 {
     int res = 0;

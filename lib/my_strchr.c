@@ -7,6 +7,9 @@
 
 #include <stdlib.h>
 
+// name :   my_strchr
+// args :   a string, the character to find
+// use :    when the character is found, return the rest of the string
 char *my_strchr(char *string, int ope)
 {
     for (int i = 0; string[i] != '\0'; i++) {

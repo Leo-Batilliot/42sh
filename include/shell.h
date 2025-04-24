@@ -8,22 +8,7 @@
 #ifndef MY_H_
     #define MY_H_
 
-    #include <stdio.h>
-    #include <stdlib.h>
-    #include <stdio.h>
-    #include <stdlib.h>
-    #include <unistd.h>
-    #include <sys/wait.h>
-    #include <sys/stat.h>
-    #include <string.h>
-    #include <signal.h>
-    #include <errno.h>
     #include <sys/types.h>
-    #include <stdbool.h>
-    #include <time.h>
-    #include <fcntl.h>
-
-    #define ERROR 1
 
 /*--------------------*/
 /* PROJECT STRUCTURES */
@@ -101,7 +86,7 @@ static const color_t colors[] = {
     {"cyan", "\033[0;36m"},
     {"white", "\033[0;37m"},
     {"reset", "\033[0m"},
-    {NULL, NULL}
+    {((void *)0), ((void *)0)}
 };
 
 /*---------------------*/
@@ -130,6 +115,8 @@ int is_separator(const char, char *);
 char *array_to_str(char **);
 int mini_printf(int, char *, ...);
 int my_strncmp(const char *, const char *, int);
+int str_is_digits(const char *);
+int my_atoi(const char *);
 
 /*---------------------*/
 /*   UTILS FUNCTIONS   */
@@ -143,7 +130,6 @@ int load_file(shell_t *);
 list_t *init_env(char **);
 
 /*    FREE    */
-int free_list(list_t *);
 
 /*    OTHERS    */
 char **replace_alias(shell_t *, char **);
@@ -204,7 +190,7 @@ int my_env(char **, shell_t *);
 int my_setenv(char **, shell_t *);
 int my_unsetenv(char **, shell_t *);
 int my_exit(char **, shell_t *);
-int handle_color_command(char **args, shell_t *shell_i);
+int color(char **, shell_t *);
 int clean(char **, shell_t *);
 
 int termios_main(shell_t *shell);

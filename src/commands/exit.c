@@ -5,14 +5,20 @@
 ** my_exit
 */
 
-#include "my.h"
+#include "shell.h"
 
+// name :   my_exit
+// args :   array, shell main struct
+// use :    exit with given status (or 0) and free the main struct
 int my_exit(char **array, shell_t *shell)
 {
     int status_exit = 0;
 
-    if (array[1])
-        status_exit = atoi(array[1]);
+    if (array[1]) {
+        if (!str_is_digits(array[1]))
+            return 1;
+        status_exit = my_atoi(array[1]);
+    }
     free_and_exit(shell, status_exit);
     return 0;
 }

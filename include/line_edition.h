@@ -8,7 +8,7 @@
 #ifndef LINE_EDITION_H_
     #define LINE_EDITION_H_
 
-    #include "my.h"
+    #include "shell.h"
 
     #define SPECIAL 27
     #define CONTROL_SEQUENCE '['

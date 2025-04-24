@@ -4,8 +4,13 @@
 ** File description:
 ** strtrim
 */
-#include "my.h"
 
+#include "shell.h"
+#include "stddef.h"
+
+// name :   strtrim
+// args :   a string
+// use :    return a duplicate cleaned string (no ' ' or '\t' at the start/end)
 char *strtrim(char *str)
 {
     char *start = NULL;
@@ -20,6 +25,6 @@ char *strtrim(char *str)
     for (; start[my_strlen(start) - 1] == ' ' || start[my_strlen(start) - 1] ==
         '\t'; start[my_strlen(start) - 1] = '\0');
     start = my_strdup(start);
-    free(str);
+    my_free(str);
     return start;
 }

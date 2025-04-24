@@ -5,10 +5,13 @@
 ** my_strdup
 */
 
-#include "my.h"
+#include "shell.h"
 #include <stddef.h>
 #include <stdlib.h>
 
+// name :   my_strdup
+// args :   source string
+// use :    return a duplicate of the source string
 char *my_strdup(char const *src)
 {
     int i = 0;
