@@ -13,6 +13,7 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <string.h>
+#include <glob.h>
 
 // name :   print_signal
 // args :   shell main struct
@@ -57,7 +58,7 @@ int signal_error(pid_t pid, shell_t *shell,
 // name :   try_to_access
 // args :   command, shell main struct
 // use :    S.E
-static int try_to_acces(char *path, shell_t *shell)
+static int try_to_access(char *path, shell_t *shell)
 {
     struct stat file_stat;
 
@@ -123,11 +124,81 @@ static int execute(shell_t *shell, char **array,
     return 0;
 }
 
+// name :   fill_globbed_values
+// args :   argument string, new arguments array, current index
+// use :    fill the new arguments array with values from globbing
+static int fill_globbed_values(char *arg, char **new_args, int j)
+{
+    glob_t globbuf;
+
+    glob(arg, GLOB_NOCHECK, NULL, &globbuf);
+    for (int i = 0; i < (int)globbuf.gl_pathc; i++) {
+        new_args[j] = strdup(globbuf.gl_pathv[i]);
+        j++;
+    }
+    globfree(&globbuf);
+    return j;
+}
+
+// name :   fill_glob_args
+// args :   arg, new arguments array
+// use :    fill the new arguments array with globbed values
+static void fill_glob_args(args_t *tmp, char **new_args)
+{
+    int j = 0;
+
+    for (int i = 0; tmp->args[i]; i++) {
+        if (strstr(tmp->args[i], "*") || strstr(tmp->args[i], "?")) {
+            j = fill_globbed_values(tmp->args[i], new_args, j);
+        } else {
+            new_args[j] = strdup(tmp->args[i]);
+            j++;
+        }
+    }
+    new_args[j] = NULL;
+}
+
+// name :   count_glob_matches
+// args :   arg
+// use :    count the number of arguments after globbing
+static int count_glob_matches(args_t *tmp)
+{
+    glob_t globbuf;
+    int new_args_count = 0;
+
+    for (int i = 0; tmp->args[i]; i++) {
+        if (strstr(tmp->args[i], "*") || strstr(tmp->args[i], "?")) {
+            glob(tmp->args[i], GLOB_NOCHECK, NULL, &globbuf);
+            new_args_count += globbuf.gl_pathc;
+            globfree(&globbuf);
+        } else {
+            new_args_count++;
+        }
+    }
+    return new_args_count;
+}
+
+// name :   globbing
+// args :   arg
+// use :    expand wildcard characters in arguments
+static char **globbing(args_t *tmp)
+{
+    int new_args_count = count_glob_matches(tmp);
+    char **new_args = malloc((new_args_count + 1) * sizeof(char *));
+
+    if (!new_args) {
+        return NULL;
+    }
+    fill_glob_args(tmp, new_args);
+    return new_args;
+}
+
 // name :   execute_cmd
 // args :   shell main struct, arg
 // use :    execute given command (check for builtins, redirections, access...)
 int execute_cmd(shell_t *shell, args_t *tmp)
 {
+    char **globbings_args = tmp->args;
     int pipefd[2] = {0};
     int res = 0;
 
@@ -135,11 +206,14 @@ int execute_cmd(shell_t *shell, args_t *tmp)
         return builtin(shell, tmp, NULL);
     if (res != 0 || (is_builtin(tmp->args) == 1 && tmp->is_pipe == 0))
         return res;
-    if (tmp->is_pipe && pipe(pipefd) == - 1)
+    if (tmp->is_pipe && pipe(pipefd) == -1)
         return 1;
     if (pipe_builtin(shell, tmp, pipefd) == 1)
         return 0;
-    if (try_to_acces(shell->path, shell) == -1)
+    if (try_to_access(shell->path, shell) == -1)
         return 1;
-    return execute(shell, tmp->args, tmp, pipefd);
+    globbings_args = globbing(tmp);
+    res = execute(shell, globbings_args, tmp, pipefd);
+    free_array((void **)globbings_args);
+    return res;
 }
