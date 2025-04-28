@@ -28,6 +28,10 @@ static void print_arg(char *arg, shell_t *shell)
     char *var_name = NULL;
 
     if (arg[0] == '$') {
+        if (arg[1] == '?') {
+            mini_printf(1, "%d", shell->last_exit);
+            return;
+        }
         var_name = arg + 1;
         value = get_local_var(var_name, shell);
         if (value)
