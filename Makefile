@@ -66,7 +66,7 @@ RESET=\033[0m
 
 # VARIABLES
 OBJ = $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRC))
-FLAGS = -Wextra -Wall -W -Werror -I include -g
+FLAGS = -Wextra -Wall -W -Werror -I include
 CC = gcc
 NAME = 42sh
 
@@ -110,3 +110,6 @@ re: fclean all
 
 tests_run:
 	@echo -e "$(WHITE)$(BOLD)\t[TESTS...]$(RESET)"
+
+debug: FLAGS += -g
+debug: re
