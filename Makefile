@@ -39,6 +39,7 @@ SRC = 	lib/my_strchr.c 					    \
 		src/commands/echo.c						\
 		src/utils/redirection.c 				\
 		src/utils/commands.c 					\
+		src/utils/globbins.c					\
 		src/utils/exec.c 						\
 		src/utils/my_list_to_array.c 			\
 		src/utils/parsing.c 					\
@@ -111,3 +112,6 @@ re: fclean all
 
 tests_run:
 	@echo -e "$(WHITE)$(BOLD)\t[TESTS...]$(RESET)"
+
+debug: FLAGS += -g
+debug: re

@@ -57,7 +57,7 @@ int signal_error(pid_t pid, shell_t *shell,
 // name :   try_to_access
 // args :   command, shell main struct
 // use :    S.E
-static int try_to_acces(char *path, shell_t *shell)
+static int try_to_access(char *path, shell_t *shell)
 {
     struct stat file_stat;
 
@@ -128,6 +128,7 @@ static int execute(shell_t *shell, char **array,
 // use :    execute given command (check for builtins, redirections, access...)
 int execute_cmd(shell_t *shell, args_t *tmp)
 {
+    char **new_args = tmp->args;
     int pipefd[2] = {0};
     int res = 0;
 
@@ -135,11 +136,16 @@ int execute_cmd(shell_t *shell, args_t *tmp)
         return builtin(shell, tmp, NULL);
     if (res != 0 || (is_builtin(tmp->args) == 1 && tmp->is_pipe == 0))
         return res;
-    if (tmp->is_pipe && pipe(pipefd) == - 1)
+    if (tmp->is_pipe && pipe(pipefd) == -1)
         return 1;
     if (pipe_builtin(shell, tmp, pipefd) == 1)
         return 0;
-    if (try_to_acces(shell->path, shell) == -1)
+    if (try_to_access(shell->path, shell) == -1)
         return 1;
-    return execute(shell, tmp->args, tmp, pipefd);
+    new_args = globbing(tmp);
+    if (!new_args)
+        return res;
+    res = execute(shell, new_args, tmp, pipefd);
+    free_array((void **)new_args);
+    return res;
 }
