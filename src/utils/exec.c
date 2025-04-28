@@ -184,11 +184,10 @@ static int count_glob_matches(args_t *tmp)
 static char **globbing(args_t *tmp)
 {
     int new_args_count = count_glob_matches(tmp);
-    char **new_args = malloc((new_args_count + 1) * sizeof(char *));
+    char **new_args = malloc(sizeof(char *) * (new_args_count + 1));
 
-    if (!new_args) {
+    if (!new_args)
         return NULL;
-    }
     fill_glob_args(tmp, new_args);
     return new_args;
 }
