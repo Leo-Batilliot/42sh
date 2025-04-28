@@ -29,6 +29,9 @@ static int fill_globbed_values(char *arg, char **new_args, int j)
     return j;
 }
 
+// name :   fill_glob_args
+// args :   arg, new args, j, i
+// use :    fill the new arguments array with globbed values
 static int fill_glob_args(args_t *tmp, char **new_args, int *j, int i)
 {
     if (strstr(tmp->args[i], "*") || strstr(tmp->args[i], "?")) {
@@ -44,9 +47,9 @@ static int fill_glob_args(args_t *tmp, char **new_args, int *j, int i)
     return 0;
 }
 
-// name :   fill_glob_args
-// args :   arg, new arguments array
-// use :    fill the new arguments array with globbed values
+// name :   set_new_args
+// args :   arg, new args
+// use :    loop to fill the new arguments array globbed values
 static int set_new_args(args_t *tmp, char **new_args)
 {
     int j = 0;
