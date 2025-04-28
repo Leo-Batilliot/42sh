@@ -59,6 +59,7 @@ typedef struct {
     int index_parse;
     alias_t *alias;
     list_t *env;
+    list_t *local_vars;
     history_t *history;
     args_t *args;
     char *prompt_color;
@@ -192,6 +193,9 @@ int my_unsetenv(char **, shell_t *);
 int my_exit(char **, shell_t *);
 int color(char **, shell_t *);
 int clean(char **, shell_t *);
+int unset(char **args, shell_t *shell);
+int set(char **args, shell_t *shell);
+int my_echo(char **args, shell_t *shell);
 
 int termios_main(shell_t *shell);
 

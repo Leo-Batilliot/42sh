@@ -9,6 +9,7 @@
 #include <stddef.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <string.h>
 
 // name :   builtins
 // args :   N.A
@@ -23,6 +24,9 @@ const builtin_t builtins[] = {
     {"alias", alias},
     {"clean", clean},
     {"color", color},
+    {"set", set},
+    {"unset", unset},
+    {"echo", my_echo},
     {NULL, NULL}
 };
 
@@ -39,7 +43,10 @@ int is_builtin(char **cmds)
         || !my_strcmp(cmds[0], "alias")
         || !my_strcmp(cmds[0], "history")
         || !my_strcmp(cmds[0], "clean")
-        || !my_strcmp(cmds[0], "color"))
+        || !my_strcmp(cmds[0], "color")
+        || !my_strcmp(cmds[0], "set")
+        || !my_strcmp(cmds[0], "unset")
+        || !my_strcmp(cmds[0], "echo"))
         return 1;
     return 0;
 }
