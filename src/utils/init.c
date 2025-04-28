@@ -152,6 +152,7 @@ static void *init_shell_values(shell_t *shell, char **env)
     if (!shell->env_cpy)
         return NULL;
     shell->prompt_color = NULL;
+    shell->local_vars = NULL;
     return shell;
 }
 

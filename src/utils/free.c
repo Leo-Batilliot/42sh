@@ -85,6 +85,8 @@ static void free_shell_lists(shell_t *shell)
         free_alias(shell->alias);
     if (shell->history)
         free_history(shell);
+    if (shell->local_vars)
+        free_list(shell->local_vars);
 }
 
 // name :   free_shell
@@ -107,6 +109,19 @@ static int free_shell(shell_t *shell)
     free_shell_lists(shell);
     my_free(shell);
     return res;
+}
+
+void free_local_vars(list_t *vars)
+{
+    list_t *tmp;
+
+    while (vars) {
+        tmp = vars;
+        vars = vars->next;
+        my_free(tmp->key);
+        my_free(tmp->value);
+        my_free(tmp);
+    }
 }
 
 // name :   free_and_exit

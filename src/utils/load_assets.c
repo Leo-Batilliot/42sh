@@ -52,9 +52,9 @@ int load_history(shell_t *shell)
         if (line[my_strlen(line) - 1] == '\n')
             line[my_strlen(line) - 1] = '\0';
         array = split_str(line, " ");
-        if (!array)
+        if (!array || array_len((const void **) array) < 3)
             continue;
-        add_node_to_history(shell, array[1], array[2]);
+        add_node_to_history(shell, array[1], array_to_str(&(array[2])));
         free_array((void **)array);
     }
     my_free(line);

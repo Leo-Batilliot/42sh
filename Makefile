@@ -35,6 +35,8 @@ SRC = 	lib/my_strchr.c 					    \
 		src/commands/history.c					\
 		src/commands/alias.c 					\
 		src/commands/colors.c					\
+		src/commands/variables.c				\
+		src/commands/echo.c						\
 		src/utils/redirection.c 				\
 		src/utils/commands.c 					\
 		src/utils/exec.c 						\
@@ -65,7 +67,7 @@ RESET=\033[0m
 
 # VARIABLES
 OBJ = $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRC))
-FLAGS = -Wextra -Wall -W -Werror -I include
+FLAGS = -Wextra -Wall -W -Werror -I include -g
 CC = gcc
 NAME = 42sh
 
