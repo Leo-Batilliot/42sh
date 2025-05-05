@@ -154,7 +154,7 @@ list_t *init_env(char **);
 char **replace_alias(shell_t *, char **);
 int add_node_to_history(shell_t *, char *, char *);
 int save_file(shell_t *);
-int add_node(shell_t *shell, char **);
+int add_node(shell_t *, char **);
 int add_to_history(shell_t *, char *);
 int is_operator(const char *);
 char *get_env_value(const char *, list_t *);
@@ -163,7 +163,7 @@ int print_error(shell_t *, int);
 char **my_env_cpy(char **);
 int write_alias(shell_t *);
 alias_t *find_node(shell_t *, char *);
-char **globbing(args_t *);
+char **globbins(char **);
 
 /*---------------------*/
 /*  TERMIOS FUNCTIONS  */
