@@ -51,6 +51,7 @@ SRC = 	lib/my_strchr.c 					    \
 		src/utils/load_assets.c 				\
 		src/utils/utils.c 						\
 		src/utils/files.c 						\
+		src/utils/pipe.c 						\
 		src/termios/termios_main.c 				\
 		src/termios/history.c 					\
 		src/termios/auto_completion.c 			\
@@ -96,7 +97,7 @@ $(NAME): $(OBJ)
 clean:
 	@echo -e "$(WHITE)$(BOLD)\t[CLEANING OBJ...]$(RESET)"
 	@if [ -d "$(OBJ_DIR)" ]; then \
-		echo "$(RED)$(BOLD)[CLEAN]:\t$(RESET)$(RED)$(OBJ_DIR)$(RESET)"; \
+		echo -e "$(RED)$(BOLD)[CLEAN]:\t$(RESET)$(RED)$(OBJ_DIR)$(RESET)"; \
 		rm -rf $(OBJ_DIR); \
 	fi
 
