@@ -143,6 +143,7 @@ static void *init_shell_values(shell_t *shell, char **env)
     shell->path = NULL;
     shell->line = NULL;
     shell->last_exit = 0;
+    shell->param = 0;
     shell->prev = 0;
     shell->alias = NULL;
     shell->history = NULL;

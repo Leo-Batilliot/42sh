@@ -81,42 +81,18 @@ static char *get_path(char *input, char *path, char *pwd)
     return try_to_access(input, pwd, path);
 }
 
-// name :   udpate_execute
-// args :   adress of can execute, shell main struct, argument
-// use :    determine if the cmd can be executed depending on logic operators
-static int update_execute(int *can_execute, shell_t *shell, args_t *tmp)
-{
-    if ((*can_execute) == 1) {
-        if (tmp->param == 0)
-            (*can_execute) = 0;
-        if ((*can_execute) == 1)
-            return 1;
-    }
-    if (tmp->param == 1 && shell->last_exit != 0) {
-        (*can_execute) = 1;
-        return 1;
-    }
-    if (tmp->param == 2 && shell->last_exit == 0) {
-        (*can_execute) = 1;
-        return 1;
-    }
-    return 0;
-}
-
 // name :   get_command_path
 // args :   array, shell main struct, adress of execute, argument
 // use :    verify if the command can be executed and build its path
-static int get_command_path(char **array, shell_t *shell,
-    int *can_execute, args_t *tmp)
+int get_command_path(char **array, shell_t *shell)
 {
-    if (update_execute(can_execute, shell, tmp))
-        return -1;
     if (!array[0])
         return -1;
     if (!is_builtin(array)) {
         if (shell->path)
             my_free(shell->path);
-        shell->path = get_path(array[0], get_env_value("PATH", shell->env),
+        shell->path = get_path(array[0],
+            get_env_value("PATH", shell->env),
             get_env_value("PWD", shell->env));
         if (!shell->path) {
             mini_printf(2, "%s: Command not found.\n", array[0]);
@@ -126,31 +102,5 @@ static int get_command_path(char **array, shell_t *shell,
             return 1;
         }
     }
-    return 0;
-}
-
-// name :   execute_command_list
-// args :   shell main struct
-// use :    build cmd paths and execute them
-int execute_command_list(shell_t *shell)
-{
-    int can_execute = 0;
-
-    for (args_t *tmp = shell->args; tmp; tmp = tmp->next) {
-        if (get_command_path(tmp->args, shell, &can_execute, tmp))
-            continue;
-        free_array((void **)shell->env_cpy);
-        shell->env_cpy = list_to_array(shell->env);
-        if (!shell->env_cpy)
-            return 0;
-        execute_cmd(shell, tmp);
-        free_array((void **)shell->env_cpy);
-        shell->env_cpy = NULL;
-        free_array((void **)tmp->args);
-        tmp->args = NULL;
-    }
-    if (shell->args)
-        free_args_list(shell->args);
-    shell->args = NULL;
     return 0;
 }
