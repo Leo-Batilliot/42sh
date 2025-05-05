@@ -27,21 +27,6 @@ typedef struct list_s {
     struct list_s *next;
 } list_t;
 
-typedef struct redirect_s {
-    int status;
-    int i;
-    char *file;
-} redirect_t;
-
-typedef struct args_s {
-    redirect_t *redir;
-    char **args;
-    int count_red;
-    int is_pipe;
-    int param;
-    struct args_s *next;
-} args_t;
-
 typedef struct alias_s {
     char **cmd;
     char *name;
@@ -79,7 +64,6 @@ typedef struct {
     list_t *env;
     list_t *local_vars;
     history_t *history;
-    args_t *args;
     char *prompt_color;
 } shell_t;
 
@@ -180,40 +164,32 @@ char **globbins(char **);
 /*---------------------*/
 
 /*    INIT    */
-args_t *init_cmd(char **);
 shell_t *init_shell(char **);
 
 /*    FREE    */
-int free_args_list(args_t *list);
-void free_and_exit(shell_t *shell, int return_value);
-int free_history(shell_t *shell);
+void free_and_exit(shell_t *, int);
+int free_history(shell_t *);
 
 /*    OTHERS    */
-int signal_error(pid_t, shell_t *, int[2], args_t *);
 void print_env(list_t *);
 void write_history(shell_t *);
-void *null_cmd(shell_t *shell);
-void *missing_name_message(shell_t *shell);
+void *null_cmd(shell_t *);
+void *missing_name_message(shell_t *);
 
 /*    MAIN FUNCTIONS    */
 int execute_command_list(shell_t *);
-int set_redirection_file(char **array, shell_t *shell, args_t **cur, int *);
-int redirection(args_t *tmp, shell_t *shell);
 int parse_args(shell_t *);
-int pipe_builtin(shell_t *, args_t *, int[2]);
-int builtin(shell_t *, args_t *, int[2]);
-int execute_cmd(shell_t *, args_t *);
-int exec_builtin(char **array, shell_t *shell);
-void print_signal(shell_t *shell, int *status);
-int is_operator(const char *str);
-node_t *parse_tokens(char **tokens, int start, int end, shell_t *shell);
-void execute_node(node_t *node, char **env_cpy, shell_t *shell);
-int get_command_path(char **array, shell_t *shell);
-node_t *parsing_redir(char **tokens, int start, int end, shell_t *shell);
-void exec_node_op(node_t *node, shell_t *shell, char **env_cpy);
-int exec_node_redir(node_t *node, char **env_cpy, shell_t *shell);
-void exec_pipe(node_t *node, shell_t *shell, char **env_cpy);
-int exec_node_cmd(node_t *node, shell_t *shell, int status, char **env_cpy);
+int exec_builtin(char **, shell_t *);
+void print_signal(shell_t *, int *);
+int is_operator(const char *);
+node_t *parse_tokens(char **, int, int, shell_t *);
+void execute_node(node_t *, char **, shell_t *);
+int get_command_path(char **, shell_t *);
+node_t *parsing_redir(char **, int, int, shell_t *);
+void exec_node_op(node_t *, shell_t *, char **);
+int exec_node_redir(node_t *, char **, shell_t *);
+void exec_pipe(node_t *, shell_t *, char **);
+int exec_node_cmd(node_t *, shell_t *, int, char **);
 
 /*    COMMANDS    */
 int my_history(char **, shell_t *);
@@ -225,10 +201,10 @@ int my_unsetenv(char **, shell_t *);
 int my_exit(char **, shell_t *);
 int color(char **, shell_t *);
 int clean(char **, shell_t *);
-int unset(char **args, shell_t *shell);
-int set(char **args, shell_t *shell);
-int my_echo(char **args, shell_t *shell);
+int unset(char **, shell_t *);
+int set(char **, shell_t *);
+int my_echo(char **, shell_t *);
 
-int termios_main(shell_t *shell);
+int termios_main(shell_t *);
 
 #endif
