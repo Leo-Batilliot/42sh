@@ -51,10 +51,33 @@ static int find_main_operator(char **tokens, int start, int end)
     return -1;
 }
 
-// name :   cpy_args
-// args :   tokens, start, end
+// name :   cpy
+// args :   tokens
 // use :    copy args
-static char **cpy_args(char **tokens, int start, int end)
+static char **cpy_args(char **tokens)
+{
+    int count = 0;
+    char **argv = NULL;
+
+    if (!tokens)
+        return NULL;
+    count = array_len((const void **)tokens);
+    argv = malloc(sizeof(char *) * (count + 1));
+    if (!argv)
+        return NULL;
+    for (int i = 0; i < count; i++) {
+        argv[i] = strdup(tokens[i]);
+        if (!argv[i])
+            return NULL;
+    }
+    argv[count] = NULL;
+    return argv;
+}
+
+// name :   cpy_parts_args
+// args :   tokens, start, end
+// use :    copy a segment of args
+static char **cpy_parts_args(char **tokens, int start, int end)
 {
     int count = end - start;
     char **argv = malloc(sizeof(char *) * (count + 1));
@@ -92,13 +115,19 @@ static node_t *parsing_subshell(char **tokens, int start,
 static node_t *parsing_cmd(char **tokens, int start, int end, shell_t *shell)
 {
     node_t *cmd_node = malloc(sizeof(node_t));
+    char **new_array = NULL;
+    char **array_globbins = NULL;
 
     if (!cmd_node) {
         shell->last_exit = 1;
         return NULL;
     }
     cmd_node->type = NODE_CMD;
-    cmd_node->argv = cpy_args(tokens, start, end);
+    new_array = replace_alias(shell, cpy_parts_args(tokens, start, end));
+    if (!new_array)
+        return NULL;
+    array_globbins = globbins(new_array);
+    cmd_node->argv = cpy_args(array_globbins);
     if (!cmd_node->argv)
         return NULL;
     return cmd_node;

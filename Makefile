@@ -44,7 +44,6 @@ SRC = 	lib/my_strchr.c 					    \
 		src/utils/my_list_to_array.c 			\
 		src/utils/parsing.c 					\
 		src/utils/parsing_alias.c 				\
-		src/utils/redirection_file.c 			\
 		src/utils/init.c 						\
 		src/utils/free.c 						\
 		src/utils/write_assets.c 				\
