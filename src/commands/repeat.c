@@ -9,9 +9,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-// Function: repeat
-// Arguments: array, shell
-// Purpose: Executes a command multiple times based on the given count
+// name: repeat
+// args: array, shell
+// use: executes a command multiple times based on the given count
 int repeat(char **array, shell_t *shell)
 {
     int count = 0;

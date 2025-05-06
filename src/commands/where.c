@@ -10,9 +10,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-// Function: search_in_path
-// Arguments: command
-// Purpose: Searches for the given command in the system PATH and prints all paths possible
+// name: search_in_path
+// args: command
+// use: searches for the given command in the system PATH and prints all paths
 void search_in_path(const char *command)
 {
     char *path = getenv("PATH");
@@ -32,9 +32,9 @@ void search_in_path(const char *command)
     free(paths);
 }
 
-// Function: where
-// Arguments: array, shell
-// Purpose: Checks if commands are shell built-ins or available in the system PATH
+// name: where
+// args: array, shell
+// use: checks if commands are shell built-ins or available in the system PATH
 int where(char **array, shell_t *shell)
 {
     (void)shell;

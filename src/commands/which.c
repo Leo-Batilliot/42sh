@@ -12,7 +12,7 @@
 
 // name :   get_paths
 // args :   none
-// use :    retrieve the system PATH environment variable and split it into an array
+// use :    retrieve the PATH environment variable and split it into an array
 static char **get_paths(void)
 {
     char *path = getenv("PATH");
@@ -52,7 +52,7 @@ static int check_command_in_path(char *command, char **paths)
 
 // name :   handle_command
 // args :   command
-// use :    process a command to check if it is a built-in or exists in the PATH
+// use :    check if it is a built-in or exists in the PATH
 static void handle_command(char *command)
 {
     char **paths = get_paths();
