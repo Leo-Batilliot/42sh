@@ -41,6 +41,7 @@ SRC = 	lib/my_strchr.c 					    \
 		src/utils/commands.c 					\
 		src/utils/globbins.c					\
 		src/utils/exec.c 						\
+		src/utils/default_env.c					\
 		src/utils/my_list_to_array.c 			\
 		src/utils/parsing.c 					\
 		src/utils/parsing_alias.c 				\

@@ -146,6 +146,7 @@ char **my_env_cpy(char **);
 int write_alias(shell_t *);
 alias_t *find_node(shell_t *, char *);
 char **globbing(args_t *);
+char **create_default_env(char **);
 
 /*---------------------*/
 /*  TERMIOS FUNCTIONS  */
