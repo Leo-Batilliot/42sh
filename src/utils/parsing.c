@@ -7,147 +7,188 @@
 
 #include "shell.h"
 #include <stddef.h>
+#include <stdlib.h>
 #include <string.h>
 
-// name :   add_new_cmd
-// args :   shell main struct, index, array, current arg
-// use :    init a new command and add it to the list
-static int add_new_cmd(shell_t *shell, int i, char **array, args_t **cur)
+
+// name :   missing_name_message
+// args :   shell
+// use :    message for missing name
+void *missing_name_message(shell_t *shell)
 {
-    (*cur)->args[shell->index_parse] = NULL;
-    (*cur)->next = init_cmd(&array[i + 1]);
-    if (!(*cur)->next)
-        return 84;
-    (*cur) = (*cur)->next;
-    shell->index_parse = 0;
-    return 1;
+    mini_printf(2, "Missing name for redirect.\n");
+    shell->last_exit = 1;
+    shell->err = 1;
+    return NULL;
 }
 
-// name :   add_pipe_cmd
-// args :   index, array, current arg, shell main struct
-// use :    set up "|" commands
-static int add_pipe_cmd(int i, char **array,
-    args_t **cur, shell_t *shell)
+// name :   missing_name_message
+// args :   shell
+// use :    message error for commands null
+void *null_cmd(shell_t *shell)
 {
-    if (shell->index_parse == 0 || array[i + 1] == NULL) {
-        mini_printf(2, "Invalid null command.\n");
+    mini_printf(2, "Invalid null command.\n");
+    shell->last_exit = 1;
+    shell->err = 1;
+    return NULL;
+}
+
+// name :   find_main_operator
+// args :   tokens, start, end
+// use :    find the last operator of line
+static int find_main_operator(char **tokens, int start, int end)
+{
+    int paren_depth = 0;
+
+    for (int i = end - 1; i >= start; i--) {
+        if (strcmp(tokens[i], ")") == 0)
+            paren_depth++;
+        if (strcmp(tokens[i], "(") == 0)
+            paren_depth--;
+        if (paren_depth == 0 && is_operator(tokens[i]))
+            return i;
+    }
+    return -1;
+}
+
+// name :   cpy
+// args :   tokens
+// use :    copy args
+static char **cpy_args(char **tokens)
+{
+    int count = 0;
+    char **argv = NULL;
+
+    if (!tokens)
+        return NULL;
+    count = array_len((const void **)tokens);
+    argv = malloc(sizeof(char *) * (count + 1));
+    if (!argv)
+        return NULL;
+    for (int i = 0; i < count; i++) {
+        argv[i] = strdup(tokens[i]);
+        if (!argv[i])
+            return NULL;
+    }
+    argv[count] = NULL;
+    return argv;
+}
+
+// name :   cpy_parts_args
+// args :   tokens, start, end
+// use :    copy a segment of args
+static char **cpy_parts_args(char **tokens, int start, int end)
+{
+    int count = end - start;
+    char **argv = malloc(sizeof(char *) * (count + 1));
+
+    if (!argv)
+        return NULL;
+    for (int i = 0; i < count; i++) {
+        argv[i] = strdup(tokens[start + i]);
+        if (!argv[i])
+            return NULL;
+    }
+    argv[count] = NULL;
+    return argv;
+}
+
+// name :   parsing_subshell
+// args :   tokens, start, end, shell
+// use :    parse the subshell for recursive function
+static node_t *parsing_subshell(char **tokens, int start,
+    int end, shell_t *shell)
+{
+    node_t *subshell_node = malloc(sizeof(node_t));
+
+    subshell_node->type = NODE_SUBSHELL;
+    subshell_node->left = parse_tokens(tokens, start + 1, end - 1, shell);
+    subshell_node->right = NULL;
+    subshell_node->op = NULL;
+    subshell_node->argv = NULL;
+    return subshell_node;
+}
+
+// name :   parsing_cmd
+// args :   tokens, start, end, shell
+// use :    parse commands for recursive functions
+static node_t *parsing_cmd(char **tokens, int start, int end, shell_t *shell)
+{
+    node_t *cmd_node = malloc(sizeof(node_t));
+    char **new_array = NULL;
+    char **array_globbins = NULL;
+
+    if (!cmd_node) {
         shell->last_exit = 1;
-        return 84;
+        return NULL;
     }
-    (*cur)->is_pipe = 1;
-    return add_new_cmd(shell, i, array, cur);
+    cmd_node->type = NODE_CMD;
+    new_array = replace_alias(shell, cpy_parts_args(tokens, start, end));
+    if (!new_array)
+        return NULL;
+    array_globbins = globbins(new_array);
+    cmd_node->argv = cpy_args(array_globbins);
+    if (!cmd_node->argv)
+        return NULL;
+    return cmd_node;
 }
 
-// name :   add_and_cmd
-// args :   index, array, current arg, shell main struct
-// use :    set up "&&" commands
-static int add_and_cmd(int i, char **array,
-    args_t **cur, shell_t *shell)
+// name :   bad_pipe
+// args :   start, end, tokens
+// use :    check if bad_pipe
+static int bad_pipe(int start, int end, char **tokens)
 {
-    if (!array[i + 1] || is_operator(array[i + 1])) {
-        print_error(shell, 0);
-        return 84;
-    }
-    add_new_cmd(shell, i, array, cur);
-    (*cur)->param = 1;
-    return 1;
-}
-
-// name :   add_or_cmd
-// args :   index, array, current arg, shell main struct
-// use :    set up "||" commands
-static int add_or_cmd(int i, char **array,
-    args_t **cur, shell_t *shell)
-{
-    if (!array[i + 1] || is_operator(array[i + 1])) {
-        print_error(shell, 0);
-        return 84;
-    }
-    add_new_cmd(shell, i, array, cur);
-    (*cur)->param = 2;
-    return 1;
-}
-
-// name :   parse_command_line
-// args :   index, array, current arg, shell main struct
-// use :    add new commands depending on the separator
-static int parse_command_line(int i, char **array,
-    args_t **cur, shell_t *shell)
-{
-    if ((strchr(array[i], '|') && my_strlen(array[i]) > 2)
-        || (strchr(array[i], '&') && my_strlen(array[i]) > 2)) {
-        print_error(shell, 0);
-        return 84;
-    }
-    if (!my_strcmp(array[i], ";"))
-        return add_new_cmd(shell, i, array, cur);
-    if (!my_strcmp(array[i], "|"))
-        return add_pipe_cmd(i, array, cur, shell);
-    if (!my_strcmp(array[i], "&&"))
-        return add_and_cmd(i, array, cur, shell);
-    if (!my_strcmp(array[i], "||"))
-        return add_or_cmd(i, array, cur, shell);
-    if (!is_operator(array[i])) {
-        (*cur)->args[shell->index_parse] = my_strdup(array[i]);
-        if (!(*cur)->args)
-            return 84;
-        shell->index_parse++;
+    for (int i = start; i < end; i++) {
+        if (strchr(tokens[i], '|')
+            && strlen(tokens[i]) > 1
+            && strcmp(tokens[i], "||"))
+                return 1;
     }
     return 0;
 }
 
-// name :   reset_parsing_list
-// args :   array, shell main struct
-// use :    reset the parsing elements in the shell structure
-static int reset_parsing_list(char **array, shell_t *shell)
+// name :   parsing_op
+// args :   stokens, start, end
+// use :    use for parsing node with operator "|, ||, ;, &&"
+node_t *parsing_op(char **tokens, int start, int end, shell_t *shell)
 {
-    if (!array)
-        return 1;
-    shell->index_parse = 0;
-    shell->tmp_red = 0;
-    if (shell->args)
-        free_args_list(shell->args);
-    shell->args = NULL;
-    return 0;
-}
+    int op_pos = find_main_operator(tokens, start, end);
+    node_t *node = NULL;
 
-// name :   parsing_loop
-// args :   shell main struct, new array
-// use :    set the redirection file and parse the command line
-static int parsing_loop(shell_t *shell, char **new_array)
-{
-    args_t *cur = NULL;
-    int res = 0;
-
-    for (int i = 0; new_array[i]; i++) {
-        res = set_redirection_file(new_array, shell, &cur, &i);
-        if (res == 1)
-            return 1;
-        if (res == 2)
-            continue;
-        res = parse_command_line(i, new_array, &cur, shell);
-        if (res == 1)
-            shell->tmp_red = 0;
-        if (res == 84)
-            return 1;
+    if (bad_pipe(start, end, tokens))
+        return null_cmd(shell);
+    if (op_pos != -1) {
+        if (op_pos == start || op_pos == end - 1)
+            return null_cmd(shell);
+        node = malloc(sizeof(node_t));
+        if (!node)
+            return NULL;
+        node->type = NODE_OP;
+        node->op = strdup(tokens[op_pos]);
+        if (!node->op)
+            return NULL;
+        node->left = parse_tokens(tokens, start, op_pos, shell);
+        node->right = parse_tokens(tokens, op_pos + 1, end, shell);
+        return node;
     }
-    cur->args[shell->index_parse] = NULL;
-    return 0;
+    return NULL;
 }
 
-// name :   parse_args
-// args :   shell main struct
-// use :    parse the shell->line to create an array and handle builtins
-int parse_args(shell_t *shell)
+// name :   parse_tokens
+// args :   stokens, start, end, shell
+// use :    main function for parsing
+node_t *parse_tokens(char **tokens, int start, int end, shell_t *shell)
 {
-    char **array = split_str(shell->line, " \t\n");
-    char **new_array = replace_alias(shell, array);
+    node_t *op = NULL;
 
-    if (array != new_array)
-        free_array((void **)array);
-    if (!new_array || reset_parsing_list(new_array, shell))
-        return free_array((void **)new_array) + 1;
-    if (parsing_loop(shell, new_array))
-        return free_array((void **)new_array) + 1;
-    return free_array((void **)new_array);
+    shell->err = 0;
+    if (strcmp(tokens[start], "(") == 0 && strcmp(tokens[end - 1], ")") == 0)
+        return parsing_subshell(tokens, start, end, shell);
+    op = parsing_op(tokens, start, end, shell);
+    if (op || shell->err == 1)
+        return op;
+    op = parsing_redir(tokens, start, end, shell);
+    if (op || shell->err == 1)
+        return op;
+    return parsing_cmd(tokens, start, end, shell);
 }
