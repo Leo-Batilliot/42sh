@@ -113,6 +113,8 @@ list_t *init_env(char **env_cpy)
 {
     list_t *head = NULL;
 
+    if (!env_cpy || !env_cpy[0])
+        env_cpy = create_default_env(env_cpy);
     if (!env_cpy)
         return NULL;
     head = my_parse_env(env_cpy);

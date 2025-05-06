@@ -147,6 +147,7 @@ int print_error(shell_t *, int);
 char **my_env_cpy(char **);
 int write_alias(shell_t *);
 alias_t *find_node(shell_t *, char *);
+char **create_default_env(char **);
 char **globbins(char **);
 
 /*---------------------*/
