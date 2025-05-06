@@ -88,7 +88,7 @@ int get_command_path(char **array, shell_t *shell)
 {
     if (!array[0])
         return -1;
-    if (!is_builtin(array)) {
+    if (!is_builtin(array[0])) {
         if (shell->path)
             my_free(shell->path);
         shell->path = get_path(array[0],

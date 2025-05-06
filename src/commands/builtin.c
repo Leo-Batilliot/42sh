@@ -27,16 +27,19 @@ const builtin_t builtins[] = {
     {"set", set},
     {"unset", unset},
     {"echo", my_echo},
+    {"which", which},
+    {"where", where},
+    {"repeat", repeat},
     {NULL, NULL}
 };
 
 // name :   is_builtin
 // args :   command array
 // use :    S.E
-int is_builtin(char **cmds)
+int is_builtin(char *cmds)
 {
     for (int i = 0; builtins[i].name; i++) {
-        if (!strcmp(builtins[i].name, cmds[0]))
+        if (!strcmp(builtins[i].name, cmds))
             return 1;
     }
     return 0;

@@ -116,7 +116,7 @@ static node_t *parsing_cmd(char **tokens, int start, int end, shell_t *shell)
 {
     node_t *cmd_node = malloc(sizeof(node_t));
     char **new_array = NULL;
-    char **array_globbins = NULL;
+    char **array_globbings = NULL;
 
     if (!cmd_node) {
         shell->last_exit = 1;
@@ -126,8 +126,8 @@ static node_t *parsing_cmd(char **tokens, int start, int end, shell_t *shell)
     new_array = replace_alias(shell, cpy_parts_args(tokens, start, end));
     if (!new_array)
         return NULL;
-    array_globbins = globbins(new_array);
-    cmd_node->argv = cpy_args(array_globbins);
+    array_globbings = globbings(new_array);
+    cmd_node->argv = cpy_args(array_globbings);
     if (!cmd_node->argv)
         return NULL;
     return cmd_node;

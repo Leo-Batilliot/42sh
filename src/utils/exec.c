@@ -53,7 +53,7 @@ void exec_cmd(shell_t *shell, node_t *node, int status, char **env_cpy)
 // use :    exec node cmd basics
 int exec_node_cmd(node_t *node, shell_t *shell, int status, char **env_cpy)
 {
-    if (is_builtin(node->argv)) {
+    if (is_builtin(node->argv[0])) {
         exec_builtin(node->argv, shell);
         return 1;
     }

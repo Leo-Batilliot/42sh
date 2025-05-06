@@ -142,13 +142,13 @@ int add_node(shell_t *, char **);
 int add_to_history(shell_t *, char *);
 int is_operator(const char *);
 char *get_env_value(const char *, list_t *);
-int is_builtin(char **);
+int is_builtin(char *);
 int print_error(shell_t *, int);
 char **my_env_cpy(char **);
 int write_alias(shell_t *);
 alias_t *find_node(shell_t *, char *);
 char **create_default_env(char **);
-char **globbins(char **);
+char **globbings(char **);
 
 /*---------------------*/
 /*  TERMIOS FUNCTIONS  */
@@ -205,6 +205,9 @@ int clean(char **, shell_t *);
 int unset(char **, shell_t *);
 int set(char **, shell_t *);
 int my_echo(char **, shell_t *);
+int which(char **, shell_t *);
+int where(char **, shell_t *);
+int repeat(char **, shell_t *);
 
 int termios_main(shell_t *);
 
