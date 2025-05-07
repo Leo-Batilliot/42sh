@@ -7,7 +7,10 @@
 
 #include "shell.h"
 #include <stddef.h>
+#include <errno.h>
 #include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 // name :   get_count
 // args :   arg, array
@@ -153,6 +156,7 @@ static void *init_shell_values(shell_t *shell, char **env)
         return NULL;
     shell->prompt_color = NULL;
     shell->local_vars = NULL;
+    shell->ignoreeof = 0;
     return shell;
 }
 

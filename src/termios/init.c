@@ -46,6 +46,7 @@ static void init_termios_variables(termios_t *termios, shell_t *shell)
     termios->prompt_color = shell->prompt_color;
     termios->input = '\0';
     termios->pos = 0;
+    termios->ignoreeof = shell->ignoreeof;
 }
 
 // name :   init_termios

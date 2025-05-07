@@ -63,6 +63,7 @@ typedef struct {
     history_t *history;
     args_t *args;
     char *prompt_color;
+    int ignoreeof;
 } shell_t;
 
 typedef int (*builtin_func_t)(char **, shell_t *);
