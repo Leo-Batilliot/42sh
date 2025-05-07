@@ -32,6 +32,7 @@ typedef struct termios_s {
     char *line;
     char input;
     int pos;
+    int ignoreeof;
 } termios_t;
 
 termios_t *init_termios(shell_t *shell);

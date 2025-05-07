@@ -78,6 +78,18 @@ static char *get_value(char **args)
     return args[2];
 }
 
+//name:    handle_ignoreeof
+//args:    shell main struct, args array
+//use:     handle ignoreeof special variable
+static void handle_ignoreeof(shell_t *shell, char **args)
+{
+    if (!my_strcmp(args[1], "ignoreeof")) {
+        shell->ignoreeof = -1;
+        if (args[2] && !my_strcmp(args[2], "=") && args[3])
+            shell->ignoreeof = atoi(args[3]);
+    }
+}
+
 // name:    set_local_var
 // args:    args array, shell main struct
 // use:     set or modify a local variable
@@ -89,6 +101,7 @@ int set(char **args, shell_t *shell)
 
     if (print_set(shell, node, args))
         return 0;
+    handle_ignoreeof(shell, args);
     name = args[1];
     value = get_value(args);
     for (node = shell->local_vars; node; node = node->next) {
@@ -154,7 +167,11 @@ int unset(char **args, shell_t *shell)
         shell->last_exit = 1;
         return 1;
     }
+    if (!my_strcmp(args[1], "ignoreeof"))
+    shell->ignoreeof = 0;
     for (int i = 1; args[i]; i++) {
+        if (!my_strcmp(args[i], "ignoreeof"))
+            shell->ignoreeof = 0;
         ret = unset_loop(ret, args[i], shell);
     }
     shell->last_exit = ret;
