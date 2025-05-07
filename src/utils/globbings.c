@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2024
 ** 42sh
 ** File description:
-** globbins.c
+** globbings.c
 */
 
 #include "shell.h"
@@ -82,10 +82,10 @@ static int count_glob_matches(char **array)
     return new_args_count;
 }
 
-// name :   globbing
+// name :   globbings
 // args :   arg
 // use :    expand wildcard characters in arguments
-char **globbins(char **array)
+char **globbings(char **array)
 {
     int new_args_count = count_glob_matches(array);
     char **new_args = malloc(sizeof(char *) * (new_args_count + 1));

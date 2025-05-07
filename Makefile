@@ -37,9 +37,12 @@ SRC = 	lib/my_strchr.c 					    \
 		src/commands/colors.c					\
 		src/commands/variables.c				\
 		src/commands/echo.c						\
+		src/commands/which.c					\
+		src/commands/where.c					\
+		src/commands/repeat.c					\
 		src/utils/redirection.c 				\
 		src/utils/commands.c 					\
-		src/utils/globbins.c					\
+		src/utils/globbings.c					\
 		src/utils/exec.c 						\
 		src/utils/default_env.c					\
 		src/utils/my_list_to_array.c 			\
