@@ -22,6 +22,7 @@ const builtin_t builtins[] = {
     {"history", my_history},
     {"exit", my_exit},
     {"alias", alias},
+    {"unalias", unalias},
     {"clean", clean},
     {"color", color},
     {"set", set},

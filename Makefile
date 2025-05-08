@@ -34,6 +34,7 @@ SRC = 	lib/my_strchr.c 					    \
 		src/commands/clean.c					\
 		src/commands/history.c					\
 		src/commands/alias.c 					\
+		src/commands/unalias.c 					\
 		src/commands/colors.c					\
 		src/commands/variables.c				\
 		src/commands/echo.c						\
