@@ -19,7 +19,7 @@ typedef struct {
     int x;
     int y;
     int add;
-    int force;
+    int must;
 } parser_t;
 
 typedef struct history_s {

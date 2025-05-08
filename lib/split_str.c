@@ -44,7 +44,7 @@ static int add_uop(const char *string, parser_t *parser, char **array)
 {
     if (is_keep_delim(string[parser->i]) && parser->add == 0) {
         parser->add = 1;
-        parser->force = 1;
+        parser->must = 1;
         parser->i--;
         return 0;
     }
@@ -55,7 +55,7 @@ static int add_uop(const char *string, parser_t *parser, char **array)
             parser->i++;
         }
         parser->add = 0;
-        parser->force = 1;
+        parser->must = 1;
         parser->i--;
         return 0;
     }
@@ -112,7 +112,7 @@ static int finish_word(char ***array, parser_t *parser)
     (*array)[parser->y][parser->x] = '\0';
     parser->y++;
     parser->x = 0;
-    parser->force = 0;
+    parser->must = 0;
     (*array) = realloc(*array, sizeof(char *) * (parser->y + 2));
     if (!(*array))
         return -1;
@@ -135,7 +135,7 @@ static int process_char(const char *string, char *operator,
             return -1;
     }
     if (is_delim(string[parser->i]) ||
-        parser->force == 1 ||
+        parser->must == 1 ||
         is_delim(string[parser->i + 1]) ||
         is_separator(string[parser->i], operator) ||
         string[parser->i + 1] == '\0') {
@@ -158,10 +158,13 @@ parser_t *declare_parser(void)
     parser->x = 0;
     parser->y = 0;
     parser->add = 0;
-    parser->force = 0;
+    parser->must = 0;
     return parser;
 }
 
+// name :   ret_array
+// args :   parser, array
+// use :    return aray or NULL if error
 static char **ret_array(parser_t *parser, char **array)
 {
     if (parser->y == 0) {
