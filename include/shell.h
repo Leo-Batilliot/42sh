@@ -14,6 +14,14 @@
 /* PROJECT STRUCTURES */
 /*--------------------*/
 
+typedef struct {
+    int i;
+    int x;
+    int y;
+    int add;
+    int force;
+} parser_t;
+
 typedef struct history_s {
     int index;
     char *time;
@@ -120,6 +128,10 @@ int mini_printf(int, char *, ...);
 int my_strncmp(const char *, const char *, int);
 int str_is_digits(const char *);
 int my_atoi(const char *);
+int is_delim(const char c);
+int is_keep_delim(char c);
+int is_keep_alone(char c);
+int is_separator(const char c, char *ope);
 
 /*---------------------*/
 /*   UTILS FUNCTIONS   */

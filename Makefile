@@ -16,7 +16,6 @@ SRC = 	lib/my_strchr.c 					    \
 		lib/split_str.c 						\
 		lib/my_strcpy.c 						\
 		lib/my_strcat.c 						\
-		lib/count_word.c 						\
 		lib/free.c 								\
 		lib/array_to_str.c 						\
 		lib/spaces_count.c						\
@@ -49,6 +48,7 @@ SRC = 	lib/my_strchr.c 					    \
 		src/utils/parsing.c 					\
 		src/utils/parsing_alias.c 				\
 		src/utils/init.c 						\
+		lib/utils_str.c 						\
 		src/utils/free.c 						\
 		src/utils/write_assets.c 				\
 		src/utils/load_assets.c 				\
