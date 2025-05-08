@@ -10,7 +10,6 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
 
 // name :   builtins
 // args :   N.A
