@@ -208,6 +208,7 @@ int exec_node_cmd(node_t *, shell_t *, int, char **);
 /*    COMMANDS    */
 int my_history(char **, shell_t *);
 int alias(char **, shell_t *);
+int unalias(char **array, shell_t *shell);
 int my_cd(char **, shell_t *);
 int my_env(char **, shell_t *);
 int my_setenv(char **, shell_t *);
