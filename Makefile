@@ -51,12 +51,18 @@ SRC = 	lib/my_strchr.c 					    \
 		src/utils/utils.c 						\
 		src/utils/files.c 						\
 		src/utils/pipe.c 						\
+		src/utils/signals.c 					\
 		src/termios/termios_main.c 				\
 		src/termios/history.c 					\
-		src/termios/auto_completion.c 			\
 		src/termios/input.c 					\
 		src/termios/init.c 						\
 		src/termios/free.c 						\
+		src/termios/completion/completion_main.c\
+		src/termios/completion/display.c 		\
+		src/termios/completion/init.c 			\
+		src/termios/completion/input.c 			\
+		src/termios/completion/parsing.c 		\
+		src/termios/completion/utils.c 			\
 		src/main.c
 
 # COLORS

@@ -6,6 +6,7 @@
 */
 
 #include "stddef.h"
+#include "shell.h"
 
 // name :   my_strcpy
 // args :   destination string, source string
@@ -19,5 +20,18 @@ char *my_strcpy(char *dest, char const *src)
     for (; src[i] != '\0'; i++)
         dest[i] = src[i];
     dest[i] = '\0';
+    return dest;
+}
+
+// name :   strcpy_from
+// args :   destination string, src string, start position
+// use :    copy the src string into dest, starting from the position given
+char *strcpy_from(char *dest, char *src, int start)
+{
+    if (!dest || !src)
+        return dest;
+    for (int i = 0; src[i] != '\0'; i++)
+        dest[i + start] = src[i];
+    dest[start + my_strlen(src)] = '\0';
     return dest;
 }

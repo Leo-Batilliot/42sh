@@ -12,16 +12,14 @@
 // name :   free_list
 // args :   list
 // use :    S.E
-static int free_list(list_t *head)
+int free_list(list_t *head)
 {
     if (!head)
         return 0;
     for (list_t *next = NULL; head; head = next) {
         next = head->next;
-        if (head->key)
-            my_free(head->key);
-        if (head->value)
-            my_free(head->value);
+        my_free(head->key);
+        my_free(head->value);
         my_free(head);
     }
     return 0;
