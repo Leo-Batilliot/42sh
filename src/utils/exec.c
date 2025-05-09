@@ -123,18 +123,29 @@ static int execute(shell_t *shell, char **array,
     return 0;
 }
 
+// name :   execute_script_or_builtin
+// args :   shell, tmp
+// use :    handles script and non-piped builtin execution
+static int execute_script_or_builtin(shell_t *shell, args_t *tmp)
+{
+    if (is_script(tmp->args[0]))
+        return execute_script(tmp->args[0], shell, tmp);
+    if (is_builtin(tmp->args) && !tmp->is_pipe)
+        return builtin(shell, tmp, NULL);
+    return -1;
+}
+
 // name :   execute_cmd
-// args :   shell main struct, arg
-// use :    execute given command (check for builtins, redirections, access...)
+// args :   shell, tmp
+// use :    executes commands (scripts, builtins, external commands)
 int execute_cmd(shell_t *shell, args_t *tmp)
 {
-    char **new_args = tmp->args;
+    char **new_args = NULL;
     int pipefd[2] = {0};
     int res = 0;
 
-    if (is_builtin(tmp->args) && !tmp->is_pipe)
-        return builtin(shell, tmp, NULL);
-    if (res != 0 || (is_builtin(tmp->args) == 1 && tmp->is_pipe == 0))
+    res = execute_script_or_builtin(shell, tmp);
+    if (res != -1)
         return res;
     if (tmp->is_pipe && pipe(pipefd) == -1)
         return 1;
