@@ -10,6 +10,9 @@
 #include <stddef.h>
 #include <stdlib.h>
 
+// name :   clear_all_alias
+// args :   main shell struct
+// use :    remove all aliases from the shell's alias list
 static void clear_all_alias(shell_t *shell)
 {
     alias_t *current = shell->alias;
@@ -25,6 +28,9 @@ static void clear_all_alias(shell_t *shell)
     shell->alias = NULL;
 }
 
+// name :   remove_alias
+// args :   current alias, previous alias, main shell struct
+// use :    remove a specific alias from the shell's alias list
 static void remove_alias(alias_t **current, alias_t **prev, shell_t *shell)
 {
     if (*prev)
@@ -37,6 +43,9 @@ static void remove_alias(alias_t **current, alias_t **prev, shell_t *shell)
     *current = (*prev) ? (*prev)->next : shell->alias;
 }
 
+// name :   clear_alias
+// args :   main shell struct, alias (name of the alias to remove)
+// use :    find and remove a specific alias from the shell's alias list
 static int clear_alias(shell_t *shell, char *alias)
 {
     alias_t *current = shell->alias;
@@ -55,6 +64,9 @@ static int clear_alias(shell_t *shell, char *alias)
     return found;
 }
 
+// name :   handle_no_args
+// args :   args
+// use :    the case where no arguments are provided to the unalias command
 static int handle_no_args(char **args)
 {
     if (!args[1]) {
@@ -65,6 +77,9 @@ static int handle_no_args(char **args)
     return 0;
 }
 
+// name :   handle_clear_all
+// args :   args, main shell struct
+// use :    handle the case where all aliases are to be removed
 static int handle_clear_all(char **args, shell_t *shell)
 {
     if (!my_strcmp(args[1], "*")) {
@@ -75,6 +90,9 @@ static int handle_clear_all(char **args, shell_t *shell)
     return -1;
 }
 
+// name :   handle_individual_aliases
+// args :   args, main shell struct
+// use :    removal of individual aliases from the shell's alias list
 static int handle_individual_aliases(char **args, shell_t *shell)
 {
     int found = 0;
@@ -90,7 +108,7 @@ static int handle_individual_aliases(char **args, shell_t *shell)
 }
 
 // name :   unalias
-// args :   array (command tokens), main shell struct
+// args :   array, main shell struct
 // use :    remove one or all aliases from the shell's alias list
 int unalias(char **array, shell_t *shell)
 {
