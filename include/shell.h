@@ -88,6 +88,18 @@ typedef struct color_s {
     char *code;
 } color_t;
 
+typedef struct script_ctx_s {
+    char **if_block;
+    int if_mode;
+    int block_index;
+} script_ctx_t;
+
+typedef struct expansion_ctx_s {
+    size_t *i;
+    size_t *j;
+    char **buffer;
+} expansion_ctx_t;
+
 static const color_t colors[] = {
     {"black", "\033[0;30m"},
     {"red", "\033[0;31m"},
@@ -138,6 +150,7 @@ int is_delim(const char c);
 int is_keep_delim(char c);
 int is_keep_alone(char c);
 int is_separator(const char c, char *ope);
+char **my_str_to_word_array(char const *str, char const *sep);
 
 /*---------------------*/
 /*   UTILS FUNCTIONS   */
@@ -221,5 +234,16 @@ int where(char **, shell_t *);
 int repeat(char **, shell_t *);
 
 int termios_main(shell_t *);
+
+/*---------------------*/
+/* SCRIPTING FUNCTIONS */
+/*---------------------*/
+int is_script(const char *filename);
+int execute_script(const char *path, shell_t *shell, node_t *node);
+char *extract_condition(char *line);
+char *expand_variables(char *line, shell_t *shell);
+char *get_variable_value(shell_t *shell, const char *var_name);
+int evaluate_condition(const char *condition, shell_t *shell);
+void trim_line(char *line);
 
 #endif
