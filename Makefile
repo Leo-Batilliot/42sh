@@ -24,6 +24,7 @@ SRC = 	lib/my_strchr.c 					    \
 		lib/my_strncmp.c 						\
 		lib/str_is_digits.c 					\
 		lib/my_atoi.c 							\
+		lib/my_str_to_word_array.c 				\
 		src/commands/cd.c	 					\
 		src/commands/env.c 						\
 		src/commands/exit.c 					\
@@ -68,6 +69,10 @@ SRC = 	lib/my_strchr.c 					    \
 		src/termios/completion/input.c 			\
 		src/termios/completion/parsing.c 		\
 		src/termios/completion/utils.c 			\
+		src/scripting/evaluate_condi.c 			\
+		src/scripting/expand_variables.c 		\
+		src/scripting/extract_condition.c 		\
+		src/scripting/scripting.c 				\
 		src/main.c
 
 # COLORS
