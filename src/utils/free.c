@@ -9,18 +9,6 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-// name :   free_redir
-// args :   redirection struct, nb of files
-// use :    S.E
-static int free_redir(redirect_t *redirect, int count)
-{
-    for (int i = 0; i < count; i++) {
-        if (redirect[i].file)
-            my_free(redirect[i].file);
-    }
-    return my_free(redirect);
-}
-
 // name :   free_list
 // args :   list
 // use :    S.E
@@ -35,26 +23,6 @@ static int free_list(list_t *head)
         if (head->value)
             my_free(head->value);
         my_free(head);
-    }
-    return 0;
-}
-
-// name :   free_args_list
-// args :   args list
-// use :    S.E
-int free_args_list(args_t *list)
-{
-    args_t *next = NULL;
-
-    if (!list)
-        return 0;
-    for (args_t *tmp = list; tmp; tmp = next) {
-        next = tmp->next;
-        if (tmp->args)
-            free_array((void **)tmp->args);
-        if (tmp->redir)
-            free_redir(tmp->redir, tmp->count_red);
-        my_free(tmp);
     }
     return 0;
 }
@@ -77,8 +45,6 @@ static void free_alias(alias_t *alias)
 // use :    S.E
 static void free_shell_lists(shell_t *shell)
 {
-    if (shell->args)
-        free_args_list(shell->args);
     if (shell->env)
         free_list(shell->env);
     if (shell->alias)

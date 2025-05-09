@@ -102,9 +102,13 @@ int add_node_to_history(shell_t *shell, char *time, char *cmd)
 int add_to_history(shell_t *shell, char *cmd)
 {
     int value = 0;
+    size_t len = 0;
 
-    if (cmd[my_strlen(cmd) - 1] == '\n')
-        cmd[my_strlen(cmd) - 1] = '\0';
+    if (!cmd || !*cmd)
+        return 1;
+    len = my_strlen(cmd);
+    if (len > 0 && cmd[len - 1] == '\n')
+        cmd[len - 1] = '\0';
     value = is_last_command_same(shell, cmd);
     if (value)
         return (value == 1) ? 0 : 1;

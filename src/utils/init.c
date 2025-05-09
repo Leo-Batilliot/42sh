@@ -7,73 +7,10 @@
 
 #include "shell.h"
 #include <stddef.h>
+#include <errno.h>
 #include <stdlib.h>
-
-// name :   get_count
-// args :   arg, array
-// use :    count redirection and allocate redirect structures for it
-static int get_count(args_t *new, char **array)
-{
-    for (int i = 0; array[i]; i++) {
-        if (!my_strcmp(";", array[i])
-            || !my_strcmp("|", array[i])
-            || !(my_strcmp("&&", array[i])))
-            break;
-        if (!my_strcmp("<", array[i])
-            || !my_strcmp(">", array[i])
-            || !my_strcmp(">>", array[i])
-            || !my_strcmp("<<", array[i]))
-            new->count_red++;
-    }
-    if (new->count_red > 0) {
-        new->redir = malloc(sizeof(redirect_t) * new->count_red);
-        if (!new->redir)
-            return 1;
-    }
-    return 0;
-}
-
-// name :   count_args_until_sep
-// args :   array
-// use :    count the number of elements before a seperator in the array
-static int count_args_until_sep(char **array)
-{
-    int count = 0;
-
-    for (int i = 0; array[i]; i++) {
-        if (!my_strcmp(array[i], ";") || !my_strcmp(array[i], "|"))
-            break;
-        if (!is_operator(array[i]))
-            count++;
-    }
-    return count;
-}
-
-// name :   init_cmd
-// args :   array
-// use :    S.E
-args_t *init_cmd(char **array)
-{
-    args_t *new = NULL;
-    int count_args = count_args_until_sep(array);
-
-    new = malloc(sizeof(args_t));
-    if (!new)
-        return NULL;
-    new->args = malloc(sizeof(char *) * (count_args + 1));
-    if (!new->args)
-        return NULL;
-    for (int i = 0; i <= count_args; i++)
-        new->args[i] = NULL;
-    new->is_pipe = 0;
-    new->param = 0;
-    new->next = NULL;
-    new->redir = NULL;
-    new->count_red = 0;
-    if (get_count(new, array))
-        return NULL;
-    return new;
-}
+#include <string.h>
+#include <unistd.h>
 
 // name :   add_to_list
 // args :   list head, node
@@ -143,16 +80,17 @@ static void *init_shell_values(shell_t *shell, char **env)
     shell->path = NULL;
     shell->line = NULL;
     shell->last_exit = 0;
+    shell->param = 0;
     shell->prev = 0;
     shell->alias = NULL;
     shell->history = NULL;
-    shell->args = NULL;
     shell->previous_pwd = NULL;
     shell->env_cpy = my_env_cpy(env);
     if (!shell->env_cpy)
         return NULL;
     shell->prompt_color = NULL;
     shell->local_vars = NULL;
+    shell->ignoreeof = 0;
     return shell;
 }
 
@@ -179,6 +117,8 @@ list_t *init_env(char **env_cpy)
 {
     list_t *head = NULL;
 
+    if (!env_cpy || !env_cpy[0])
+        env_cpy = create_default_env(env_cpy);
     if (!env_cpy)
         return NULL;
     head = my_parse_env(env_cpy);

@@ -59,9 +59,10 @@ char *get_env_value(const char *to_find, list_t *head)
 // use :    S.E
 int is_operator(const char *str)
 {
-    const char *operators[] = {";", ">>", "<<", "<", "|", ">", "&&"};
+    const char *operators[] = {";", "|", "||", "&&"};
 
-    for (int j = 0; j < 7; j++)
+    for (unsigned long int j = 0;
+        j < sizeof(operators) / sizeof(operators[0]); j++)
         if (!my_strcmp(str, operators[j]))
             return 1;
     return 0;

@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2024
 ** 42sh
 ** File description:
-** globbins.c
+** globbings.c
 */
 
 #include "shell.h"
@@ -32,14 +32,14 @@ static int fill_globbed_values(char *arg, char **new_args, int j)
 // name :   fill_glob_args
 // args :   arg, new args, j, i
 // use :    fill the new arguments array with globbed values
-static int fill_glob_args(args_t *tmp, char **new_args, int *j, int i)
+static int fill_glob_args(char **array, char **new_args, int *j, int i)
 {
-    if (strstr(tmp->args[i], "*") || strstr(tmp->args[i], "?")) {
-        (*j) = fill_globbed_values(tmp->args[i], new_args, (*j));
+    if (strstr(array[i], "*") || strstr(array[i], "?")) {
+        (*j) = fill_globbed_values(array[i], new_args, (*j));
         if ((*j) == -1)
             return -1;
     } else {
-        new_args[(*j)] = strdup(tmp->args[i]);
+        new_args[(*j)] = strdup(array[i]);
         if (!new_args[(*j)])
             return -1;
         (*j)++;
@@ -50,12 +50,12 @@ static int fill_glob_args(args_t *tmp, char **new_args, int *j, int i)
 // name :   set_new_args
 // args :   arg, new args
 // use :    loop to fill the new arguments array globbed values
-static int set_new_args(args_t *tmp, char **new_args)
+static int set_new_args(char **array, char **new_args)
 {
     int j = 0;
 
-    for (int i = 0; tmp->args[i]; i++) {
-        if (fill_glob_args(tmp, new_args, &j, i) == -1)
+    for (int i = 0; array[i]; i++) {
+        if (fill_glob_args(array, new_args, &j, i) == -1)
             return -1;
     }
     new_args[j] = NULL;
@@ -65,14 +65,14 @@ static int set_new_args(args_t *tmp, char **new_args)
 // name :   count_glob_matches
 // args :   arg
 // use :    count the number of arguments after globbing
-static int count_glob_matches(args_t *tmp)
+static int count_glob_matches(char **array)
 {
     glob_t globbuf;
     int new_args_count = 0;
 
-    for (int i = 0; tmp->args[i]; i++) {
-        if (strstr(tmp->args[i], "*") || strstr(tmp->args[i], "?")) {
-            glob(tmp->args[i], GLOB_NOCHECK, NULL, &globbuf);
+    for (int i = 0; array[i]; i++) {
+        if (strstr(array[i], "*") || strstr(array[i], "?")) {
+            glob(array[i], GLOB_NOCHECK, NULL, &globbuf);
             new_args_count += globbuf.gl_pathc;
             globfree(&globbuf);
         } else {
@@ -82,17 +82,17 @@ static int count_glob_matches(args_t *tmp)
     return new_args_count;
 }
 
-// name :   globbing
+// name :   globbings
 // args :   arg
 // use :    expand wildcard characters in arguments
-char **globbing(args_t *tmp)
+char **globbings(char **array)
 {
-    int new_args_count = count_glob_matches(tmp);
+    int new_args_count = count_glob_matches(array);
     char **new_args = malloc(sizeof(char *) * (new_args_count + 1));
 
     if (!new_args)
         return NULL;
-    if (set_new_args(tmp, new_args) == -1)
+    if (set_new_args(array, new_args) == -1)
         return NULL;
     return new_args;
 }

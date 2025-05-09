@@ -9,6 +9,11 @@
 #include <stddef.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <fcntl.h>
+#include <stdlib.h>
 
 // name :   line
 // args :   shell main struct
@@ -30,6 +35,8 @@ static int line(shell_t *shell)
 // use :    get line input from user, parse it, execute the commands
 int main_loop(shell_t *shell)
 {
+    char **tokens = NULL;
+
     while (1) {
         if (!shell->env)
             return shell->last_exit;
@@ -37,9 +44,15 @@ int main_loop(shell_t *shell)
             return shell->last_exit;
         if (add_to_history(shell, shell->line))
             continue;
-        if (!shell->line || shell->line[0] == '\n' || parse_args(shell))
+        tokens = split_str(shell->line, " \t\n");
+        if (!shell->line || shell->line[0] == '\n' || !tokens)
             continue;
-        execute_command_list(shell);
+        shell->root = parse_tokens(tokens, 0,
+            array_len((const void **)tokens), shell);
+        shell->env_cpy = list_to_array(shell->env);
+        if (!shell->env_cpy)
+            return 0;
+        execute_node(shell->root, shell->env_cpy, shell);
     }
     return 0;
 }

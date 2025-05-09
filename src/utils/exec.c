@@ -13,11 +13,12 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <string.h>
+#include <fcntl.h>
 
 // name :   print_signal
 // args :   shell main struct
 // use :    S.E
-static void print_signal(shell_t *shell, int *status)
+void print_signal(shell_t *shell, int *status)
 {
     int term_signal = WTERMSIG(*status);
 
@@ -28,98 +29,85 @@ static void print_signal(shell_t *shell, int *status)
     shell->last_exit = 128 + term_signal;
 }
 
-// name :   signal_error
-// args :   pid, shell main struct, fd, arg
-// use :    handle signal errors
-int signal_error(pid_t pid, shell_t *shell,
-    int pipe_fd[2], args_t *tmp)
-{
-    int status = 0;
-
-    if (shell->prev != 0) {
-        close(shell->prev);
-        shell->prev = 0;
-    }
-    if (tmp->is_pipe == 1) {
-        close(pipe_fd[1]);
-        shell->prev = pipe_fd[0];
-    } else {
-        if (waitpid(pid, &status, 0) == -1)
-            return 1;
-    }
-    if (WIFEXITED(status))
-        shell->last_exit = WEXITSTATUS(status);
-    else if (WIFSIGNALED(status))
-        print_signal(shell, &status);
-    return 0;
-}
-
-// name :   try_to_access
-// args :   command, shell main struct
-// use :    S.E
-static int try_to_access(char *path, shell_t *shell)
-{
-    struct stat file_stat;
-
-    if (stat(path, &file_stat) == -1) {
-        mini_printf(2, "%s: Command not found.\n", path);
-        shell->last_exit = 1;
-        return -1;
-    }
-    if (S_ISDIR(file_stat.st_mode)) {
-        mini_printf(2, "%s: Permission denied.\n", path);
-        shell->last_exit = 1;
-        return -1;
-    }
-    if (access(path, X_OK)) {
-        mini_printf(2, "%s: %s.\n", path, strerror(errno));
-        shell->last_exit = 1;
-        return -1;
-    }
-    return 0;
-}
-
-// name :   child
-// args :   shell main struct, array, arg, fd
-// use :    handle redirection and execute command
-static int child(shell_t *shell, char **array,
-    args_t *tmp, int pipe_fd[2])
-{
-    if (isatty(0) == 0 && shell->last_exit != 0 && tmp->param == 0)
-        return 1;
-    if (shell->prev != 0) {
-        dup2(shell->prev, STDIN_FILENO);
-        close(shell->prev);
-    }
-    if (tmp->is_pipe == 1) {
-        dup2(pipe_fd[1], STDOUT_FILENO);
-        close(pipe_fd[0]);
-        close(pipe_fd[1]);
-    }
-    redirection(tmp, shell);
-    if (execve(shell->path, array, shell->env_cpy) == -1) {
-        write(2, shell->path, my_strlen(shell->path));
-        write(2, ": Exec format error. Binary file not executable.\n", 49);
-        shell->last_exit = 1;
-        exit(1);
-    }
-    return 0;
-}
-
-// name :   execute
-// args :   shell main struct, array, arg, fd
-// use :    fork and handle error in case of pid != 0
-static int execute(shell_t *shell, char **array,
-    args_t *tmp, int pipefd[2])
+// name :   exec_cmd
+// args :   shell, node, status, env_cpy
+// use :    exec cmd for all
+void exec_cmd(shell_t *shell, node_t *node, int status, char **env_cpy)
 {
     pid_t pid = fork();
 
     if (pid == 0) {
-        if (child(shell, array, tmp, pipefd))
+        execve(shell->path, node->argv, env_cpy);
+    } else {
+        if (waitpid(pid, &status, 0) == -1)
+            return;
+        if (WIFEXITED(status))
+            shell->last_exit = WEXITSTATUS(status);
+        if (WIFSIGNALED(status))
+            print_signal(shell, &status);
+    }
+}
+
+// name :   exec_node_cmd
+// args :   node, shell, status, env_cpy
+// use :    exec node cmd basics
+int exec_node_cmd(node_t *node, shell_t *shell, int status, char **env_cpy)
+{
+    if (is_builtin(node->argv[0])) {
+        exec_builtin(node->argv, shell);
+        return 1;
+    }
+    if (get_command_path(node->argv, shell))
+        return 1;
+    exec_cmd(shell, node, status, env_cpy);
+    return 0;
+}
+
+// name :   exec_node_op
+// args :   node, shell, env_cpy
+// use :    fonction for execute node who contain type op
+void exec_node_op(node_t *node,
+    shell_t *shell, char **env_cpy)
+{
+    if (strcmp(node->op, ";") == 0) {
+        execute_node(node->left, env_cpy, shell);
+        execute_node(node->right, env_cpy, shell);
+    }
+    if (strcmp(node->op, "&&") == 0) {
+        shell->param = 1;
+        execute_node(node->left, env_cpy, shell);
+        if (shell->last_exit == 0) {
+            execute_node(node->right, env_cpy, shell);
+        }
+    }
+    if (strcmp(node->op, "||") == 0) {
+        shell->param = 1;
+        execute_node(node->left, env_cpy, shell);
+        if (shell->last_exit != 0) {
+            execute_node(node->right, env_cpy, shell);
+        }
+    }
+}
+
+// name :   exec_node_subshell
+// args :   node, shell, status, env_coy
+// use :    function for exec subshell
+static int exec_node_subshell(node_t *node, shell_t *shell,
+    int status, char **env_cpy)
+{
+    pid_t pid = fork();
+
+    if (pid == 0) {
+        execute_node(node->left, env_cpy, shell);
+        exit(shell->last_exit);
+    } else {
+        if (waitpid(pid, &status, 0) == -1)
             return 1;
-    } else
-        if (signal_error(pid, shell, pipefd, tmp))
-            return 1;
+        if (WIFEXITED(status))
+            shell->last_exit = WEXITSTATUS(status);
+        if (WIFSIGNALED(status))
+            print_signal(shell, &status);
+    }
     return 0;
 }
 
@@ -159,4 +147,28 @@ int execute_cmd(shell_t *shell, args_t *tmp)
     res = execute(shell, new_args, tmp, pipefd);
     free_array((void **)new_args);
     return res;
+}
+
+// name :   execute_node
+// args :   node, env_cpy, shell
+// use :    main fonction recursive for exec node
+void execute_node(node_t *node, char **env_cpy, shell_t *shell)
+{
+    int status = 0;
+
+    if (!node)
+        return;
+    if (isatty(0) == 0 && shell->last_exit != 0 && !shell->param)
+        return;
+    if (node->type == NODE_CMD)
+        if (exec_node_cmd(node, shell, status, env_cpy))
+            return;
+    if (node->type == NODE_OP)
+        exec_pipe(node, shell, env_cpy);
+    if (node->type == NODE_SUBSHELL)
+        if (exec_node_subshell(node, shell, status, env_cpy))
+            return;
+    if (node->type == NODE_REDIR)
+        if (!exec_node_redir(node, env_cpy, shell))
+            return;
 }

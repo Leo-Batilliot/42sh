@@ -16,7 +16,6 @@ SRC = 	lib/my_strchr.c 					    \
 		lib/split_str.c 						\
 		lib/my_strcpy.c 						\
 		lib/my_strcat.c 						\
-		lib/count_word.c 						\
 		lib/free.c 								\
 		lib/array_to_str.c 						\
 		lib/spaces_count.c						\
@@ -35,23 +34,29 @@ SRC = 	lib/my_strchr.c 					    \
 		src/commands/clean.c					\
 		src/commands/history.c					\
 		src/commands/alias.c 					\
+		src/commands/unalias.c 					\
 		src/commands/colors.c					\
 		src/commands/variables.c				\
 		src/commands/echo.c						\
+		src/commands/which.c					\
+		src/commands/where.c					\
+		src/commands/repeat.c					\
 		src/utils/redirection.c 				\
 		src/utils/commands.c 					\
-		src/utils/globbins.c					\
+		src/utils/globbings.c					\
 		src/utils/exec.c 						\
+		src/utils/default_env.c					\
 		src/utils/my_list_to_array.c 			\
 		src/utils/parsing.c 					\
 		src/utils/parsing_alias.c 				\
-		src/utils/redirection_file.c 			\
 		src/utils/init.c 						\
+		lib/utils_str.c 						\
 		src/utils/free.c 						\
 		src/utils/write_assets.c 				\
 		src/utils/load_assets.c 				\
 		src/utils/utils.c 						\
 		src/utils/files.c 						\
+		src/utils/pipe.c 						\
 		src/termios/termios_main.c 				\
 		src/termios/history.c 					\
 		src/termios/auto_completion.c 			\
@@ -101,7 +106,7 @@ $(NAME): $(OBJ)
 clean:
 	@echo -e "$(WHITE)$(BOLD)\t[CLEANING OBJ...]$(RESET)"
 	@if [ -d "$(OBJ_DIR)" ]; then \
-		echo "$(RED)$(BOLD)[CLEAN]:\t$(RESET)$(RED)$(OBJ_DIR)$(RESET)"; \
+		echo -e "$(RED)$(BOLD)[CLEAN]:\t$(RESET)$(RED)$(OBJ_DIR)$(RESET)"; \
 		rm -rf $(OBJ_DIR); \
 	fi
 
