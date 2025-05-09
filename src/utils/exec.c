@@ -87,6 +87,10 @@ static int try_to_access(char *path, shell_t *shell)
 // use :    exec node cmd basics
 int exec_node_cmd(node_t *node, shell_t *shell, int status, char **env_cpy)
 {
+    if (is_script(node->argv[0])) {
+        execute_script(node->argv[0], shell, node);
+        return 1;
+    }
     if (is_builtin(node->argv[0])) {
         exec_builtin(node->argv, shell);
         return 1;
