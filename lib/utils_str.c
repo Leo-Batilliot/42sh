@@ -5,18 +5,24 @@
 ** utils_str
 */
 
-#include <shell.h>
+#include "shell.h"
 #include <stdlib.h>
 
 static const char *delim = ";";
 static const char *array[] = {"<", ">", "|", "&", NULL};
-static const char *to_keep[] = {"(", ")", "\"", NULL};
+static const char *to_keep[] = {"(", ")", NULL};
 
-int is_separator(const char c, char *ope)
+int is_separator(char c, char *operator, const char *str, int pos)
 {
-    for (int i = 0; ope[i] != '\0'; i++)
-        if (c == ope[i])
+    int i = 0;
+
+    if (is_in_quotes(str, pos))
+        return 0;
+    while (operator && operator[i] != '\0') {
+        if (c == operator[i])
             return 1;
+        i++;
+    }
     return 0;
 }
 

@@ -123,7 +123,7 @@ char **split_str(const char *, char *);
 int my_strlen(char const *);
 int my_strcmp(char const *, char const *);
 int is_delim(const char);
-int is_separator(const char, char *);
+int is_separator(char, char *, const char *, int);
 char *array_to_str(char **);
 int mini_printf(int, char *, ...);
 int my_strncmp(const char *, const char *, int);
@@ -132,7 +132,14 @@ int my_atoi(const char *);
 int is_delim(const char c);
 int is_keep_delim(char c);
 int is_keep_alone(char c);
-int is_separator(const char c, char *ope);
+int is_in_quotes(const char *str, int pos);
+int is_quote(char c);
+int handle_quote_allocation(const char *, parser_t *, char **);
+int handle_quote_length(const char *, parser_t *, int *);
+int get_quoted_length(const char *string, int start_pos);
+int handle_quote(const char *, char *, char ***, parser_t *);
+int finish_word(char ***array, parser_t *parser);
+int fill_array_str(const char *, char *, char **, parser_t *);
 
 /*---------------------*/
 /*   UTILS FUNCTIONS   */

@@ -20,6 +20,7 @@ SRC = 	lib/my_strchr.c 					    \
 		lib/array_to_str.c 						\
 		lib/spaces_count.c						\
 		lib/array_len.c 						\
+		lib/quotes.c 							\
 		lib/mini_printf.c 						\
 		lib/my_strncmp.c 						\
 		lib/str_is_digits.c 					\
