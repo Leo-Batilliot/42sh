@@ -21,7 +21,7 @@ void search_in_path(const char *command)
 
     if (!path)
         return;
-    paths = split_str(path, ":");
+    paths = simple_split_str(path, ":");
     for (int i = 0; paths[i]; i++) {
         asprintf(&full_path, "%s/%s", paths[i], command);
         if (access(full_path, X_OK) == 0)

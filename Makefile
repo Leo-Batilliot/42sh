@@ -24,6 +24,8 @@ SRC = 	lib/my_strchr.c 					    \
 		lib/my_strncmp.c 						\
 		lib/str_is_digits.c 					\
 		lib/my_atoi.c 							\
+		lib/simple_split_str.c 					\
+		lib/array_dup.c 						\
 		lib/my_str_to_word_array.c 				\
 		src/commands/cd.c	 					\
 		src/commands/env.c 						\

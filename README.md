@@ -44,19 +44,26 @@ Une fois dans le shell, vous pouvez utiliser des commandes classiques ainsi que 
 ### Commandes Supportées
 - `cd` : Change le répertoire de travail.
 - `alias` : Permet d'afficher ou de créer/remplacer un alias.
+- `unalias` : Permet de supprimer des alias (`unalias *` supprime tous les alias comme `clean alias`).  
 - `env` : Affiche les variables d'environnement.
 - `setenv` : Modifie ou ajoute une variable d'environnement.
 - `unsetenv` : Supprime une variable d'environnement.
 - `history` : Affiche l'historique des commandes.
-- `clean` : Permet de supprimer/nettoyer certaines variables (exemple : `clean history`)
+- `clean` : Permet de supprimer/nettoyer certaines variables (exemple : `clean history`, `clean alias`)  
 - `color` : Permet d'afficher les différentes couleurs ou de changer celle du prompt.
 - `exit` : Quitte le shell.
+- `echo` : Affiche du texte ou la valeur d’une variable.  
+- `which` :  Affiche le chemin absolu de la première occurrence d’une commande trouvée dans le `PATH`  
+- `where` :  Affiche toutes les occurrences d’une commande dans le `PATH`, y compris les alias.  
+- `repeat` :  Exécute une commande un certain nombre de fois.  
 
 ### Redirections, pipes, operateurs
 Le 42sh prend en charge :
     -les redirections standards `>`, `>>`, `<`, `<<`, permettant de rediriger l'entrée/sortie vers/depuis des fichiers.  
     -les pipes `|` pour chaîner plusieurs commandes ensemble.  
-    -les operateurs `||`(= ou) et `&&`(= et) pour executer une commande si celle d'avant à reussi, ou stopper a la première qui réussi, etc...  
+    -les operateurs `||`(= ou) et `&&`(= et) pour executer une commande si celle d'avant à reussi, ou stopper a la première qui réussi, etc... 
+    -les parenthèses `()` pour executer leur contenu dans un sous-shell.  
+    -les guillemets `""` pour regrouper plusieurs arguments (pour donner une phrase en un seul morceau par exemple).  
 
 ### Couleur du prompt
 Il est possible de changer la couleur du prompt a tout moment en utilisant la commande `color` avec : `color [couleur]`  
@@ -80,7 +87,7 @@ Le shell retient les alias definis et les remplace par leur valeur.
 - `include` :  Contient les fichiers .h contenant les définitions de fonctions, de structures et les define.  
 - `lib` : Contient les fonctions utilitaires (souvent recodées et modifiées) pour de divers projets.  
 - `src/commands/` : Contient les commandes intégrées au shell telles que `cd`, `exit`, `setenv`, etc...  
-- `src/utils/` : Contient des fonctions utilitaires pour la gestion des redirections, des fichiers, et des processus.  
+- `src/utils/` : Contient des fonctions utilitaires pour le parsing, la gestion des redirections, des fichiers, et des processus.  
 - `src/termios/` : Contient des fonctions liées à l'interface terminal, telles que la gestion de l'autocomplétion et de l'historique.
 
 ### Documentation

@@ -26,7 +26,7 @@ int load_alias(shell_t *shell)
     while (getline(&line, &size, fd) != -1) {
         if (line[my_strlen(line) - 1] == '\n')
             line[my_strlen(line) - 1] = '\0';
-        array = split_str(line, " \t='");
+        array = simple_split_str(line, " \t='");
         if (!array)
             continue;
         add_node(shell, array);
@@ -43,19 +43,21 @@ int load_history(shell_t *shell)
 {
     FILE *fd = fopen("assets/history.txt", "r");
     char **array = NULL;
+    char *str = NULL;
     char *line = NULL;
     size_t len = 0;
 
     if (!fd)
         return 1;
-    while (getline(&line, &len, fd) != -1) {
+    for (; getline(&line, &len, fd) != -1; free_array((void **)array)) {
         if (line[my_strlen(line) - 1] == '\n')
             line[my_strlen(line) - 1] = '\0';
-        array = split_str(line, " ");
+        array = simple_split_str(line, " ");
         if (!array || array_len((const void **) array) < 3)
             continue;
-        add_node_to_history(shell, array[1], array_to_str(&(array[2])));
-        free_array((void **)array);
+        str = array_to_str(&(array[2]));
+        add_node_to_history(shell, array[1], str);
+        my_free(str);
     }
     my_free(line);
     return fclose(fd);

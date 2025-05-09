@@ -33,10 +33,10 @@ int word_len(char const *str, char const *sep)
     return i;
 }
 
-// name :   count_words
+// name :   count_word
 // args :   str (char const *), sep (char const *)
 // use :    counts how many words are in the string based on separators
-int count_words(char const *str, char const *sep)
+int count_word(char const *str, char const *sep)
 {
     int i = 0;
     int word_count = 0;
@@ -74,7 +74,7 @@ void fill_word(char *array, char const *str, int *i, char const *sep)
 // use :    splits a string into an array of words using given separators
 char **my_str_to_word_array(char const *str, char const *sep)
 {
-    int words_count = count_words(str, sep);
+    int words_count = count_word(str, sep);
     char **array = malloc(sizeof(char *) * (words_count + 1));
     int index = 0;
     int len = 0;

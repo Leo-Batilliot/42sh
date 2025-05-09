@@ -91,7 +91,7 @@ int fill_completion_list(completion_t *completion, termios_t *termios)
     if (completion->directory)
         return parse_directory(completion->directory, completion);
     if (completion->type == COMMAND) {
-        array = split_str(get_env_value("PATH", termios->env), ":");
+        array = simple_split_str(get_env_value("PATH", termios->env), ":");
         if (!array)
             return 1;
         for (int i = 0; array[i]; i++)

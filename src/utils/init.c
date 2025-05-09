@@ -31,7 +31,7 @@ static list_t *add_to_list(list_t *head, list_t *node)
 // name :   init_node
 // args :   value, env array, index
 // use :    init a new env variable using the env array
-static list_t *init_node(char *value, char **env, int i)
+static list_t *init_list_node(char *value, char **env, int i)
 {
     list_t *node = malloc(sizeof(list_t));
 
@@ -63,7 +63,7 @@ static list_t *my_parse_env(char **env)
         if (!value)
             return NULL;
         *value = '\0';
-        node = init_node(value, env, i);
+        node = init_list_node(value, env, i);
         if (!node)
             return NULL;
         *value = '=';
@@ -85,6 +85,7 @@ static void *init_shell_values(shell_t *shell, char **env)
     shell->alias = NULL;
     shell->history = NULL;
     shell->previous_pwd = NULL;
+    shell->root = NULL;
     shell->env_cpy = my_env_cpy(env);
     if (!shell->env_cpy)
         return NULL;
@@ -108,6 +109,25 @@ shell_t *init_shell(char **env)
     if (!shell->prompt_color)
         return NULL;
     return shell;
+}
+
+// name :   init_node
+// args :   N.A
+// use :    S.E
+node_t *init_node(void)
+{
+    node_t *node = malloc(sizeof(node_t));
+
+    if (!node)
+        return NULL;
+    node->argv = NULL;
+    node->file = NULL;
+    node->left = NULL;
+    node->op = NULL;
+    node->redir_type = NULL;
+    node->right = NULL;
+    node->type = 0;
+    return node;
 }
 
 // name :   init_env

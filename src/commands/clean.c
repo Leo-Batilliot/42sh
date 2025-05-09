@@ -45,5 +45,7 @@ int clean(char **array, shell_t *shell)
         return print_help_msg();
     if (!my_strcmp(array[1], "history") && shell->history)
         return free_history(shell);
+    if (!my_strcmp(array[1], "alias") && shell->alias)
+        return clear_all_alias(shell);
     return print_help_msg();
 }
