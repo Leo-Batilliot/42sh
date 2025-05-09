@@ -136,7 +136,6 @@ char *my_strchr(char *, int);
 char *my_strdup(char const *);
 char *my_strcpy(char *, char const *);
 char *my_strcat(char *, char const *);
-int count_word(const char *, char *);
 char **split_str(const char *, char *);
 char **simple_split_str(char *, char *);
 int my_strlen(char const *);
