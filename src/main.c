@@ -68,6 +68,7 @@ int main(int ac, char **av, char **env)
     (void)av;
     if (ac != 1)
         return res;
+    handle_signals();
     shell = init_shell(env);
     if (!shell)
         return res;

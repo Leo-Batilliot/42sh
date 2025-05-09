@@ -112,6 +112,11 @@ int free_array(void **);
 int my_free(void *);
 
 /*    OTHERS    */
+char *my_strndup(char const *, int);
+int rev_case_strncmp(char *, char *, int);
+int my_case_strncmp(char *, char *, int);
+char *strcpy_from(char *, char *, int);
+char *my_null_strdup(char *);
 int spaces_count(int, int);
 int array_len(const void **);
 char *my_strchr(char *, int);
@@ -146,8 +151,10 @@ int load_file(shell_t *);
 list_t *init_env(char **);
 
 /*    FREE    */
+int free_list(list_t *);
 
 /*    OTHERS    */
+void handle_signals(void);
 char **replace_alias(shell_t *, char **);
 int add_node_to_history(shell_t *, char *, char *);
 int save_file(shell_t *);
@@ -162,16 +169,6 @@ int write_alias(shell_t *);
 alias_t *find_node(shell_t *, char *);
 char **create_default_env(char **);
 char **globbings(char **);
-
-/*---------------------*/
-/*  TERMIOS FUNCTIONS  */
-/*---------------------*/
-
-/*    INIT    */
-
-/*    FREE    */
-
-/*    OTHERS    */
 
 /*---------------------*/
 /*  PROJECT FUNCTIONS  */

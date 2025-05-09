@@ -11,7 +11,7 @@
 // name :   print_prompt
 // args :   env list, prompt color
 // use :    S.E
-static int print_prompt(list_t *env, char *color)
+int print_prompt(list_t *env, char *color)
 {
     char *path = get_env_value("PWD", env);
 
