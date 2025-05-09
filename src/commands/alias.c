@@ -104,7 +104,7 @@ int add_node(shell_t *shell, char **array)
 static int append_split_to_array(char ***dest,
     int *j, char *to_split)
 {
-    char **split = split_str(to_split, "= '\t");
+    char **split = simple_split_str(to_split, "= '\t");
 
     if (!split || !split[0])
         return free_array((void **)split) + 84;

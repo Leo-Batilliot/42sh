@@ -47,7 +47,7 @@ static node_t *check_redir_conditions(int i, char **tokens,
 static node_t *create_redirection_node(int i, char **tokens,
     int start, shell_t *shell)
 {
-    node_t *redir_node = malloc(sizeof(node_t));
+    node_t *redir_node = init_node();
 
     if (!redir_node)
         return NULL;

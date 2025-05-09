@@ -57,7 +57,7 @@ static int replace_new(int *j, char ***new_array, char *name, shell_t *shell)
     string = array_to_str(to_cmp->cmd);
     if (!string)
         return 1;
-    array_tmp = split_str(string, " \t");
+    array_tmp = simple_split_str(string, " \t");
     my_free(string);
     return add_alias(array_tmp, j, new_array);
 }
@@ -72,7 +72,7 @@ char **replace_alias(shell_t *shell, char **array)
     int j = 0;
 
     if (!array || !my_strcmp("alias", array[0]))
-        return array;
+        return array_dup(array);
     for (int i = 0; array[i]; i++) {
         res = replace_new(&j, &new_array, array[i], shell);
         if (res == 1)

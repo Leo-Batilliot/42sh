@@ -50,7 +50,7 @@ static int access_with_pwd(char *input, char **res, char *pwd)
 static char *try_to_access(char *input, char *pwd, char *path)
 {
     char *res = NULL;
-    char **array = split_str(path, ":");
+    char **array = simple_split_str(path, ":");
 
     if (!array)
         return NULL;

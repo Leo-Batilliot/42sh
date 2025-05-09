@@ -124,5 +124,7 @@ int handle_input(termios_t *termios)
         return delete_character(termios, 0);
     if (termios->input == SPECIAL)
         return special_input(termios);
+    if (termios->input < ' ' || termios->input > '~')
+        return 0;
     return add_character(termios);
 }

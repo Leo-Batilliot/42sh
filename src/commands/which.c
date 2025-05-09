@@ -20,7 +20,7 @@ static char **get_paths(void)
 
     if (!path)
         return NULL;
-    paths = split_str(path, ":");
+    paths = simple_split_str(path, ":");
     if (!paths)
         return NULL;
     return paths;

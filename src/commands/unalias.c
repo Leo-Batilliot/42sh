@@ -13,7 +13,7 @@
 // name :   clear_all_alias
 // args :   main shell struct
 // use :    remove all aliases from the shell's alias list
-static void clear_all_alias(shell_t *shell)
+int clear_all_alias(shell_t *shell)
 {
     alias_t *current = shell->alias;
     alias_t *next;
@@ -26,6 +26,7 @@ static void clear_all_alias(shell_t *shell)
         current = next;
     }
     shell->alias = NULL;
+    return 0;
 }
 
 // name :   remove_alias
@@ -112,7 +113,7 @@ static int handle_individual_aliases(char **args, shell_t *shell)
 // use :    remove one or all aliases from the shell's alias list
 int unalias(char **array, shell_t *shell)
 {
-    char **args = split_str(shell->line, "\t \n");
+    char **args = simple_split_str(shell->line, "\t \n");
     int result;
 
     (void)array;

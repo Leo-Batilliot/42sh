@@ -119,12 +119,14 @@ char *strcpy_from(char *, char *, int);
 char *my_null_strdup(char *);
 int spaces_count(int, int);
 int array_len(const void **);
+char **array_dup(char **);
 char *my_strchr(char *, int);
 char *my_strdup(char const *);
 char *my_strcpy(char *, char const *);
 char *my_strcat(char *, char const *);
 int count_word(const char *, char *);
 char **split_str(const char *, char *);
+char **simple_split_str(char *, char *);
 int my_strlen(char const *);
 int my_strcmp(char const *, char const *);
 int is_delim(const char);
@@ -176,10 +178,13 @@ char **globbings(char **);
 
 /*    INIT    */
 shell_t *init_shell(char **);
+node_t *init_node(void);
 
 /*    FREE    */
 void free_and_exit(shell_t *, int);
 int free_history(shell_t *);
+void free_nodes(node_t *);
+int clear_all_alias(shell_t *);
 
 /*    OTHERS    */
 void print_env(list_t *);

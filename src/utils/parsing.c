@@ -51,41 +51,23 @@ static int find_main_operator(char **tokens, int start, int end)
     return -1;
 }
 
-// name :   cpy
-// args :   tokens
-// use :    copy args
-static char **cpy_args(char **tokens)
-{
-    int count = 0;
-    char **argv = NULL;
-
-    if (!tokens)
-        return NULL;
-    count = array_len((const void **)tokens);
-    argv = malloc(sizeof(char *) * (count + 1));
-    if (!argv)
-        return NULL;
-    for (int i = 0; i < count; i++) {
-        argv[i] = strdup(tokens[i]);
-        if (!argv[i])
-            return NULL;
-    }
-    argv[count] = NULL;
-    return argv;
-}
-
 // name :   cpy_parts_args
 // args :   tokens, start, end
 // use :    copy a segment of args
 static char **cpy_parts_args(char **tokens, int start, int end)
 {
     int count = end - start;
-    char **argv = malloc(sizeof(char *) * (count + 1));
+    char **argv = NULL;
 
+    if (count < 1)
+        return NULL;
+    argv = malloc(sizeof(char *) * (count + 1));
     if (!argv)
         return NULL;
     for (int i = 0; i < count; i++) {
-        argv[i] = strdup(tokens[start + i]);
+        if (array_len((const void **)tokens) < start + i)
+            return NULL;
+        argv[i] = my_strdup(tokens[start + i]);
         if (!argv[i])
             return NULL;
     }
@@ -99,7 +81,7 @@ static char **cpy_parts_args(char **tokens, int start, int end)
 static node_t *parsing_subshell(char **tokens, int start,
     int end, shell_t *shell)
 {
-    node_t *subshell_node = malloc(sizeof(node_t));
+    node_t *subshell_node = init_node();
 
     subshell_node->type = NODE_SUBSHELL;
     subshell_node->left = parse_tokens(tokens, start + 1, end - 1, shell);
@@ -109,28 +91,41 @@ static node_t *parsing_subshell(char **tokens, int start,
     return subshell_node;
 }
 
+// name :   free_arrays_and_node
+// args :   2 arrays, a node, and the shell
+// use :    S.E
+static void *free_arrays_and_node(char **a, char **b, node_t *d, shell_t *shll)
+{
+    free_array((void **)a);
+    free_array((void **)b);
+    free_nodes(d);
+    if (shll)
+        shll->last_exit = 1;
+    return NULL;
+}
+
 // name :   parsing_cmd
 // args :   tokens, start, end, shell
 // use :    parse commands for recursive functions
 static node_t *parsing_cmd(char **tokens, int start, int end, shell_t *shell)
 {
-    node_t *cmd_node = malloc(sizeof(node_t));
+    node_t *cmd = init_node();
     char **new_array = NULL;
-    char **array_globbings = NULL;
+    char **args_array = NULL;
 
-    if (!cmd_node) {
-        shell->last_exit = 1;
-        return NULL;
-    }
-    cmd_node->type = NODE_CMD;
-    new_array = replace_alias(shell, cpy_parts_args(tokens, start, end));
+    if (!cmd)
+        return free_arrays_and_node(NULL, NULL, NULL, shell);
+    cmd->type = NODE_CMD;
+    args_array = cpy_parts_args(tokens, start, end);
+    new_array = replace_alias(shell, args_array);
+    free_array((void **)args_array);
     if (!new_array)
-        return NULL;
-    array_globbings = globbings(new_array);
-    cmd_node->argv = cpy_args(array_globbings);
-    if (!cmd_node->argv)
-        return NULL;
-    return cmd_node;
+        return free_arrays_and_node(NULL, NULL, cmd, shell);
+    cmd->argv = globbings(new_array);
+    if (!cmd->argv)
+        return free_arrays_and_node(new_array, NULL, cmd, shell);
+    free_arrays_and_node(new_array, NULL, NULL, NULL);
+    return cmd;
 }
 
 // name :   bad_pipe
@@ -160,7 +155,7 @@ node_t *parsing_op(char **tokens, int start, int end, shell_t *shell)
     if (op_pos != -1) {
         if (op_pos == start || op_pos == end - 1)
             return null_cmd(shell);
-        node = malloc(sizeof(node_t));
+        node = init_node();
         if (!node)
             return NULL;
         node->type = NODE_OP;
